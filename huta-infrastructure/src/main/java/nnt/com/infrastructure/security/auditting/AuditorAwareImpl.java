@@ -1,4 +1,4 @@
-package nnt.com.infrastructure.config.security.auditting;
+package nnt.com.infrastructure.security.auditting;
 
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.Authentication;

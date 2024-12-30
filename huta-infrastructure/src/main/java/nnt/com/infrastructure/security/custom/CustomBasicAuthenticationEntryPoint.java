@@ -1,4 +1,4 @@
-package nnt.com.infrastructure.config.security.custom;
+package nnt.com.infrastructure.security.custom;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

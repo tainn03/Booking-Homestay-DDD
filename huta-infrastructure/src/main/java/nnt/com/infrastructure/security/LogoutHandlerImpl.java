@@ -1,4 +1,4 @@
-package nnt.com.infrastructure.config.security;
+package nnt.com.infrastructure.security;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

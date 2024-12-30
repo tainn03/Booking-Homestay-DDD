@@ -1,4 +1,4 @@
-package nnt.com.infrastructure.config.security;
+package nnt.com.infrastructure.security;
 
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
@@ -11,8 +11,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import nnt.com.domain.base.exception.BusinessException;
 import nnt.com.domain.base.exception.ErrorCode;
-import nnt.com.infrastructure.config.security.auditting.AuditorAwareImpl;
 import nnt.com.infrastructure.persistence.authentication.database.jpa.UserInfraRepositoryJpa;
+import nnt.com.infrastructure.security.auditting.AuditorAwareImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;

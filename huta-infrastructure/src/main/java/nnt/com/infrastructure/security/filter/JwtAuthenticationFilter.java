@@ -1,4 +1,4 @@
-package nnt.com.infrastructure.config.security.filter;
+package nnt.com.infrastructure.security.filter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

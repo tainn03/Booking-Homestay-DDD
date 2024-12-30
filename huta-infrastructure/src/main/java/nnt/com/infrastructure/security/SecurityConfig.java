@@ -1,11 +1,12 @@
-package nnt.com.infrastructure.config.security;
+package nnt.com.infrastructure.security;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import nnt.com.infrastructure.config.security.custom.CustomAccessDeniedHandler;
-import nnt.com.infrastructure.config.security.custom.CustomBasicAuthenticationEntryPoint;
-import nnt.com.infrastructure.config.security.filter.JwtAuthenticationFilter;
+import nnt.com.infrastructure.security.custom.CustomAccessDeniedHandler;
+import nnt.com.infrastructure.security.custom.CustomBasicAuthenticationEntryPoint;
+import nnt.com.infrastructure.security.filter.JwtAuthenticationFilter;
+import nnt.com.infrastructure.security.filter.RateLimitFilter;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,6 +38,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableConfigurationProperties(RSAKeyRecord.class)
 public class SecurityConfig {
     JwtAuthenticationFilter jwtAuthenticationFilter;
+    RateLimitFilter rateLimitFilter;
     AuthenticationProvider authenticationProvider;
     LogoutHandler logoutHandler;
     String[] WHITE_LIST_URL = {
@@ -69,6 +71,7 @@ public class SecurityConfig {
                 }))
                 .csrf(AbstractHttpConfigurer::disable)
                 .requiresChannel((requiresChannel) -> requiresChannel.anyRequest().requiresInsecure()) // http
+                .addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .logout(logout ->
                         logout.logoutUrl("/api/v1/auth/logout")

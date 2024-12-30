@@ -1,4 +1,4 @@
-package nnt.com.infrastructure.config.security;
+package nnt.com.infrastructure.security;
 
 import jakarta.validation.constraints.NotNull;
 import org.springframework.boot.context.properties.ConfigurationProperties;
