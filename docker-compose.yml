@@ -1,0 +1,76 @@
+version: "3.8"
+networks:
+  booking-net:
+    driver: bridge
+services:
+  redis:
+    image: redis:latest
+    container_name: my-redis
+    ports:
+      - "6379:6379"
+    environment:
+      - REDIS_PASSWORD=
+    command: [ "redis-server", "--protected-mode", "no" ]
+    networks:
+      - booking-net
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 128M
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: my-prometheus
+    restart: unless-stopped
+    volumes:
+      - ./environment/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./environment/data/prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    ports:
+      - "9090:9090"
+    networks:
+      - booking-net
+
+  grafana:
+    image: grafana/grafana
+    container_name: my-grafana
+    hostname: grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SING_UP=false
+      - GF_SERVER_DOMAIN=localhost
+      #enable logger
+      - GF_LOG_MODE=console file
+      - GF_LOG_FILTERS=alerting.notifier.slack:debug alermanager:debug ngalert:debug
+    volumes:
+      - ./environment/grafana-storage:/var/lib/grafana
+    ports:
+      - "3000:3000"
+    networks:
+      - booking-net
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.17.0
+    container_name: my-elastic
+    restart: unless-stopped
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ELASTICSEARCH_JAVA_OPTS=-Xms512m -Xmx512m
+    ports:
+      - "9200:9200"
+    networks:
+      - booking-net
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G

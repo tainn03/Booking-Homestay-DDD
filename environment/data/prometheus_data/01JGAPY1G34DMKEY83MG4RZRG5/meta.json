@@ -1,0 +1,17 @@
+{
+	"ulid": "01JGAPY1G34DMKEY83MG4RZRG5",
+	"minTime": 1735480800000,
+	"maxTime": 1735488000000,
+	"stats": {
+		"numSamples": 825120,
+		"numSeries": 573,
+		"numChunks": 6877
+	},
+	"compaction": {
+		"level": 1,
+		"sources": [
+			"01JGAPY1G34DMKEY83MG4RZRG5"
+		]
+	},
+	"version": 1
+}
