@@ -1,115 +1,65 @@
 package nnt.com.infrastructure.utils;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import nnt.com.domain.base.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.GrantedAuthority;
+import org.springframework.context.ApplicationContext;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
+import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Service;
 
-import java.security.Key;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Objects;
+
+import static lombok.AccessLevel.PRIVATE;
 
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
+@FieldDefaults(level = PRIVATE)
 public class JwtUtilImpl implements JwtUtil {
-    @Value("${application.security.jwt.secret}")
-    String SECRET_KEY;
+    final ApplicationContext applicationContext;
+
     @Value("${application.security.jwt.expiration}")
     long JWT_EXPIRATION;
     @Value("${application.security.jwt.refresh}")
     long REFRESH_EXPIRATION;
 
-    // TRÍCH XUẤT THÔNG TIN NGƯỜI DÙNG TỪ JWT
-    @Override
-    public String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject);
-    }
-
-    @Override
-    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = extractAllClaims(token);
-        return claimsResolver.apply(claims);
-    }
-
-    private Claims extractAllClaims(String token) { // Trích xuất tất cả thông tin từ chuỗi jwt
-        return Jwts.parser()
-                .setSigningKey(getSignInKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-    }
-
-    private Key getSignInKey() { // Lấy secret key
-        byte[] secretBytes = Decoders.BASE64.decode(SECRET_KEY); // Giải mã chuỗi SECRET_KEY ra thành mảng byte
-        return Keys.hmacShaKeyFor(secretBytes);
-    }
-
-
-    // TẠO JWT MỚI DỰA TRÊN THÔNG TIN NGƯỜI DÙNG
     @Override
     public String generateAccessToken(UserDetails userDetails) {
-        Map<String, Object> extraClaims = new HashMap<>();
-        String roles = userDetails.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(", "));
-        extraClaims.put("roles", roles); // Thêm claim về roles
-        return generateToken(extraClaims, userDetails);
+        return generateJwtToken(userDetails, JWT_EXPIRATION);
     }
 
     @Override
-    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
-        return buildToken(extraClaims, userDetails, JWT_EXPIRATION);
+    public String generateRefreshToken(UserDetails userDetails) {
+        return generateJwtToken(userDetails, REFRESH_EXPIRATION);
+    }
+
+    private String generateJwtToken(UserDetails userDetails, long tokenDurationInSeconds) {
+        JwtEncoder jwtEncoder = applicationContext.getBean(JwtEncoder.class);
+        JwtClaimsSet claimsSet = JwtClaimsSet.builder()
+                .subject(userDetails.getUsername())
+                .issuedAt(Instant.now())
+                .expiresAt(Instant.now().plus(tokenDurationInSeconds, ChronoUnit.SECONDS))
+                .claim("roles", userDetails.getAuthorities().stream().map(Object::toString).toArray(String[]::new))
+                .build();
+        JwsHeader jwsHeader = JwsHeader.with(SignatureAlgorithm.RS256).build();
+        return jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claimsSet)).getTokenValue();
     }
 
     @Override
-    public String generateRefreshToken(UserDetails userDetails) { // tạo refresh token
-        return buildToken(new HashMap<>(), userDetails, REFRESH_EXPIRATION);
+    public boolean isTokenValid(Jwt jwtToken, UserDetails userDetails) {
+        return !isTokenExpired(jwtToken) && getUsername(jwtToken).equals(userDetails.getUsername());
     }
 
     @Override
-    public String generateConfirmationToken(UserDetails userDetails) { // tạo confirmation token
-        return buildToken(new HashMap<>(), userDetails, JWT_EXPIRATION);
+    public String getUsername(Jwt jwtToken) {
+        return jwtToken.getSubject();
     }
 
-    private String buildToken(
-            Map<String, Object> extraClaims,
-            UserDetails userDetails,
-            long expiration
-    ) {
-        return Jwts.builder()
-                .setSubject(userDetails.getUsername())
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + expiration)) // Thời gian hết hạn của jwt
-                .addClaims(extraClaims)
-                .signWith(getSignInKey(), SignatureAlgorithm.HS256)
-                .compact();
+    private boolean isTokenExpired(Jwt jwtToken) {
+        return Objects.requireNonNull(jwtToken.getExpiresAt()).isBefore(Instant.now());
     }
-
-    // KIỂM TRA JWT CÓ HỢP LỆ HAY KHÔNG
-    @Override
-    public boolean isValidToken(String token, UserDetails userDetails) {
-        final String email = extractUsername(token);
-        return email.equals(userDetails.getUsername()) && !isTokenExpired(token);
-    }
-
-    private boolean isTokenExpired(String token) { // Kiểm tra jwt có hết hạn hay không
-        return extractExpiration(token).before(new Date());
-    }
-
-    private Date extractExpiration(String token) { // Trích xuất thời gian hết hạn từ chuỗi jwt
-        return extractClaim(token, Claims::getExpiration);
-    }
-
 }

@@ -6,6 +6,7 @@ import lombok.experimental.FieldDefaults;
 import nnt.com.infrastructure.config.security.custom.CustomAccessDeniedHandler;
 import nnt.com.infrastructure.config.security.custom.CustomBasicAuthenticationEntryPoint;
 import nnt.com.infrastructure.config.security.filter.JwtAuthenticationFilter;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
@@ -31,8 +32,9 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @EnableWebSecurity
 @EnableMethodSecurity
-@EnableJpaAuditing
+@EnableJpaAuditing(auditorAwareRef = "AuditorAwareImpl")
 @EnableElasticsearchRepositories
+@EnableConfigurationProperties(RSAKeyRecord.class)
 public class SecurityConfig {
     JwtAuthenticationFilter jwtAuthenticationFilter;
     AuthenticationProvider authenticationProvider;

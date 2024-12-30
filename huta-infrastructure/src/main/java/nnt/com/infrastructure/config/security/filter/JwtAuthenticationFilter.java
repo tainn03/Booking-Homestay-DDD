@@ -13,6 +13,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -24,21 +26,23 @@ import java.io.IOException;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     JwtUtil jwtUtil;
+    JwtDecoder jwtDecoder;
     UserDetailsService userDetailsService;
     TokenInfraRepositoryJpa tokenRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         final String authHeader = request.getHeader("Authorization");
-        final String jwt;
+        final Jwt jwt;
         final String userEmail;
 
         if (!isBearerToken(authHeader)) {
             filterChain.doFilter(request, response);
             return;
         }
-        jwt = authHeader.substring(7);
-        userEmail = jwtUtil.extractUsername(jwt);
+
+        jwt = jwtDecoder.decode(authHeader.substring(7));
+        userEmail = jwtUtil.getUsername(jwt);
 
         if (isUserNotAuthenticated()) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
@@ -57,8 +61,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         return SecurityContextHolder.getContext().getAuthentication() == null;
     }
 
-    private boolean isValidToken(String jwt, UserDetails userDetails) {
-        return jwtUtil.isValidToken(jwt, userDetails) && tokenRepository.findByToken(jwt)
+    private boolean isValidToken(Jwt jwt, UserDetails userDetails) {
+        return jwtUtil.isTokenValid(jwt, userDetails) && tokenRepository.findByToken(jwt.toString())
                 .map(token -> !token.isExpired() && !token.isRevoked())
                 .orElse(false);
     }

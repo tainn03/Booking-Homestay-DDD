@@ -1,24 +1,15 @@
 package nnt.com.domain.base.utils;
 
-import io.jsonwebtoken.Claims;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import java.util.Map;
-import java.util.function.Function;
+import org.springframework.security.oauth2.jwt.Jwt;
 
 public interface JwtUtil {
-    String extractUsername(String token);
-
-    <T> T extractClaim(String token, Function<Claims, T> claimsResolver);
-
     String generateAccessToken(UserDetails userDetails);
-
-    String generateToken(Map<String, Object> extraClaims, UserDetails userDetails);
 
     String generateRefreshToken(UserDetails userDetails);
 
-    String generateConfirmationToken(UserDetails userDetails);
+    boolean isTokenValid(Jwt jwtToken, UserDetails userDetails);
 
-    boolean isValidToken(String token, UserDetails userDetails);
+    String getUsername(Jwt jwtToken);
 
 }

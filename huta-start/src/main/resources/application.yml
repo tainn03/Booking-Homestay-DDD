@@ -1,0 +1,106 @@
+spring:
+  config:
+    import: file:.env[.properties]
+  threads:
+    virtual:
+      enabled: true
+  application:
+    name: huta.com
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+  jpa:
+    database: postgresql
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+      transaction:
+        jta:
+          platform: org.hibernate.service.jta.platform.internal.AtomikosJtaPlatform
+      format_sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: always
+  cache:
+    type: redis
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      lettuce:
+        pool:
+          max-active: 10
+          max-idle: 5
+          min-idle: 5
+    elasticsearch:
+      uris: http://localhost:9200
+      connection-timeout: 2s
+      socket-timeout: 5s
+
+server:
+  port: 8080
+  tomcat:
+    threads:
+      max: 200
+      min-spare: 10
+    accept-count: 25000
+
+#logging:
+#  level:
+#    org:
+#      springframework:
+#        security: TRACE
+#  pattern:
+#    console: "%green(%d{HH:mm:ss.SSS}) %blue(%-5level) %red([%thread]) %yellow(%logger{15}) - %msg%n"
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      booking:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        slidingWindowType: COUNT_BASED
+        permittedNumberOfCallsInHalfOpenState: 3
+        failureRateThreshold: 50
+        waitDurationInOpenState: 5s
+        eventConsumerBufferSize: 10
+  ratelimiter:
+    instances:
+      backendA:
+        limitForPeriod: 2000
+        limitRefreshPeriod: 10s
+        timeoutDuration: 0
+        registerHealthIndicator: true
+        eventConsumerBufferSize: 100
+
+management:
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+    health:
+      show-details: always
+    prometheus:
+      enabled: true
+
+application:
+  security:
+    jwt:
+      expiration: ${JWT_EXPIRATION:86400000}
+      refresh: ${JWT_REFRESH:86400000}
+    rsa:
+      rsa-public-key: classpath:certificates/publickey.pem
+      rsa-private-key: classpath:certificates/privatekey.pem

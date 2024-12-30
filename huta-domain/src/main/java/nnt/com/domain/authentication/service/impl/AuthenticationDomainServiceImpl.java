@@ -18,6 +18,8 @@ import nnt.com.domain.base.exception.ErrorCode;
 import nnt.com.domain.base.utils.JwtUtil;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -30,6 +32,7 @@ public class AuthenticationDomainServiceImpl implements AuthenticationDomainServ
     RoleDomainRepository roleDomainRepository;
     PasswordEncoder passwordEncoder;
     JwtUtil jwtUtil;
+    JwtDecoder jwtDecoder;
     TokenDomainRepository tokenDomainRepository;
 
 
@@ -81,9 +84,10 @@ public class AuthenticationDomainServiceImpl implements AuthenticationDomainServ
 
     @Override
     public Map<String, String> refreshToken(String refreshToken, HttpServletResponse response) {
-        String username = jwtUtil.extractUsername(refreshToken);
+        Jwt jwt = jwtDecoder.decode(refreshToken);
+        String username = jwtUtil.getUsername(jwt);
         User user = userDomainRepository.findByEmail(username);
-        if (!jwtUtil.isValidToken(refreshToken, user)) {
+        if (!jwtUtil.isTokenValid(jwt, user)) {
             throw new BusinessException(ErrorCode.INVALID_TOKEN);
         }
         return generateToken(user);
