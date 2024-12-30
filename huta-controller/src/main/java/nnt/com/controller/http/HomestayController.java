@@ -31,7 +31,7 @@ public class HomestayController {
                                                       @RequestParam(required = false, defaultValue = "id") String sortBy,
                                                       @RequestParam(required = false, defaultValue = "asc") String direction
     ) {
-        Page<HomestayResponse> data = homestayAppService.findAll(page, size, sortBy, direction);
+        Page<HomestayResponse> data = homestayAppService.getAll(page, size, sortBy, direction);
         return ResponseEntity.ok(responseFactory.create(data));
     }
 

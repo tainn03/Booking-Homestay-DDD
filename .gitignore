@@ -15,6 +15,7 @@ target/
 .idea/
 target/
 Apache24/
+environment
 
 ### Eclipse ###
 .apt_generated

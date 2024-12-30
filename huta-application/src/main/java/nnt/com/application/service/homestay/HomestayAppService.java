@@ -5,7 +5,7 @@ import nnt.com.application.model.dto.response.HomestayResponse;
 import org.springframework.data.domain.Page;
 
 public interface HomestayAppService {
-    Page<HomestayResponse> findAll(int page, int size, String sortBy, String dicrection);
+    Page<HomestayResponse> getAll(int page, int size, String sortBy, String dicrection);
 
     HomestayResponse getHomestayById(Long homestayId);
 

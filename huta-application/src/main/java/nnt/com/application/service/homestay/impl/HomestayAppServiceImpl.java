@@ -25,14 +25,14 @@ public class HomestayAppServiceImpl implements HomestayAppService {
     HomestaySearchMapper homestaySearchMapper;
 
     @Override
-    public Page<HomestayResponse> findAll(int page, int size, String sortBy, String direction) {
-        Page<Homestay> homestays = homestayDomainService.findAll(page, size, sortBy, direction);
+    public Page<HomestayResponse> getAll(int page, int size, String sortBy, String direction) {
+        Page<Homestay> homestays = homestayDomainService.getAll(page, size, sortBy, direction);
         return homestays.map(homestayMapper::toDTO);
     }
 
     @Override
     public HomestayResponse getHomestayById(Long homestayId) {
-        return homestayMapper.toDTO(homestayDomainService.findById(homestayId));
+        return homestayMapper.toDTO(homestayDomainService.getById(homestayId));
     }
 
     @Override
@@ -44,13 +44,13 @@ public class HomestayAppServiceImpl implements HomestayAppService {
 
     @Override
     public void deleteById(Long homestayId) {
-        homestayDomainService.deleteById(homestayId);
+        homestayDomainService.delete(homestayId);
         homestaySearchDomainService.deleteById(homestayId);
     }
 
     @Override
     public HomestayResponse update(Long homestayId, HomestayRequest request) {
-        Homestay homestay = homestayDomainService.findById(homestayId);
+        Homestay homestay = homestayDomainService.getById(homestayId);
         updateHomestaySearch(request, homestay);
         Homestay updatedHomestay = homestayMapper.updateEntity(homestay, request);
         return homestayMapper.toDTO(homestayDomainService.update(updatedHomestay));

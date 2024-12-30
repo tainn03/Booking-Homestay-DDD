@@ -31,12 +31,12 @@ public class HomestayDomainServiceImpl implements HomestayDomainService {
     LocalCache<Homestay> localCache;
 
     @Override
-    public Page<Homestay> findAll(int page, int size, String sortBy, String direction) {
+    public Page<Homestay> getAll(int page, int size, String sortBy, String direction) {
         return homestayDomainRepository.findAll(page, size, sortBy, direction);
     }
 
     @Override
-    public Homestay findById(Long homestayId) {
+    public Homestay getById(Long homestayId) {
         Homestay homestay = getHomestayFromLocalCache(homestayId);
         if (homestay != null) {
             return homestay;
@@ -63,7 +63,7 @@ public class HomestayDomainServiceImpl implements HomestayDomainService {
     }
 
     @Override
-    public void deleteById(Long homestayId) {
+    public void delete(Long homestayId) {
         homestayDomainRepository.deleteById(homestayId);
         redisCache.delete(RedisKey.HOMESTAY.getKey() + homestayId);
         localCache.invalidate(homestayId);
