@@ -6,23 +6,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
-import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 public interface TokenInfraRepositoryJpa extends JpaRepository<Token, Long> {
-    @Query("SELECT t FROM Token t WHERE t.user.id = :userId AND t.expired = false AND t.revoked = false")
-    List<Token> findAllValidTokenByUserId(String userId);
-
     @Modifying
     @Transactional
     @Query("UPDATE Token t SET t.revoked = true WHERE t.user.id = :userId AND t.expired = false AND t.revoked = false")
     void revokeTokensByUserId(long userId);
 
     Optional<Token> findByToken(String token);
-
-    @Modifying
-    @Transactional
-    @Query("DELETE FROM Token t WHERE t.expired = true")
-    void deleteAllByExpirationBefore(Date date);
 }

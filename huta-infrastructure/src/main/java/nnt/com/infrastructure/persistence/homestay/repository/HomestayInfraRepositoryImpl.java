@@ -20,13 +20,13 @@ public class HomestayInfraRepositoryImpl implements HomestayDomainRepository {
     HomestayInfraRepositoryJpa homestayInfraRepositoryJpa;
 
     @Override
-    public Page<Homestay> findAll(int page, int size, String sortBy, String direction) {
+    public Page<Homestay> getAll(int page, int size, String sortBy, String direction) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(direction), sortBy));
         return homestayInfraRepositoryJpa.findAll(pageable);
     }
 
     @Override
-    public Homestay findById(Long homestayId) {
+    public Homestay getById(Long homestayId) {
         return homestayInfraRepositoryJpa.findById(homestayId).orElse(null);
     }
 
@@ -36,7 +36,7 @@ public class HomestayInfraRepositoryImpl implements HomestayDomainRepository {
     }
 
     @Override
-    public void deleteById(Long homestayId) {
+    public void delete(Long homestayId) {
         homestayInfraRepositoryJpa.deleteById(homestayId);
     }
 

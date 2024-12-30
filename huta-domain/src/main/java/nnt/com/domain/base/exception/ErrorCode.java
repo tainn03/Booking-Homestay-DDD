@@ -24,6 +24,8 @@ public enum ErrorCode {
     HOMESTAY_NOT_FOUND(40402, "Không tìm thấy homestay", HttpStatus.NOT_FOUND),
     USER_NOT_FOUND(40403, "Không tìm thấy người dùng", HttpStatus.NOT_FOUND),
     ROLE_NOT_FOUND(40404, "Không tìm thấy vai trò", HttpStatus.NOT_FOUND),
+    PERMISSION_NOT_FOUND(40405, "Không tìm thấy quyền", HttpStatus.NOT_FOUND),
+    TOKEN_NOT_FOUND(40406, "Không tìm thấy token", HttpStatus.NOT_FOUND),
 
     // SERVICE ERRORS
     SERVICE_UNAVAILABLE(50301, "Dịch vụ không khả dụng, ngắt kết nối", HttpStatus.SERVICE_UNAVAILABLE),

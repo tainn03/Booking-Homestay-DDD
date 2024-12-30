@@ -88,8 +88,7 @@ public class JwtUtilImpl implements JwtUtil {
             UserDetails userDetails,
             long expiration
     ) {
-        return Jwts
-                .builder()
+        return Jwts.builder()
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + expiration)) // Thời gian hết hạn của jwt

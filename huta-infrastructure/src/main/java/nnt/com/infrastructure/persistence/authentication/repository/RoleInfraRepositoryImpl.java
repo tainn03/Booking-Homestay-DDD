@@ -7,6 +7,10 @@ import nnt.com.domain.authentication.repository.RoleDomainRepository;
 import nnt.com.domain.base.exception.BusinessException;
 import nnt.com.domain.base.exception.ErrorCode;
 import nnt.com.infrastructure.persistence.authentication.database.jpa.RoleInfraRepositoryJpa;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import static lombok.AccessLevel.PRIVATE;
@@ -21,5 +25,32 @@ public class RoleInfraRepositoryImpl implements RoleDomainRepository {
     public Role findByRoleName(String name) {
         return roleInfraRepositoryJpa.findByRole(name)
                 .orElseThrow(() -> new BusinessException(ErrorCode.ROLE_NOT_FOUND));
+    }
+
+    @Override
+    public Role save(Role role) {
+        return roleInfraRepositoryJpa.save(role);
+    }
+
+    @Override
+    public Role update(Role role) {
+        return roleInfraRepositoryJpa.save(role);
+    }
+
+    @Override
+    public Role getById(String name) {
+        return roleInfraRepositoryJpa.findByRole(name)
+                .orElseThrow(() -> new BusinessException(ErrorCode.ROLE_NOT_FOUND));
+    }
+
+    @Override
+    public Page<Role> getAll(int page, int size, String sort, String direction) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(direction), sort));
+        return roleInfraRepositoryJpa.findAll(pageable);
+    }
+
+    @Override
+    public void delete(String id) {
+        roleInfraRepositoryJpa.deleteByRole(id);
     }
 }

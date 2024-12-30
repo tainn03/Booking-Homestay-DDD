@@ -1,8 +1,8 @@
-package nnt.com.domain.base.service;
+package nnt.com.domain.base.behaviors;
 
 import org.springframework.data.domain.Page;
 
-public interface BaseService<T, K> {
+public interface BaseBehaviors<T, K> {
     T save(T t);
 
     T update(T t);

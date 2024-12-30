@@ -32,7 +32,7 @@ public class HomestayDomainServiceImpl implements HomestayDomainService {
 
     @Override
     public Page<Homestay> getAll(int page, int size, String sortBy, String direction) {
-        return homestayDomainRepository.findAll(page, size, sortBy, direction);
+        return homestayDomainRepository.getAll(page, size, sortBy, direction);
     }
 
     @Override
@@ -64,7 +64,7 @@ public class HomestayDomainServiceImpl implements HomestayDomainService {
 
     @Override
     public void delete(Long homestayId) {
-        homestayDomainRepository.deleteById(homestayId);
+        homestayDomainRepository.delete(homestayId);
         redisCache.delete(RedisKey.HOMESTAY.getKey() + homestayId);
         localCache.invalidate(homestayId);
     }
@@ -116,7 +116,7 @@ public class HomestayDomainServiceImpl implements HomestayDomainService {
                 return homestay;
             }
 
-            homestay = homestayDomainRepository.findById(homestayId);
+            homestay = homestayDomainRepository.getById(homestayId);
             if (homestay == null) {
                 throw new BusinessException(ErrorCode.HOMESTAY_NOT_FOUND);
             }
