@@ -15,4 +15,9 @@ public interface TokenInfraRepositoryJpa extends JpaRepository<Token, Long> {
     void revokeTokensByUserId(long userId);
 
     Optional<Token> findByToken(String token);
+
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM Token t WHERE t.expired = true OR t.revoked = true")
+    void deleteInvalidTokens();
 }
