@@ -3,9 +3,9 @@ package nnt.com.application.model.annotation.validator;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import lombok.extern.slf4j.Slf4j;
-import nnt.com.application.exception.BusinessException;
-import nnt.com.application.exception.ErrorCode;
 import nnt.com.application.model.annotation.EnumPattern;
+import nnt.com.domain.base.exception.BusinessException;
+import nnt.com.domain.base.exception.ErrorCode;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

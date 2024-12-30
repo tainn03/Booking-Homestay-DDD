@@ -1,10 +1,8 @@
 package nnt.com.controller.aop.exception;
 
-import nnt.com.application.exception.BusinessException;
-import nnt.com.application.exception.ErrorCode;
 import nnt.com.controller.model.response.ApiResponse;
-import nnt.com.domain.base.exception.DomainDistributedLockException;
-import nnt.com.domain.base.exception.DomainNotFoundException;
+import nnt.com.domain.base.exception.BusinessException;
+import nnt.com.domain.base.exception.ErrorCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
@@ -30,55 +28,37 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BusinessException.class)
     ResponseEntity<ApiResponse> handleBusinessException(BusinessException e) {
         String enumKey = e.getErrorCode().name();
-        return getMetaResponseEntity(enumKey);
-    }
-
-    @ExceptionHandler(DomainNotFoundException.class)
-    ResponseEntity<ApiResponse> handleDomainNotFoundError(Exception e) {
-        ApiResponse response = ApiResponse.builder()
-                .code(ErrorCode.OBJECT_NOT_FOUND.getCode())
-                .message(e.getMessage())
-                .build();
-        return ResponseEntity.status(ErrorCode.OBJECT_NOT_FOUND.getStatusCode()).body(response);
-    }
-
-    @ExceptionHandler(DomainDistributedLockException.class)
-    ResponseEntity<ApiResponse> handleDomainDistributedLockError(Exception e) {
-        ApiResponse response = ApiResponse.builder()
-                .code(ErrorCode.DISTRIBUTED_LOCKING.getCode())
-                .message(e.getMessage())
-                .build();
-        return ResponseEntity.status(ErrorCode.DISTRIBUTED_LOCKING.getStatusCode()).body(response);
+        return getResponseEntity(enumKey);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     ResponseEntity<ApiResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         String enumKey = Objects.requireNonNull(e.getBindingResult().getFieldError()).getDefaultMessage();
-        return getMetaResponseEntity(enumKey);
+        return getResponseEntity(enumKey);
     }
 
     @ExceptionHandler(NoResourceFoundException.class)
     ResponseEntity<ApiResponse> handleNoResourceFoundException(Exception e) {
         String enumKey = ErrorCode.NO_RESOURCE_FOUND.name();
-        return getMetaResponseEntity(enumKey);
+        return getResponseEntity(enumKey);
     }
 
     @ExceptionHandler(ObjectOptimisticLockingFailureException.class)
     ResponseEntity<ApiResponse> handleObjectOptimisticLockingFailureException(Exception e) {
         String enumKey = ErrorCode.OPTIMISTIC_LOCKING.name();
-        return getMetaResponseEntity(enumKey);
+        return getResponseEntity(enumKey);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     ResponseEntity<ApiResponse> handleHttpMessageNotReadableException(Exception e) {
         ApiResponse response = ApiResponse.builder()
                 .code(ErrorCode.INVALID_ENUM_PATTERN.getCode())
-                .message("Thông tin enum không hợp lệ: " + e.getMessage())
+                .message("Thông tin không hợp lệ: " + e.getMessage())
                 .build();
         return ResponseEntity.status(ErrorCode.INVALID_ENUM_PATTERN.getStatusCode()).body(response);
     }
 
-    private ResponseEntity<ApiResponse> getMetaResponseEntity(String enumKey) {
+    private ResponseEntity<ApiResponse> getResponseEntity(String enumKey) {
         ErrorCode errorCode = ErrorCode.INVALID_KEY;
         ApiResponse response;
         try {

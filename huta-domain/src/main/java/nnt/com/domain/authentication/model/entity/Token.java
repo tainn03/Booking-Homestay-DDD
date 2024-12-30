@@ -7,6 +7,9 @@ import nnt.com.domain.authentication.model.enums.TokenType;
 import nnt.com.domain.base.model.entity.BaseEntity;
 
 @Entity
+@Table(name = "tokens", indexes = {
+        @Index(name = "idx_token", columnList = "token", unique = true)
+})
 @Getter
 @Setter
 @Builder

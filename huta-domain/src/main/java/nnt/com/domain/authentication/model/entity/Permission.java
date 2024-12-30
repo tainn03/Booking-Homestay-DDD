@@ -1,23 +1,21 @@
 package nnt.com.domain.authentication.model.entity;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import nnt.com.domain.base.model.entity.BaseEntity;
 
 import java.util.List;
 
 @Entity
+@Table(name = "permissions")
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Permission extends BaseEntity<Long> {
+public class Permission {
+    @Id
     String permission;
     String apiPath;
     String module;

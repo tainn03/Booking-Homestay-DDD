@@ -6,7 +6,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import nnt.com.domain.authentication.model.entity.Token;
-import nnt.com.infrastructure.persistence.authentication.database.jpa.TokenInfraRepository;
+import nnt.com.infrastructure.persistence.authentication.database.jpa.TokenInfraRepositoryJpa;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class LogoutHandlerImpl implements LogoutHandler {
-    TokenInfraRepository tokenRepository;
+    TokenInfraRepositoryJpa tokenRepository;
 
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {

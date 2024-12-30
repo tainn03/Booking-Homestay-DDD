@@ -11,7 +11,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 
 @Entity
-@Table(name = "users")
+@Table(name = "users", indexes = {
+        @Index(name = "idx_users_email", columnList = "email", unique = true)
+})
 @Getter
 @Setter
 @Builder
@@ -23,7 +25,8 @@ public class User extends BaseEntity<Long> implements UserDetails {
     String password;
     String fullName;
     @Enumerated(EnumType.STRING)
-    UserStatus status;
+    @Builder.Default
+    UserStatus status = UserStatus.ACTIVE;
 
     @ManyToOne
     @JoinColumn(name = "role_id", nullable = false)

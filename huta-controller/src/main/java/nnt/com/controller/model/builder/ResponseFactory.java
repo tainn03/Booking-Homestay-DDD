@@ -1,7 +1,7 @@
 package nnt.com.controller.model.builder;
 
-import nnt.com.application.exception.ErrorCode;
 import nnt.com.controller.model.response.ApiResponse;
+import nnt.com.domain.base.exception.ErrorCode;
 import org.springframework.http.HttpStatus;
 
 public interface ResponseFactory {

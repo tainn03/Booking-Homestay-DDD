@@ -3,9 +3,10 @@ package nnt.com.infrastructure.config.security;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import nnt.com.domain.base.exception.DomainNotFoundException;
+import nnt.com.domain.base.exception.BusinessException;
+import nnt.com.domain.base.exception.ErrorCode;
 import nnt.com.infrastructure.config.security.auditting.AuditorAwareImpl;
-import nnt.com.infrastructure.persistence.authentication.database.jpa.UserInfraRepository;
+import nnt.com.infrastructure.persistence.authentication.database.jpa.UserInfraRepositoryJpa;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
@@ -21,7 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ApplicationConfig {
-    UserInfraRepository userInfraRepository;
+    UserInfraRepositoryJpa userInfraRepository;
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
@@ -44,7 +45,7 @@ public class ApplicationConfig {
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> userInfraRepository.findByEmail(username)
-                .orElseThrow(() -> new DomainNotFoundException("Người dùng không tồn tại"));
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
     }
 
     @Bean

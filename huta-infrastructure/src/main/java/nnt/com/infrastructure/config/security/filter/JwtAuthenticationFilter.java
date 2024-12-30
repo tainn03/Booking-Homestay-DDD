@@ -7,8 +7,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import nnt.com.infrastructure.persistence.authentication.database.jpa.TokenInfraRepository;
-import nnt.com.infrastructure.utils.JwtUtil;
+import nnt.com.domain.base.utils.JwtUtil;
+import nnt.com.infrastructure.persistence.authentication.database.jpa.TokenInfraRepositoryJpa;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,7 +25,7 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     JwtUtil jwtUtil;
     UserDetailsService userDetailsService;
-    TokenInfraRepository tokenRepository;
+    TokenInfraRepositoryJpa tokenRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -40,15 +40,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         jwt = authHeader.substring(7);
         userEmail = jwtUtil.extractUsername(jwt);
 
-        if (userEmail != null && isUserNotAuthenticated()) {
+        if (isUserNotAuthenticated()) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
-
             if (isValidToken(jwt, userDetails)) {
                 authenticateUser(userDetails, request);
-            } else {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.getWriter().write("Token expired");
-                return;
             }
         }
         doFilter(request, response, filterChain);

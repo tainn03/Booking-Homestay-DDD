@@ -39,7 +39,7 @@ public class SecurityConfig {
     LogoutHandler logoutHandler;
     String[] WHITE_LIST_URL = {
             "/actuator/**",
-            "/api/v1/auth/**",
+            "/api/v1/auth/public/**",
             "/api/v1/homestays/public/**",
             "/api/v1/search/**",
             "/api/v1/general/**",
@@ -53,7 +53,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers(WHITE_LIST_URL).permitAll()
-                                .anyRequest().permitAll()
+                                .anyRequest().authenticated()
                 )
                 .sessionManagement(smc -> smc.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)

@@ -7,9 +7,9 @@ import nnt.com.domain.authentication.model.entity.User;
 import java.util.Map;
 
 public interface AuthenticationDomainService {
-    Map<String, String> register(String fullName, String email, String password);
+    Map<String, String> register(String email, String password);
 
-    Map<String, String> authenticate(String email, String password, HttpServletResponse response);
+    Map<String, String> login(String email, String password);
 
     Map<String, String> refreshToken(String refreshToken, HttpServletResponse response);
 

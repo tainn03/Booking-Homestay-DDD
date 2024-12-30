@@ -8,8 +8,8 @@ import nnt.com.domain.base.cache.local.LocalCache;
 import nnt.com.domain.base.cache.redis.RedisCache;
 import nnt.com.domain.base.distributed.RedisDistributedLocker;
 import nnt.com.domain.base.distributed.RedisDistributedService;
-import nnt.com.domain.base.exception.DomainDistributedLockException;
-import nnt.com.domain.base.exception.DomainNotFoundException;
+import nnt.com.domain.base.exception.BusinessException;
+import nnt.com.domain.base.exception.ErrorCode;
 import nnt.com.domain.base.model.enums.LockKey;
 import nnt.com.domain.base.model.enums.RedisKey;
 import nnt.com.domain.homestay.model.entity.Homestay;
@@ -75,7 +75,7 @@ public class HomestayDomainServiceImpl implements HomestayDomainService {
         try {
             boolean isLocked = locker.tryLock(1, 5, TimeUnit.SECONDS);
             if (!isLocked) {
-                throw new DomainDistributedLockException("Đối tượng đang được sử dụng, vui lòng thử lại sau");
+                throw new BusinessException(ErrorCode.DISTRIBUTED_LOCKING);
             }
 
             return updateWithCache(homestay);
@@ -118,7 +118,7 @@ public class HomestayDomainServiceImpl implements HomestayDomainService {
 
             homestay = homestayDomainRepository.findById(homestayId);
             if (homestay == null) {
-                throw new DomainNotFoundException("Không tìm thấy homestay với id: " + homestayId);
+                throw new BusinessException(ErrorCode.HOMESTAY_NOT_FOUND);
             }
 
             log.info("GET HOMESTAY {} FROM DATABASE", homestayId);
