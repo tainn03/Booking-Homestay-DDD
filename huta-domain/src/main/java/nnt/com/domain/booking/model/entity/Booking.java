@@ -3,6 +3,7 @@ package nnt.com.domain.booking.model.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import nnt.com.domain.base.model.entity.BaseEntity;
+import nnt.com.domain.booking.model.enums.BookingStatus;
 import nnt.com.domain.payment.model.entity.Payment;
 import nnt.com.domain.room.model.entity.Room;
 import nnt.com.domain.user.model.entity.User;
@@ -19,10 +20,13 @@ import java.util.List;
 public class Booking extends BaseEntity<Long> {
     LocalDate checkIn;
     LocalDate checkOut;
-    String status;
     String note;
     int totalCost;
     int guests;
+
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    BookingStatus status = BookingStatus.PENDING;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
