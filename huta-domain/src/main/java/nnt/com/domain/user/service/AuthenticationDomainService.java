@@ -1,20 +1,19 @@
-package nnt.com.application.service.authentication;
+package nnt.com.domain.user.service;
 
 import jakarta.json.JsonObject;
 import jakarta.servlet.http.HttpServletResponse;
-import nnt.com.application.model.dto.request.ChangePasswordRequest;
-import nnt.com.application.model.dto.request.LoginRequest;
-import nnt.com.application.model.dto.response.AuthResponse;
 import nnt.com.domain.user.model.entity.User;
 
-public interface AuthenticationAppService {
-    AuthResponse register(LoginRequest request);
+import java.util.Map;
 
-    AuthResponse login(LoginRequest request);
+public interface AuthenticationDomainService {
+    Map<String, String> register(String email, String password);
 
-    AuthResponse refreshToken(String refreshToken, HttpServletResponse response);
+    Map<String, String> login(String email, String password);
 
-    void changePassword(ChangePasswordRequest request);
+    Map<String, String> refreshToken(String refreshToken, HttpServletResponse response);
+
+    void changePassword(String email, String currentPassword, String newPassword);
 
     void confirm(String token, HttpServletResponse response);
 

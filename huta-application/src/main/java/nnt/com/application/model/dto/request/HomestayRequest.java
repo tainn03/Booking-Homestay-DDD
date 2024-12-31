@@ -3,7 +3,7 @@ package nnt.com.application.model.dto.request;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import nnt.com.application.model.annotation.EnumPattern;
-import nnt.com.domain.authentication.model.enums.UserStatus;
+import nnt.com.domain.user.model.enums.UserStatus;
 import org.springframework.data.elasticsearch.annotations.GeoPointField;
 import org.springframework.data.elasticsearch.core.geo.GeoPoint;
 

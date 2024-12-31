@@ -8,7 +8,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import nnt.com.domain.base.utils.JwtUtil;
-import nnt.com.infrastructure.persistence.authentication.database.jpa.TokenInfraRepositoryJpa;
+import nnt.com.infrastructure.persistence.user.database.jpa.TokenInfraRepositoryJpa;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;

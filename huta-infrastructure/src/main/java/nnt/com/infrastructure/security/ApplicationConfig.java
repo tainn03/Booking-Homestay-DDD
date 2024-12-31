@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import nnt.com.domain.base.exception.BusinessException;
 import nnt.com.domain.base.exception.ErrorCode;
-import nnt.com.infrastructure.persistence.authentication.database.jpa.UserInfraRepositoryJpa;
+import nnt.com.infrastructure.persistence.user.database.jpa.UserInfraRepositoryJpa;
 import nnt.com.infrastructure.security.auditting.AuditorAwareImpl;
 import nnt.com.infrastructure.security.key.RSAKeyRecord;
 import org.springframework.context.annotation.Bean;
@@ -33,7 +33,7 @@ import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ApplicationConfig {
-    UserInfraRepositoryJpa userInfraRepository;
+    UserInfraRepositoryJpa userInfraRepositoryJpa;
     RSAKeyRecord rsaKeyRecord;
 
     @Bean
@@ -56,7 +56,7 @@ public class ApplicationConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return username -> userInfraRepository.findByEmail(username)
+        return username -> userInfraRepositoryJpa.findByEmail(username)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
     }
 

@@ -8,8 +8,8 @@ import nnt.com.application.model.dto.request.ChangePasswordRequest;
 import nnt.com.application.model.dto.request.LoginRequest;
 import nnt.com.application.model.dto.response.AuthResponse;
 import nnt.com.application.service.authentication.AuthenticationAppService;
-import nnt.com.domain.authentication.model.entity.User;
-import nnt.com.domain.authentication.service.AuthenticationDomainService;
+import nnt.com.domain.user.model.entity.User;
+import nnt.com.domain.user.service.AuthenticationDomainService;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
