@@ -32,6 +32,8 @@ public enum ErrorCode {
     CITY_NOT_FOUND(40410, "Không tìm thấy tỉnh, thành phố", HttpStatus.NOT_FOUND),
     TYPE_HOMESTAY_NOT_FOUND(40411, "Không tìm thấy loại homestay", HttpStatus.NOT_FOUND),
     BOOKING_NOT_FOUND(40412, "Không tìm thấy booking", HttpStatus.NOT_FOUND),
+    CONVERSATION_NOT_FOUND(40413, "Không tìm thấy cuộc trò chuyện", HttpStatus.NOT_FOUND),
+    MESSAGE_NOT_FOUND(40414, "Không tìm thấy tin nhắn", HttpStatus.NOT_FOUND),
 
     // SERVICE ERRORS
     SERVICE_UNAVAILABLE(50301, "Dịch vụ không khả dụng, ngắt kết nối", HttpStatus.SERVICE_UNAVAILABLE),
