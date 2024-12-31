@@ -6,7 +6,7 @@ import lombok.experimental.FieldDefaults;
 import nnt.com.domain.base.model.entity.BaseEntity;
 import nnt.com.domain.booking.model.entity.Booking;
 import nnt.com.domain.homestay.model.entity.Homestay;
-import nnt.com.domain.homestay.model.entity.Review;
+import nnt.com.domain.homestay.model.entity.Rating;
 import nnt.com.domain.image.model.entity.Image;
 import nnt.com.domain.user.model.enums.UserStatus;
 import org.springframework.security.core.GrantedAuthority;
@@ -69,7 +69,7 @@ public class User extends BaseEntity<Long> implements UserDetails {
     List<Booking> bookings;
 
     @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
-    List<Review> reviews;
+    List<Rating> reviews;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

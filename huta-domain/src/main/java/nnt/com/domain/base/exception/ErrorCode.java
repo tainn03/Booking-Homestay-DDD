@@ -27,6 +27,10 @@ public enum ErrorCode {
     PERMISSION_NOT_FOUND(40405, "Không tìm thấy quyền", HttpStatus.NOT_FOUND),
     TOKEN_NOT_FOUND(40406, "Không tìm thấy token", HttpStatus.NOT_FOUND),
     IMAGE_NOT_FOUND(40407, "Không tìm thấy ảnh", HttpStatus.NOT_FOUND),
+    RATING_NOT_FOUND(40408, "Không tìm thấy đánh giá", HttpStatus.NOT_FOUND),
+    DISTRICT_NOT_FOUND(40409, "Không tìm thấy quận, huyện", HttpStatus.NOT_FOUND),
+    CITY_NOT_FOUND(40410, "Không tìm thấy tỉnh, thành phố", HttpStatus.NOT_FOUND),
+    TYPE_HOMESTAY_NOT_FOUND(40411, "Không tìm thấy loại homestay", HttpStatus.NOT_FOUND),
 
     // SERVICE ERRORS
     SERVICE_UNAVAILABLE(50301, "Dịch vụ không khả dụng, ngắt kết nối", HttpStatus.SERVICE_UNAVAILABLE),

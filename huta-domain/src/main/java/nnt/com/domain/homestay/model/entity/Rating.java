@@ -16,7 +16,7 @@ import nnt.com.domain.user.model.entity.User;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Review extends BaseEntity<Long> {
+public class Rating extends BaseEntity<Long> {
     Integer rating;
     String comment;
 
