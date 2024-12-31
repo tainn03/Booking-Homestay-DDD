@@ -13,6 +13,7 @@ import nnt.com.domain.base.exception.BusinessException;
 import nnt.com.domain.base.exception.ErrorCode;
 import nnt.com.infrastructure.persistence.authentication.database.jpa.UserInfraRepositoryJpa;
 import nnt.com.infrastructure.security.auditting.AuditorAwareImpl;
+import nnt.com.infrastructure.security.key.RSAKeyRecord;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;

@@ -10,6 +10,7 @@ import nnt.com.application.service.authentication.AuthenticationAppService;
 import nnt.com.controller.model.builder.ResponseFactory;
 import nnt.com.controller.model.response.ApiResponse;
 import nnt.com.domain.base.exception.ErrorCode;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,8 @@ public class AuthenticationController {
 
     @PostMapping("/public/register")
     public ResponseEntity<ApiResponse> register(@Valid @RequestBody LoginRequest request) {
-        return ResponseEntity.ok(responseFactory.create(authenticationAppService.register(request)));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(responseFactory.create(authenticationAppService.register(request)));
     }
 
     @PostMapping("/public/login")
@@ -34,7 +36,8 @@ public class AuthenticationController {
 
     @PostMapping("/public/refresh")
     public ResponseEntity<ApiResponse> refreshToken(@RequestParam String token, HttpServletResponse response) {
-        return ResponseEntity.ok(responseFactory.create(authenticationAppService.refreshToken(token, response)));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(responseFactory.create(authenticationAppService.refreshToken(token, response)));
     }
 
     @PostMapping("/pwd")
