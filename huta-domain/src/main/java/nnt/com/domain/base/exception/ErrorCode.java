@@ -34,6 +34,9 @@ public enum ErrorCode {
     BOOKING_NOT_FOUND(40412, "Không tìm thấy booking", HttpStatus.NOT_FOUND),
     CONVERSATION_NOT_FOUND(40413, "Không tìm thấy cuộc trò chuyện", HttpStatus.NOT_FOUND),
     MESSAGE_NOT_FOUND(40414, "Không tìm thấy tin nhắn", HttpStatus.NOT_FOUND),
+    AMENITY_NOT_FOUND(40415, "Không tìm thấy tiện ích", HttpStatus.NOT_FOUND),
+    DISCOUNT_NOT_FOUND(40416, "Không tìm thấy khuyến mãi", HttpStatus.NOT_FOUND),
+    PRICE_CALENDAR_NOT_FOUND(40417, "Không tìm thấy lịch giá", HttpStatus.NOT_FOUND),
 
     // SERVICE ERRORS
     SERVICE_UNAVAILABLE(50301, "Dịch vụ không khả dụng, ngắt kết nối", HttpStatus.SERVICE_UNAVAILABLE),
