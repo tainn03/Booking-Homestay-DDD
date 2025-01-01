@@ -37,6 +37,8 @@ public enum ErrorCode {
     AMENITY_NOT_FOUND(40415, "Không tìm thấy tiện ích", HttpStatus.NOT_FOUND),
     DISCOUNT_NOT_FOUND(40416, "Không tìm thấy khuyến mãi", HttpStatus.NOT_FOUND),
     PRICE_CALENDAR_NOT_FOUND(40417, "Không tìm thấy lịch giá", HttpStatus.NOT_FOUND),
+    PAYMENT_NOT_FOUND(40418, "Không tìm thấy thanh toán", HttpStatus.NOT_FOUND),
+    REFUND_NOT_FOUND(40419, "Không tìm thấy hoàn tiền", HttpStatus.NOT_FOUND),
 
     // SERVICE ERRORS
     SERVICE_UNAVAILABLE(50301, "Dịch vụ không khả dụng, ngắt kết nối", HttpStatus.SERVICE_UNAVAILABLE),
