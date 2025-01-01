@@ -115,3 +115,7 @@ application:
       payUrl: ${VNPAY_PAY_URL}
       returnUrl: ${VNPAY_RETURN_URL}
       apiUrl: ${VNPAY_API_URL}
+  sendgrid:
+    api-key: ${SENDGRID_API_KEY}
+  huta:
+    email: ${HUTA_EMAIL}
