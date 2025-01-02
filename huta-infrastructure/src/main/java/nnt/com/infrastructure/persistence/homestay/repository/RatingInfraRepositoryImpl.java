@@ -13,6 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 import static lombok.AccessLevel.PRIVATE;
 
 @Service
@@ -45,5 +47,10 @@ public class RatingInfraRepositoryImpl implements RatingDomainRepository {
     @Override
     public void delete(Long id) {
         ratingInfraRepositoryJpa.deleteById(id);
+    }
+
+    @Override
+    public List<Rating> findAll() {
+        return ratingInfraRepositoryJpa.findAll();
     }
 }
