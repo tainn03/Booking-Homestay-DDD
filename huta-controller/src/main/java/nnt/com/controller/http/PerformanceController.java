@@ -3,6 +3,7 @@ package nnt.com.controller.http;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import nnt.com.controller.model.builder.impl.ResponseFactoryImpl;
 import nnt.com.controller.model.response.ApiResponse;
 import nnt.com.domain.base.exception.BusinessException;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/perf")
 @RequiredArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
+@Slf4j
 public class PerformanceController {
     ResponseFactoryImpl responseFactory;
 
@@ -33,5 +35,10 @@ public class PerformanceController {
     public ResponseEntity<ApiResponse> fallbackCircuitBreaker(Exception ex) {
         return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
                 .body(responseFactory.create(ErrorCode.SERVICE_UNAVAILABLE));
+    }
+
+    @GetMapping("/benchmark")
+    public void checkBenchmark() {
+        log.info("Benchmarking...");
     }
 }

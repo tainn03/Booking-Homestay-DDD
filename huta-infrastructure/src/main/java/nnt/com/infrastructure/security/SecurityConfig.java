@@ -44,6 +44,7 @@ public class SecurityConfig {
     String[] WHITE_LIST_URL = {
             "/actuator/**",
             "/api/v1/auth/public/**",
+            "api/v1/perf/**",
             "/api/v1/homestays/public/**",
             "/api/v1/search/**",
             "/api/v1/general/**",
@@ -76,7 +77,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .requiresChannel((requiresChannel) -> requiresChannel.anyRequest().requiresInsecure()) // http
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterAfter(rateLimitFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(rateLimitFilter, JwtAuthenticationFilter.class)
                 .logout(logout ->
                         logout.logoutUrl("/api/v1/auth/logout")
                                 .addLogoutHandler(logoutHandler)

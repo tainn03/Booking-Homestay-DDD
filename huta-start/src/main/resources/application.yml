@@ -12,8 +12,8 @@ spring:
     password: ${SPRING_DATASOURCE_PASSWORD:sa2008}
     driver-class-name: org.postgresql.Driver
     hikari:
-      maximum-pool-size: 20
-      minimum-idle: 5
+      maximum-pool-size: 30
+      minimum-idle: 10
   jpa:
     database: postgresql
     show-sql: true
@@ -50,7 +50,7 @@ server:
   port: 8080
   tomcat:
     threads:
-      max: 200
+      max: 300
       min-spare: 10
     accept-count: 25000
 
