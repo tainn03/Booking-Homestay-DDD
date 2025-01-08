@@ -3,7 +3,7 @@ package nnt.com.application.service.search.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import nnt.com.application.service.search.HomestaySearchAppService;
-import nnt.com.domain.homestay.model.document.HomestaySearch;
+import nnt.com.domain.homestay.model.document.HomestayDocument;
 import nnt.com.domain.homestay.service.HomestaySearchDomainService;
 import org.springframework.stereotype.Service;
 
@@ -16,12 +16,12 @@ public class HomestaySearchAppServiceImpl implements HomestaySearchAppService {
     HomestaySearchDomainService homestaySearchDomainService;
 
     @Override
-    public List<HomestaySearch> searchByContent(String content) {
+    public List<HomestayDocument> searchByContent(String content) {
         return homestaySearchDomainService.searchByContent(content);
     }
 
     @Override
-    public List<HomestaySearch> searchByLocation(String lat, String lon, int distance) {
+    public List<HomestayDocument> searchByLocation(String lat, String lon, int distance) {
         return homestaySearchDomainService.searchByLocation(Double.parseDouble(lat), Double.parseDouble(lon), distance);
     }
 }

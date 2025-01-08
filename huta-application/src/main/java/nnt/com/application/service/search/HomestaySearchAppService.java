@@ -1,11 +1,11 @@
 package nnt.com.application.service.search;
 
-import nnt.com.domain.homestay.model.document.HomestaySearch;
+import nnt.com.domain.homestay.model.document.HomestayDocument;
 
 import java.util.List;
 
 public interface HomestaySearchAppService {
-    List<HomestaySearch> searchByContent(String content);
+    List<HomestayDocument> searchByContent(String content);
 
-    List<HomestaySearch> searchByLocation(String lat, String lon, int distance);
+    List<HomestayDocument> searchByLocation(String lat, String lon, int distance);
 }

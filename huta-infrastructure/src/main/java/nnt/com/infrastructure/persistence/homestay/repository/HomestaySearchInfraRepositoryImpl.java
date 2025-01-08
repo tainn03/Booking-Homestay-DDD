@@ -2,7 +2,7 @@ package nnt.com.infrastructure.persistence.homestay.repository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import nnt.com.domain.homestay.model.document.HomestaySearch;
+import nnt.com.domain.homestay.model.document.HomestayDocument;
 import nnt.com.domain.homestay.repository.HomestaySearchDomainRepository;
 import nnt.com.infrastructure.persistence.homestay.database.elastic.HomestayInfraRepositoryElastic;
 import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate;
@@ -25,12 +25,12 @@ public class HomestaySearchInfraRepositoryImpl implements HomestaySearchDomainRe
     ElasticsearchTemplate elasticsearchTemplate;
 
     @Override
-    public HomestaySearch save(HomestaySearch homestaySearch) {
+    public HomestayDocument save(HomestayDocument homestaySearch) {
         return homestaySearchInfraRepository.save(homestaySearch);
     }
 
     @Override
-    public List<HomestaySearch> findAll() {
+    public List<HomestayDocument> findAll() {
         return StreamSupport.stream(homestaySearchInfraRepository.findAll().spliterator(), false).toList();
     }
 
@@ -40,9 +40,9 @@ public class HomestaySearchInfraRepositoryImpl implements HomestaySearchDomainRe
     }
 
     @Override
-    public List<HomestaySearch> search(Criteria criteria) {
+    public List<HomestayDocument> search(Criteria criteria) {
         Query query = new CriteriaQuery(criteria);
-        SearchHits<HomestaySearch> searchHits = elasticsearchTemplate.search(query, HomestaySearch.class);
+        SearchHits<HomestayDocument> searchHits = elasticsearchTemplate.search(query, HomestayDocument.class);
         return searchHits.getSearchHits().stream()
                 .map(SearchHit::getContent)
                 .collect(Collectors.toList());

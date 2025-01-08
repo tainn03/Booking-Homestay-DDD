@@ -1,17 +1,17 @@
 package nnt.com.domain.homestay.service;
 
-import nnt.com.domain.homestay.model.document.HomestaySearch;
+import nnt.com.domain.homestay.model.document.HomestayDocument;
 
 import java.util.List;
 
 public interface HomestaySearchDomainService {
-    HomestaySearch save(HomestaySearch homestaySearch);
+    HomestayDocument save(HomestayDocument homestaySearch);
 
-    List<HomestaySearch> findAll();
+    List<HomestayDocument> findAll();
 
     void deleteById(Long id);
 
-    List<HomestaySearch> searchByContent(String content);
+    List<HomestayDocument> searchByContent(String content);
 
-    List<HomestaySearch> searchByLocation(double lat, double lon, int distance);
+    List<HomestayDocument> searchByLocation(double lat, double lon, int distance);
 }

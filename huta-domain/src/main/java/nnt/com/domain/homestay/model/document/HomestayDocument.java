@@ -12,7 +12,7 @@ import org.springframework.data.elasticsearch.core.geo.GeoPoint;
 @Document(indexName = "homestays")
 @Getter
 @Setter
-public class HomestaySearch {
+public class HomestayDocument {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;

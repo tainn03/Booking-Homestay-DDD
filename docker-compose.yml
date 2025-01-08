@@ -98,32 +98,32 @@ services:
           cpus: '1'
           memory: 1G
 
-  logstash:
-    image: docker.elastic.co/logstash/logstash:8.17.0
-    container_name: my-logstash
-    restart: on-failure
-    build:
-      context: ./environment/logstash/
-      dockerfile: ./environment/logstash/Dockerfile
-    ports:
-      - "5000:5000"
-      - "5033:5000/tcp"
-      - "5022:5000/udp"
-      - "9600:9600"
-    environment:
-      - LS_JAVA_OPTS=-Xms256m -Xmx256m
-      - LOGSTASH_JDBC_USER=postgres
-      - LOGSTASH_JDBC_PASSWORD=sa2008
-      - LOGSTASH_JDBC_URL=jdbc:postgresql://postgres:5432/booking
-      - CONFIG_SUPPORT_ESCAPE=true
-      - ELASTICSEARCH_URL=http://elasticsearch:9200
-    networks:
-      - booking-net
-    volumes:
-      - logstashvolume:/usr/share/logstash/data
-    depends_on:
-      - elasticsearch
-      - postgres
+  #  logstash:
+  #    image: docker.elastic.co/logstash/logstash:8.17.0
+  #    container_name: my-logstash
+  #    restart: on-failure
+  #    build:
+  #      context: ./environment/logstash/
+  #      dockerfile: ./environment/logstash/Dockerfile
+  #    ports:
+  #      - "5000:5000"
+  #      - "5033:5000/tcp"
+  #      - "5022:5000/udp"
+  #      - "9600:9600"
+  #    environment:
+  #      - LS_JAVA_OPTS=-Xms256m -Xmx256m
+  #      - LOGSTASH_JDBC_USER=postgres
+  #      - LOGSTASH_JDBC_PASSWORD=sa2008
+  #      - LOGSTASH_JDBC_URL=jdbc:postgresql://postgres:5432/booking
+  #      - CONFIG_SUPPORT_ESCAPE=true
+  #      - ELASTICSEARCH_URL=http://elasticsearch:9200
+  #    networks:
+  #      - booking-net
+  #    volumes:
+  #      - logstashvolume:/usr/share/logstash/data
+  #    depends_on:
+  #      - elasticsearch
+  #      - postgres
 
   kibana:
     image: docker.elastic.co/kibana/kibana:8.17.0

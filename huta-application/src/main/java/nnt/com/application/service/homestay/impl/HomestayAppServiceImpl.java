@@ -8,7 +8,7 @@ import nnt.com.application.model.dto.response.HomestayResponse;
 import nnt.com.application.model.mapper.HomestayMapper;
 import nnt.com.application.model.mapper.HomestaySearchMapper;
 import nnt.com.application.service.homestay.HomestayAppService;
-import nnt.com.domain.homestay.model.document.HomestaySearch;
+import nnt.com.domain.homestay.model.document.HomestayDocument;
 import nnt.com.domain.homestay.model.entity.Homestay;
 import nnt.com.domain.homestay.service.HomestayDomainService;
 import nnt.com.domain.homestay.service.HomestaySearchDomainService;
@@ -62,7 +62,7 @@ public class HomestayAppServiceImpl implements HomestayAppService {
     }
 
     private void saveHomestaySearch(HomestayRequest request, Homestay homestay) {
-        HomestaySearch homestaySearch = homestaySearchMapper.toDocument(request);
+        HomestayDocument homestaySearch = homestaySearchMapper.toDocument(request);
         homestaySearch.setId(homestay.getId().toString());
         homestaySearchDomainService.save(homestaySearch);
     }

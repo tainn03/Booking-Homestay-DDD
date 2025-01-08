@@ -2,7 +2,7 @@ package nnt.com.domain.homestay.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import nnt.com.domain.homestay.model.document.HomestaySearch;
+import nnt.com.domain.homestay.model.document.HomestayDocument;
 import nnt.com.domain.homestay.repository.HomestaySearchDomainRepository;
 import nnt.com.domain.homestay.service.HomestaySearchDomainService;
 import org.springframework.data.elasticsearch.core.geo.GeoPoint;
@@ -18,12 +18,12 @@ public class HomestaySearchDomainServiceImpl implements HomestaySearchDomainServ
     HomestaySearchDomainRepository homestaySearchDomainRepository;
 
     @Override
-    public HomestaySearch save(HomestaySearch homestaySearch) {
+    public HomestayDocument save(HomestayDocument homestaySearch) {
         return homestaySearchDomainRepository.save(homestaySearch);
     }
 
     @Override
-    public List<HomestaySearch> findAll() {
+    public List<HomestayDocument> findAll() {
         return homestaySearchDomainRepository.findAll();
     }
 
@@ -33,7 +33,7 @@ public class HomestaySearchDomainServiceImpl implements HomestaySearchDomainServ
     }
 
     @Override
-    public List<HomestaySearch> searchByContent(String content) {
+    public List<HomestayDocument> searchByContent(String content) {
         Criteria criteria = new Criteria()
                 .or("name").contains(content)
                 .or("description").contains(content)
@@ -42,7 +42,7 @@ public class HomestaySearchDomainServiceImpl implements HomestaySearchDomainServ
     }
 
     @Override
-    public List<HomestaySearch> searchByLocation(double lat, double lon, int distance) {
+    public List<HomestayDocument> searchByLocation(double lat, double lon, int distance) {
         GeoPoint centerPoint = new GeoPoint(lat, lon);
         Criteria criteria = new Criteria("location")
                 .within(centerPoint, String.format("%dkm", distance));
