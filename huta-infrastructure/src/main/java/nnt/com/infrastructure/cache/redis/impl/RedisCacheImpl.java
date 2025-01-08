@@ -1,11 +1,11 @@
-package nnt.com.infrastructure.cache.redis;
+package nnt.com.infrastructure.cache.redis.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import nnt.com.domain.base.cache.redis.RedisCache;
+import nnt.com.infrastructure.cache.redis.RedisCache;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;

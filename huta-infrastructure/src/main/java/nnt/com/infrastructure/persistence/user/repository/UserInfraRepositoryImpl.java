@@ -2,10 +2,10 @@ package nnt.com.infrastructure.persistence.user.repository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import nnt.com.domain.user.model.entity.User;
-import nnt.com.domain.user.repository.UserDomainRepository;
 import nnt.com.domain.base.exception.BusinessException;
 import nnt.com.domain.base.exception.ErrorCode;
+import nnt.com.domain.user.model.entity.User;
+import nnt.com.domain.user.repository.UserDomainRepository;
 import nnt.com.infrastructure.persistence.user.database.jpa.UserInfraRepositoryJpa;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -53,5 +53,10 @@ public class UserInfraRepositoryImpl implements UserDomainRepository {
     @Override
     public User findByEmail(String email) {
         return userInfraRepository.findByEmail(email).orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+    }
+
+    @Override
+    public User getByEmail(String emailOwner) {
+        return userInfraRepository.getByEmail(emailOwner).orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
     }
 }

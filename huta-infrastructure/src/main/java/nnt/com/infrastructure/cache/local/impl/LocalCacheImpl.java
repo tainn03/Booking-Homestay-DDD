@@ -1,9 +1,9 @@
-package nnt.com.infrastructure.cache.local;
+package nnt.com.infrastructure.cache.local.impl;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import lombok.extern.slf4j.Slf4j;
-import nnt.com.domain.base.cache.local.LocalCache;
+import nnt.com.infrastructure.cache.local.LocalCache;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.TimeUnit;

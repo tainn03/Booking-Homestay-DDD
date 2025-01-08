@@ -1,4 +1,4 @@
-package nnt.com.domain.base.cache.redis;
+package nnt.com.infrastructure.cache.redis;
 
 public interface RedisCache {
     void setString(String key, String value);

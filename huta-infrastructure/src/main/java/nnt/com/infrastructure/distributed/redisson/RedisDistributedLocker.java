@@ -1,4 +1,4 @@
-package nnt.com.domain.base.distributed;
+package nnt.com.infrastructure.distributed.redisson;
 
 import java.util.concurrent.TimeUnit;
 

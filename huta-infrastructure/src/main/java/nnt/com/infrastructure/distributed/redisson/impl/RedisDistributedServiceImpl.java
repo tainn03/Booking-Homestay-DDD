@@ -2,8 +2,8 @@ package nnt.com.infrastructure.distributed.redisson.impl;
 
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import nnt.com.domain.base.distributed.RedisDistributedLocker;
-import nnt.com.domain.base.distributed.RedisDistributedService;
+import nnt.com.infrastructure.distributed.redisson.RedisDistributedLocker;
+import nnt.com.infrastructure.distributed.redisson.RedisDistributedService;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;

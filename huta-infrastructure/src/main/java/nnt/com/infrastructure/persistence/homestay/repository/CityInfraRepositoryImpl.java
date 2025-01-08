@@ -22,6 +22,12 @@ public class CityInfraRepositoryImpl implements CityDomainRepository {
     CityInfraRepositoryJpa cityInfraRepositoryJpa;
 
     @Override
+    public City getByName(String name) {
+        return cityInfraRepositoryJpa.findByName(name)
+                .orElseThrow(() -> new BusinessException(ErrorCode.CITY_NOT_FOUND));
+    }
+
+    @Override
     public City save(City city) {
         return cityInfraRepositoryJpa.save(city);
     }
@@ -33,7 +39,8 @@ public class CityInfraRepositoryImpl implements CityDomainRepository {
 
     @Override
     public City getById(Integer id) {
-        return cityInfraRepositoryJpa.findById(id).orElseThrow(() -> new BusinessException(ErrorCode.CITY_NOT_FOUND));
+        return cityInfraRepositoryJpa.findById(id)
+                .orElseThrow(() -> new BusinessException(ErrorCode.CITY_NOT_FOUND));
     }
 
     @Override

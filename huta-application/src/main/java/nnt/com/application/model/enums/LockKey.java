@@ -1,4 +1,4 @@
-package nnt.com.domain.base.model.enums;
+package nnt.com.application.model.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

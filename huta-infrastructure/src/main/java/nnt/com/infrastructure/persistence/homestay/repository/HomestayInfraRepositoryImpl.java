@@ -2,6 +2,8 @@ package nnt.com.infrastructure.persistence.homestay.repository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import nnt.com.domain.base.exception.BusinessException;
+import nnt.com.domain.base.exception.ErrorCode;
 import nnt.com.domain.homestay.model.entity.Homestay;
 import nnt.com.domain.homestay.repository.HomestayDomainRepository;
 import nnt.com.infrastructure.persistence.homestay.database.jpa.HomestayInfraRepositoryJpa;
@@ -27,7 +29,7 @@ public class HomestayInfraRepositoryImpl implements HomestayDomainRepository {
 
     @Override
     public Homestay getById(Long homestayId) {
-        return homestayInfraRepositoryJpa.findById(homestayId).orElse(null);
+        return homestayInfraRepositoryJpa.findById(homestayId).orElseThrow(() -> new BusinessException(ErrorCode.HOMESTAY_NOT_FOUND));
     }
 
     @Override

@@ -9,6 +9,8 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.GeoPointField;
 import org.springframework.data.elasticsearch.core.geo.GeoPoint;
 
+import java.util.List;
+
 @Document(indexName = "homestays")
 @Getter
 @Setter
@@ -26,4 +28,15 @@ public class HomestayDocument {
     private String addressDetail;
     @GeoPointField
     private GeoPoint location;
+
+    private String emailOwner;
+
+    //    Integer numLike;
+    List<String> imageUrls;
+    //    List<Room> rooms;
+//    List<Rating> reviews;
+    private String typeHomestay;
+    private String district;
+    private String city;
+    private Integer version;
 }

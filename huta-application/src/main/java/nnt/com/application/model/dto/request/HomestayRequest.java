@@ -28,4 +28,9 @@ public class HomestayRequest {
 
     @GeoPointField
     GeoPoint location;
+
+    String emailOwner;
+    String typeHomestay;
+    String district;
+    String city;
 }

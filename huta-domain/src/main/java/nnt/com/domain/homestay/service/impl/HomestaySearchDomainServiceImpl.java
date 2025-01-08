@@ -34,10 +34,11 @@ public class HomestaySearchDomainServiceImpl implements HomestaySearchDomainServ
 
     @Override
     public List<HomestayDocument> searchByContent(String content) {
+        String query = "*" + content + "*";
         Criteria criteria = new Criteria()
-                .or("name").contains(content)
-                .or("description").contains(content)
-                .or("addressDetail").contains(content);
+                .or(new Criteria("name").expression(query))
+                .or(new Criteria("description").expression(query))
+                .or(new Criteria("addressDetail").expression(query));
         return homestaySearchDomainRepository.search(criteria);
     }
 

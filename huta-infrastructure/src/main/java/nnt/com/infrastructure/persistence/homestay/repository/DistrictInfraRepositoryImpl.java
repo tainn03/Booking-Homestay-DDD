@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import nnt.com.domain.base.exception.BusinessException;
 import nnt.com.domain.base.exception.ErrorCode;
+import nnt.com.domain.homestay.model.entity.City;
 import nnt.com.domain.homestay.model.entity.District;
 import nnt.com.domain.homestay.repository.DistrictDomainRepository;
 import nnt.com.infrastructure.persistence.homestay.database.jpa.DistrictInfraRepositoryJpa;
@@ -22,6 +23,12 @@ public class DistrictInfraRepositoryImpl implements DistrictDomainRepository {
     DistrictInfraRepositoryJpa districtInfraRepositoryJpa;
 
     @Override
+    public District findByNameAndCity(String districtName, City city) {
+        return districtInfraRepositoryJpa.findByNameAndCity(districtName, city)
+                .orElseThrow(() -> new BusinessException(ErrorCode.DISTRICT_NOT_FOUND));
+    }
+
+    @Override
     public District save(District district) {
         return districtInfraRepositoryJpa.save(district);
     }
@@ -33,7 +40,8 @@ public class DistrictInfraRepositoryImpl implements DistrictDomainRepository {
 
     @Override
     public District getById(Integer id) {
-        return districtInfraRepositoryJpa.findById(id).orElseThrow(() -> new BusinessException(ErrorCode.DISTRICT_NOT_FOUND));
+        return districtInfraRepositoryJpa.findById(id)
+                .orElseThrow(() -> new BusinessException(ErrorCode.DISTRICT_NOT_FOUND));
     }
 
     @Override

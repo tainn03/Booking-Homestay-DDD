@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Setter
 @Getter
@@ -23,4 +24,13 @@ public class HomestayResponse {
     Double lon;
     Double lat;
     String addressDetail;
+    String emailOwner;
+
+    //    Integer numLike;
+    List<String> imageUrls;
+    //    List<Room> rooms;
+//    List<Rating> reviews;
+    String typeHomestay;
+    String district;
+    Integer version;
 }

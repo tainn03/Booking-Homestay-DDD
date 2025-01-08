@@ -1,4 +1,4 @@
-package nnt.com.domain.base.cache.local;
+package nnt.com.infrastructure.cache.local;
 
 public interface LocalCache<T> {
     void put(long key, T value);
