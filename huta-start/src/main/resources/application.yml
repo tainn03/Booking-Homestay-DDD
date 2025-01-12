@@ -1,6 +1,6 @@
 spring:
-  config:
-    import: file:.env[.properties]
+  #  config:
+  #    import: optional:file:.env[.properties]
   threads:
     virtual:
       enabled: true
