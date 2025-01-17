@@ -183,6 +183,15 @@ services:
       - KAFKA_CFG_NODE_ID=1
     volumes:
       - ./environment/kafka/data/bitnami/kafka1:/bitnami/kafka
+      # Maps a local file create-topics.sh from the ./scripts directory to the path /opt/bitnami/kafka/create_topic.sh inside the Kafka container
+      # This script can be used to automatically create Kafka topics when the container starts
+      - ./environment/kafka/scripts/create-topics.sh:/opt/bitnami/kafka/create_topic.sh:ro
+      # Following command starts the Kafka server in the background using /opt/bitnami/scripts/kafka/run.sh. then sleep 5 to ensure that the Kafka server is fully up and running.
+      # Executes the create_topic.sh script, which is used to create Kafka topics. Uses 'wait' to keep the script running until all background processes (like the Kafka server) finish,
+    command: >
+      bash -c "
+      /opt/bitnami/scripts/kafka/run.sh & sleep 5; /opt/bitnami/kafka/create_topic.sh; wait
+      "
     networks:
       - booking-net
     healthcheck:

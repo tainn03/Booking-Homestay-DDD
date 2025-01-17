@@ -21,9 +21,9 @@ public class MailConsumer {
     MailService mailService;
 
     //    @KafkaListener(topics = "#{T(nnt.com.domain.base.model.enums.KafkaTopic).MAIL_TOPIC.getTopic()}", groupId = "my-group")
-    @KafkaListener(topics = "mail-topic", groupId = "my-group")
+    @KafkaListener(topics = "user.mail", groupId = "my-group")
     public void consume(ConsumerRecord<String, EmailRequest> record) throws IOException {
         log.info("LẮNG NGHE MAIL VỚI KEY {}, VALUE {}, PARTITION {}, OFFSET {}", record.key(), record.value(), record.partition(), record.offset());
-        mailService.send(record.value());
+//        mailService.send(record.value());
     }
 }

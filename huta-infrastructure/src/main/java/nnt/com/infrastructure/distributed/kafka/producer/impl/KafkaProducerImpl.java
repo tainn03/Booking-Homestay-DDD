@@ -23,29 +23,36 @@ public class KafkaProducerImpl implements KafkaProducer {
     @Override
     public void sendFireAndForgot(String topic, String key, Object message) {
         long startTime = System.currentTimeMillis();
-        kafkaTemplate.send(topic, key, message);
-        log.info("GỬI {}: KEY {}, VALUE {} BẰNG FIRE AND FORGET VỚI TOTAL TIME = {} ms", topic, key, message, System.currentTimeMillis() - startTime);
+        send(topic, key, message);
+        log.info("GỬI YÊU CẦU {}:{}-{} BẰNG FIRE AND FORGET VỚI TOTAL TIME = {} ms", topic, key, message, System.currentTimeMillis() - startTime);
     }
 
     @Override
     public void sendSync(String topic, String key, Object message) throws ExecutionException, InterruptedException {
         long startTime = System.currentTimeMillis();
-        CompletableFuture<SendResult<String, Object>> future = kafkaTemplate.send(topic, key, message);
+        CompletableFuture<SendResult<String, Object>> future = send(topic, key, message);
         SendResult<String, Object> result = future.get();
-        log.info("GỬI {}: KEY {}, VALUE {} BẰNG SYNC VỚI TOTAL TIME = {} ms VÀ KẾT QUẢ LÀ {}", topic, key, message, System.currentTimeMillis() - startTime, result.getRecordMetadata());
+        log.info("GỬI YÊU CẦU {}:{}-{} BẰNG SYNC VỚI TOTAL TIME = {} ms VÀ KẾT QUẢ LÀ {}", topic, key, message, System.currentTimeMillis() - startTime, result.getRecordMetadata());
     }
 
     @Override
     public void sendAsync(String topic, String key, Object message) {
         long startTime = System.currentTimeMillis();
-        CompletableFuture<SendResult<String, Object>> future = kafkaTemplate.send(topic, key, message);
+        CompletableFuture<SendResult<String, Object>> future = send(topic, key, message);
         future.whenComplete((result, ex) -> {
             if (ex == null) {
-                log.info("2: GỬI {}: KEY {}, VALUE {} BẰNG ASYNC VỚI TOTAL TIME = {} ms VÀ KẾT QUẢ LÀ {}", topic, key, message, System.currentTimeMillis() - startTime, result.getRecordMetadata());
+                log.info("2: PHẢN HỒI YÊU CẦU {}:{}-{} BẰNG ASYNC VỚI TOTAL TIME = {} ms VÀ KẾT QUẢ LÀ {}", topic, key, message, System.currentTimeMillis() - startTime, result.getRecordMetadata());
             } else {
-                log.error("2: GỬI {}: KEY {}, VALUE {}BẰNG ASYNC VỚI TOTAL TIME = {} ms VÀ CÓ LỖI {}", topic, key, message, System.currentTimeMillis() - startTime, ex);
+                log.error(ex.getMessage(), ex);
             }
         });
-        log.info("1: GỬI {}: KEY {}, VALUE {} BẰNG ASYNC VỚI TOTAL TIME = {} ms TRONG KHI CHƯA CÓ KẾT QUẢ", topic, key, message, System.currentTimeMillis() - startTime);
+        log.info("1: GỬI YÊU CẦU {}:{}-{} BẰNG ASYNC VỚI TOTAL TIME = {} ms", topic, key, message, System.currentTimeMillis() - startTime);
+    }
+
+    private CompletableFuture<SendResult<String, Object>> send(String topic, String key, Object message) {
+        if (key == null) {
+            return kafkaTemplate.send(topic, message);
+        }
+        return kafkaTemplate.send(topic, key, message);
     }
 }

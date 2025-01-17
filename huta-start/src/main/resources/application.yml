@@ -45,31 +45,6 @@ spring:
       uris: http://localhost:9200
       connection-timeout: 2s
       socket-timeout: 5s
-  kafka:
-    bootstrap-servers: localhost:9193
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-      retries: 0
-      auto-create-topics: true
-      batch-size: 16384
-      buffer-memory: 33554432
-    consumer:
-      group-id: my-group
-      auto-offset-reset: latest
-      enable-auto-commit: true
-      auto-commit-interval: 1
-      error-handler: logging
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-      properties:
-        spring:
-          json:
-            trusted:
-              packages: "*"
-    listener:
-      ack-mode: count
-      missing-topics-fatal: false
   batch:
     job:
       enabled: false # prevents any batch job from running automatically at startup
