@@ -10,7 +10,7 @@ import nnt.com.application.model.dto.response.HomestayResponse;
 import nnt.com.application.service.homestay.HomestayAppService;
 import nnt.com.controller.model.builder.ResponseFactory;
 import nnt.com.controller.model.response.ApiResponse;
-import nnt.com.domain.base.exception.ErrorCode;
+import nnt.com.domain.common.exception.ErrorCode;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

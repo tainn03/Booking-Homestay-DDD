@@ -2,10 +2,10 @@ package nnt.com.infrastructure.persistence.booking.repository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import nnt.com.domain.base.exception.BusinessException;
-import nnt.com.domain.base.exception.ErrorCode;
-import nnt.com.domain.booking.model.entity.Booking;
-import nnt.com.domain.booking.repository.BookingDomainRepository;
+import nnt.com.domain.aggregates.booking.model.entity.Booking;
+import nnt.com.domain.aggregates.booking.repository.BookingDomainRepository;
+import nnt.com.domain.common.exception.BusinessException;
+import nnt.com.domain.common.exception.ErrorCode;
 import nnt.com.infrastructure.persistence.booking.database.jpa.BookingInfraRepositoryJpa;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

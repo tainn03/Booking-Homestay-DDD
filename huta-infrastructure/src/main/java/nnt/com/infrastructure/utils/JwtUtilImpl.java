@@ -2,7 +2,7 @@ package nnt.com.infrastructure.utils;
 
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import nnt.com.domain.base.utils.JwtUtil;
+import nnt.com.domain.common.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.core.userdetails.UserDetails;

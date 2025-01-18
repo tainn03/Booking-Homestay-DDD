@@ -2,10 +2,10 @@ package nnt.com.infrastructure.persistence.user.repository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import nnt.com.domain.base.exception.BusinessException;
-import nnt.com.domain.base.exception.ErrorCode;
-import nnt.com.domain.user.model.entity.User;
-import nnt.com.domain.user.repository.UserDomainRepository;
+import nnt.com.domain.common.exception.BusinessException;
+import nnt.com.domain.common.exception.ErrorCode;
+import nnt.com.domain.aggregates.user.model.entity.User;
+import nnt.com.domain.aggregates.user.repository.UserDomainRepository;
 import nnt.com.infrastructure.persistence.user.database.jpa.UserInfraRepositoryJpa;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

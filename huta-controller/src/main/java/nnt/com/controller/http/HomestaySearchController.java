@@ -3,7 +3,7 @@ package nnt.com.controller.http;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import nnt.com.application.service.search.HomestaySearchAppService;
-import nnt.com.domain.homestay.model.document.HomestayDocument;
+import nnt.com.domain.aggregates.homestay.model.document.HomestayDocument;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;

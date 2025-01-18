@@ -2,10 +2,10 @@ package nnt.com.infrastructure.persistence.payment.repository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import nnt.com.domain.base.exception.BusinessException;
-import nnt.com.domain.base.exception.ErrorCode;
-import nnt.com.domain.payment.model.entity.Payment;
-import nnt.com.domain.payment.repository.PaymentDomainRepository;
+import nnt.com.domain.common.exception.BusinessException;
+import nnt.com.domain.common.exception.ErrorCode;
+import nnt.com.domain.aggregates.payment.model.entity.Payment;
+import nnt.com.domain.aggregates.payment.repository.PaymentDomainRepository;
 import nnt.com.infrastructure.persistence.payment.database.jpa.PaymentInfraRepositoryJpa;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

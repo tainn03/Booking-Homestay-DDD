@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import nnt.com.application.service.payment.PaymentAppService;
-import nnt.com.domain.payment.service.VNPayService;
+import nnt.com.domain.aggregates.payment.service.VNPayService;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;

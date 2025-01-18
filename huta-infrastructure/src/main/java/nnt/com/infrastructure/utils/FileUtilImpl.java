@@ -1,6 +1,6 @@
 package nnt.com.infrastructure.utils;
 
-import nnt.com.domain.base.utils.FileUtil;
+import nnt.com.domain.common.utils.FileUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 

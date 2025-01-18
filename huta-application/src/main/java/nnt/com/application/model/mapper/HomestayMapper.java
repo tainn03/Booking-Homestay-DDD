@@ -2,8 +2,8 @@ package nnt.com.application.model.mapper;
 
 import nnt.com.application.model.dto.request.HomestayRequest;
 import nnt.com.application.model.dto.response.HomestayResponse;
-import nnt.com.domain.homestay.model.entity.Homestay;
-import nnt.com.domain.image.model.entity.Image;
+import nnt.com.domain.aggregates.homestay.model.entity.Homestay;
+import nnt.com.domain.aggregates.image.model.entity.Image;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;

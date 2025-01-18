@@ -2,9 +2,8 @@ package nnt.com.controller.http;
 
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import nnt.com.domain.base.model.dto.EmailRequest;
-import nnt.com.domain.base.model.enums.KafkaTopic;
-import nnt.com.infrastructure.distributed.kafka.producer.KafkaProducer;
+import nnt.com.application.brokerMQ.producer.MailProducer;
+import nnt.com.domain.common.model.dto.EmailRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,7 +17,7 @@ import static lombok.AccessLevel.PRIVATE;
 @RequiredArgsConstructor
 @FieldDefaults(level = PRIVATE, makeFinal = true)
 public class MailController {
-    KafkaProducer kafkaProducer;
+    MailProducer mailProducer;
 
     @GetMapping
     public String sendHtml() {
@@ -30,7 +29,7 @@ public class MailController {
         for (int i = 0; i < 3; i++) {
             emailRequest.setTo("test " + i);
             emailRequest.setSubject(String.valueOf(i));
-            kafkaProducer.sendAsync(KafkaTopic.MAIL_TOPIC.getTopic(), keys[i], emailRequest);
+            mailProducer.sendMail(keys[i], emailRequest);
         }
         return "Email sent";
     }

@@ -2,8 +2,8 @@ package nnt.com.infrastructure.persistence.room.repository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import nnt.com.domain.room.model.entity.Room;
-import nnt.com.domain.room.repository.RoomDomainRepository;
+import nnt.com.domain.aggregates.room.model.entity.Room;
+import nnt.com.domain.aggregates.room.repository.RoomDomainRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 

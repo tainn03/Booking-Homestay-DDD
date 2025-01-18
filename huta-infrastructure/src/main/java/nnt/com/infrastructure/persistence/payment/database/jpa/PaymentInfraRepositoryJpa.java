@@ -1,6 +1,6 @@
 package nnt.com.infrastructure.persistence.payment.database.jpa;
 
-import nnt.com.domain.payment.model.entity.Payment;
+import nnt.com.domain.aggregates.payment.model.entity.Payment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

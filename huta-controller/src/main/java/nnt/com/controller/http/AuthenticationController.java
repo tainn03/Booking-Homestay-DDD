@@ -9,7 +9,7 @@ import nnt.com.application.model.dto.request.LoginRequest;
 import nnt.com.application.service.authentication.AuthenticationAppService;
 import nnt.com.controller.model.builder.ResponseFactory;
 import nnt.com.controller.model.response.ApiResponse;
-import nnt.com.domain.base.exception.ErrorCode;
+import nnt.com.domain.common.exception.ErrorCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class PusherConfig {
+
     @Bean
     public Pusher pusher() {
         Pusher pusher = new Pusher(

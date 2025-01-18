@@ -2,7 +2,7 @@ package nnt.com.infrastructure.utils;
 
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import nnt.com.domain.base.utils.VNPayUtil;
+import nnt.com.domain.common.utils.VNPayUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
