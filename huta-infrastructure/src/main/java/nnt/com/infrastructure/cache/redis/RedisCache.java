@@ -1,5 +1,7 @@
 package nnt.com.infrastructure.cache.redis;
 
+import java.util.concurrent.TimeUnit;
+
 public interface RedisCache {
     void setString(String key, String value);
 
@@ -7,7 +9,13 @@ public interface RedisCache {
 
     void setObject(String key, Object value);
 
+    void setObject(String key, Object value, Long ttl, TimeUnit timeUnit);
+
     <T> T getObject(String key, Class<T> targetClass);
 
     void delete(String key);
+
+    boolean hasKey(String key);
+
+    Long increment(String key, long liveTime);
 }

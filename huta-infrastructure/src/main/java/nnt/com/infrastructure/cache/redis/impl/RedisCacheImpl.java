@@ -7,11 +7,14 @@ import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import nnt.com.infrastructure.cache.redis.RedisCache;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.support.atomic.RedisAtomicLong;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 @Component
 @Slf4j
@@ -55,6 +58,20 @@ public class RedisCacheImpl implements RedisCache {
     }
 
     @Override
+    public void setObject(String key, Object value, Long ttl, TimeUnit timeUnit) {
+        redisTemplate.opsForValue().set(key, value, ttl, timeUnit);
+        if (!StringUtils.hasLength(key)) {
+            return;
+        }
+        try {
+            String jsonValue = objectMapper.writeValueAsString(value);
+            redisTemplate.opsForValue().set(key, jsonValue, ttl, timeUnit);
+        } catch (Exception e) {
+            log.error("ERROR WHEN SET OBJECT TO REDIS: {}", e.getMessage());
+        }
+    }
+
+    @Override
     public <T> T getObject(String key, Class<T> targetClass) {
         Object result = redisTemplate.opsForValue().get(key);
         switch (result) {
@@ -87,16 +104,22 @@ public class RedisCacheImpl implements RedisCache {
 
     @Override
     public void delete(String key) {
-        if (Boolean.TRUE.equals(redisTemplate.hasKey(key))) {
-            log.info("DELETE KEY: {}", key);
+        if (hasKey(key)) {
             redisTemplate.delete(key);
-            if (Boolean.FALSE.equals(redisTemplate.hasKey(key))) {
-                log.info("KEY: {} SUCCESSFULLY DELETED", key);
-            } else {
-                log.warn("FAILED TO DELETE KEY: {}", key);
-            }
-        } else {
-            log.warn("KEY: {} NOT FOUND", key);
         }
+    }
+
+    public boolean hasKey(String key) {
+        return Boolean.TRUE.equals(redisTemplate.hasKey(key));
+    }
+
+    public Long increment(String key, long liveTime) {
+        RedisAtomicLong atomicCounter = new RedisAtomicLong(key, Objects.requireNonNull(redisTemplate.getConnectionFactory()));
+        long counterValue = atomicCounter.getAndIncrement();
+        //Thiết lập thời gian hết hạn ban đầu
+        if (counterValue == 0 && liveTime > 0) {
+            atomicCounter.expire(liveTime, TimeUnit.SECONDS);
+        }
+        return counterValue;
     }
 }

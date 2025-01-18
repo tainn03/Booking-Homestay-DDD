@@ -120,5 +120,10 @@ application:
       apiUrl: ${VNPAY_API_URL}
   sendgrid:
     api-key: ${SENDGRID_API_KEY}
+  pusher:
+    app-id: ${PUSHER_APP_ID}
+    key: ${PUSHER_KEY}
+    secret: ${PUSHER_SECRET}
+    cluster: ${PUSHER_CLUSTER}
   huta:
     email: ${HUTA_EMAIL}
