@@ -9,7 +9,6 @@ import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 import static lombok.AccessLevel.PRIVATE;
 
@@ -28,11 +27,15 @@ public class KafkaProducerImpl implements KafkaProducer {
     }
 
     @Override
-    public void sendSync(String topic, String key, Object message) throws ExecutionException, InterruptedException {
+    public void sendSync(String topic, String key, Object message) {
         long startTime = System.currentTimeMillis();
         CompletableFuture<SendResult<String, Object>> future = send(topic, key, message);
-        SendResult<String, Object> result = future.get();
-        log.info("GỬI YÊU CẦU {}:{}-{} BẰNG SYNC VỚI TOTAL TIME = {} ms VÀ KẾT QUẢ LÀ {}", topic, key, message, System.currentTimeMillis() - startTime, result.getRecordMetadata());
+        try {
+            SendResult<String, Object> result = future.get();
+            log.info("GỬI YÊU CẦU {}:{}-{} BẰNG SYNC VỚI TOTAL TIME = {} ms VÀ KẾT QUẢ LÀ {}", topic, key, message, System.currentTimeMillis() - startTime, result.getRecordMetadata());
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
     }
 
     @Override

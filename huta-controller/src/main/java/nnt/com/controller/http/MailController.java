@@ -22,32 +22,16 @@ public class MailController {
 
     @GetMapping
     public String sendHtml() {
-//        Map<String, String> templateParams = Map.of("name", "NNT");
-//        EmailRequest emailRequest = EmailRequest.builder()
-//                .to("taib2110141@student.ctu.edu.vn")
-//                .subject("Test email")
-//                .templateParams(templateParams)
-//                .build();
-//        kafkaProducer.sendAsync(KafkaTopic.MAIL_TOPIC.getTopic(), null, emailRequest);
         Map<String, String> templateParams = Map.of("name", "NNT");
         EmailRequest emailRequest = EmailRequest.builder()
-                .to("test 1")
-                .subject("1")
                 .templateParams(templateParams)
                 .build();
-        kafkaProducer.sendFireAndForgot(KafkaTopic.MAIL_TOPIC.getTopic(), "1", emailRequest);
-        emailRequest = EmailRequest.builder()
-                .to("test 2")
-                .subject("2")
-                .templateParams(templateParams)
-                .build();
-        kafkaProducer.sendFireAndForgot(KafkaTopic.MAIL_TOPIC.getTopic(), "2", emailRequest);
-        emailRequest = EmailRequest.builder()
-                .to("test 3")
-                .subject("3")
-                .templateParams(templateParams)
-                .build();
-        kafkaProducer.sendFireAndForgot(KafkaTopic.MAIL_TOPIC.getTopic(), "3", emailRequest);
+        String[] keys = {"first_key", "second_key", "third_key"};
+        for (int i = 0; i < 3; i++) {
+            emailRequest.setTo("test " + i);
+            emailRequest.setSubject(String.valueOf(i));
+            kafkaProducer.sendAsync(KafkaTopic.MAIL_TOPIC.getTopic(), keys[i], emailRequest);
+        }
         return "Email sent";
     }
 }
