@@ -17,9 +17,10 @@ import java.util.List;
 public class Room extends BaseEntity<Long> {
     String name;
     int size;
-    double price = 0.0;
+    double dailyPrice = 0.0;
     double weekendPrice = 0.0;
     String status;
+    int beds;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "homestay_id", nullable = false)
@@ -27,9 +28,6 @@ public class Room extends BaseEntity<Long> {
 
     @ManyToMany(mappedBy = "rooms", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     List<Booking> bookings;
-
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    List<Image> images;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(

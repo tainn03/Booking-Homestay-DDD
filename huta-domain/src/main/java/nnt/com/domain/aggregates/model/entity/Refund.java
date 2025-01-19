@@ -1,6 +1,7 @@
 package nnt.com.domain.aggregates.model.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -21,6 +22,7 @@ public class Refund extends BaseEntity<Long> {
     String status;
     int amount;
 
-    @OneToOne
+    @OneToOne(mappedBy = "refund")
+    @JoinColumn(name = "payment_id", nullable = false)
     Payment payment;
 }

@@ -27,6 +27,7 @@ public class User extends BaseEntity<Long> implements UserDetails {
     String email;
     String password;
     String fullName;
+    String avatar;
 
     @Enumerated(EnumType.STRING)
     @Builder.Default
@@ -35,16 +36,13 @@ public class User extends BaseEntity<Long> implements UserDetails {
     LocalDate dob;
     String gender;
     String address;
-    String cccd;
+    String identityNumber;
     String businessLicense;
     String nationality;
     String bankName;
     String bankNum;
     String bankUsername;
     LocalDateTime lastLogin;
-
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    Image avatar;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role", nullable = false)
@@ -66,6 +64,9 @@ public class User extends BaseEntity<Long> implements UserDetails {
 
     @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     List<Rating> reviews;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    List<Recommend> recommends;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -1,9 +1,9 @@
 package nnt.com.domain.aggregates.model.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import nnt.com.domain.aggregates.model.enums.PaymentMethod;
 import nnt.com.domain.shared.model.entity.BaseEntity;
 
 import java.time.LocalDate;
@@ -21,8 +21,14 @@ public class Payment extends BaseEntity<Long> {
     LocalDate date;
     String status;
     String note;
-    String paymentMethod;
+
+    @Enumerated(EnumType.STRING)
+    PaymentMethod paymentMethod;
+
+    @OneToOne(mappedBy = "payment")
+    @JoinColumn(name = "booking_id", nullable = false)
+    Booking booking;
 
     @OneToOne
-    Booking booking;
+    Refund refund;
 }

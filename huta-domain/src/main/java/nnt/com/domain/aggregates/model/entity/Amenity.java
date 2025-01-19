@@ -1,11 +1,9 @@
 package nnt.com.domain.aggregates.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.*;
 import lombok.*;
+import nnt.com.domain.aggregates.model.enums.AmenityType;
 
 import java.util.List;
 
@@ -18,7 +16,9 @@ import java.util.List;
 public class Amenity {
     @Id
     String name;
-    String type;
+
+    @Enumerated(EnumType.STRING)
+    AmenityType type;
 
     @JsonIgnore
     @ManyToMany(mappedBy = "amenities", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
