@@ -3,8 +3,8 @@ package nnt.com.application.service.search.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import nnt.com.application.service.search.HomestaySearchAppService;
-import nnt.com.domain.aggregates.homestay.model.document.HomestayDocument;
-import nnt.com.domain.aggregates.homestay.service.HomestaySearchDomainService;
+import nnt.com.domain.aggregates.model.document.HomestayDocument;
+import nnt.com.domain.aggregates.service.HomestaySearchDomainService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

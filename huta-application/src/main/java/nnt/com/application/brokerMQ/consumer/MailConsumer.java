@@ -3,7 +3,7 @@ package nnt.com.application.brokerMQ.consumer;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import nnt.com.domain.common.model.dto.EmailRequest;
+import nnt.com.domain.shared.model.dto.EmailRequest;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;

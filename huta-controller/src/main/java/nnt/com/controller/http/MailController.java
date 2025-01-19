@@ -3,7 +3,7 @@ package nnt.com.controller.http;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import nnt.com.application.brokerMQ.producer.MailProducer;
-import nnt.com.domain.common.model.dto.EmailRequest;
+import nnt.com.domain.shared.model.dto.EmailRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

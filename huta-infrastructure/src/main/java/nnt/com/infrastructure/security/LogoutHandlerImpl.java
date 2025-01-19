@@ -5,7 +5,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import nnt.com.domain.aggregates.user.model.entity.Token;
+import nnt.com.domain.aggregates.model.entity.Token;
 import nnt.com.infrastructure.persistence.user.database.jpa.TokenInfraRepositoryJpa;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

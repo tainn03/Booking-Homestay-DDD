@@ -1,6 +1,6 @@
 package nnt.com.application.service.search;
 
-import nnt.com.domain.aggregates.homestay.model.document.HomestayDocument;
+import nnt.com.domain.aggregates.model.document.HomestayDocument;
 
 import java.util.List;
 

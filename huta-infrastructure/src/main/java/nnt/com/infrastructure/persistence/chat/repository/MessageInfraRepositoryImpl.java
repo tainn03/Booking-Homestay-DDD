@@ -2,10 +2,10 @@ package nnt.com.infrastructure.persistence.chat.repository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import nnt.com.domain.aggregates.chat.model.entity.Message;
-import nnt.com.domain.aggregates.chat.repository.MessageDomainRepository;
-import nnt.com.domain.common.exception.BusinessException;
-import nnt.com.domain.common.exception.ErrorCode;
+import nnt.com.domain.aggregates.model.entity.Message;
+import nnt.com.domain.aggregates.repository.MessageDomainRepository;
+import nnt.com.domain.shared.exception.BusinessException;
+import nnt.com.domain.shared.exception.ErrorCode;
 import nnt.com.infrastructure.persistence.chat.database.jpa.MessageInfraRepositoryJpa;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

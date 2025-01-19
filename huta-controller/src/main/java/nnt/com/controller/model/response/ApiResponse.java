@@ -3,7 +3,7 @@ package nnt.com.controller.model.response;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import nnt.com.domain.common.exception.ErrorCode;
+import nnt.com.domain.shared.exception.ErrorCode;
 
 import java.time.LocalDateTime;
 

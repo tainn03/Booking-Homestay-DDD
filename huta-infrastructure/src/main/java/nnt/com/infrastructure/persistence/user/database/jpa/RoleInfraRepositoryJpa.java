@@ -1,7 +1,7 @@
 package nnt.com.infrastructure.persistence.user.database.jpa;
 
 import jakarta.transaction.Transactional;
-import nnt.com.domain.aggregates.user.model.entity.Role;
+import nnt.com.domain.aggregates.model.entity.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

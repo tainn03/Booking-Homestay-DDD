@@ -6,8 +6,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import nnt.com.domain.common.utils.CloudinaryUtil;
-import nnt.com.domain.common.utils.FileUtil;
+import nnt.com.domain.shared.utils.CloudinaryUtil;
+import nnt.com.domain.shared.utils.FileUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 

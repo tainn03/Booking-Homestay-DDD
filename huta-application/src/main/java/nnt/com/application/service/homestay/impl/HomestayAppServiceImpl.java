@@ -3,13 +3,13 @@ package nnt.com.application.service.homestay.impl;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import nnt.com.application.model.dto.request.HomestayRequest;
-import nnt.com.application.model.dto.response.HomestayResponse;
-import nnt.com.application.model.mapper.HomestaySearchMapper;
 import nnt.com.application.service.homestay.HomestayAppService;
 import nnt.com.application.service.homestay.cache.HomestayAppServiceCache;
-import nnt.com.domain.aggregates.homestay.model.document.HomestayDocument;
-import nnt.com.domain.aggregates.homestay.service.HomestaySearchDomainService;
+import nnt.com.domain.aggregates.model.document.HomestayDocument;
+import nnt.com.domain.aggregates.model.dto.request.HomestayRequest;
+import nnt.com.domain.aggregates.model.dto.response.HomestayResponse;
+import nnt.com.domain.aggregates.model.mapper.HomestaySearchMapper;
+import nnt.com.domain.aggregates.service.HomestaySearchDomainService;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 

@@ -2,10 +2,10 @@ package nnt.com.infrastructure.persistence.room.repository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import nnt.com.domain.common.exception.BusinessException;
-import nnt.com.domain.common.exception.ErrorCode;
-import nnt.com.domain.aggregates.room.model.entity.PriceCalendar;
-import nnt.com.domain.aggregates.room.repository.PriceCalendarDomainRepository;
+import nnt.com.domain.aggregates.model.entity.PriceCalendar;
+import nnt.com.domain.aggregates.repository.PriceCalendarDomainRepository;
+import nnt.com.domain.shared.exception.BusinessException;
+import nnt.com.domain.shared.exception.ErrorCode;
 import nnt.com.infrastructure.persistence.room.database.jpa.PriceCalendarInfraRepositoryJpa;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

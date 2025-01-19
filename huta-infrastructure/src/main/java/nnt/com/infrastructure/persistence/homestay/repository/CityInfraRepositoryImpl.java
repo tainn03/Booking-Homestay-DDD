@@ -2,10 +2,10 @@ package nnt.com.infrastructure.persistence.homestay.repository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import nnt.com.domain.common.exception.BusinessException;
-import nnt.com.domain.common.exception.ErrorCode;
-import nnt.com.domain.aggregates.homestay.model.entity.City;
-import nnt.com.domain.aggregates.homestay.repository.CityDomainRepository;
+import nnt.com.domain.aggregates.model.entity.City;
+import nnt.com.domain.aggregates.repository.CityDomainRepository;
+import nnt.com.domain.shared.exception.BusinessException;
+import nnt.com.domain.shared.exception.ErrorCode;
 import nnt.com.infrastructure.persistence.homestay.database.jpa.CityInfraRepositoryJpa;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

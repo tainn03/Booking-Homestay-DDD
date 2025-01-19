@@ -1,7 +1,7 @@
 package nnt.com.application.service.homestay;
 
-import nnt.com.application.model.dto.request.HomestayRequest;
-import nnt.com.application.model.dto.response.HomestayResponse;
+import nnt.com.domain.aggregates.model.dto.request.HomestayRequest;
+import nnt.com.domain.aggregates.model.dto.response.HomestayResponse;
 import org.springframework.data.domain.Page;
 
 public interface HomestayAppService {

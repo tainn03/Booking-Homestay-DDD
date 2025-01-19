@@ -1,6 +1,6 @@
 package nnt.com.infrastructure.persistence.booking.database.jpa;
 
-import nnt.com.domain.aggregates.booking.model.entity.Booking;
+import nnt.com.domain.aggregates.model.entity.Booking;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

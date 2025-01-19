@@ -2,8 +2,8 @@ package nnt.com.infrastructure.persistence.homestay.repository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import nnt.com.domain.aggregates.homestay.model.document.HomestayDocument;
-import nnt.com.domain.aggregates.homestay.repository.HomestaySearchDomainRepository;
+import nnt.com.domain.aggregates.model.document.HomestayDocument;
+import nnt.com.domain.aggregates.repository.HomestaySearchDomainRepository;
 import nnt.com.infrastructure.persistence.homestay.database.elastic.HomestayInfraRepositoryElastic;
 import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.SearchHit;

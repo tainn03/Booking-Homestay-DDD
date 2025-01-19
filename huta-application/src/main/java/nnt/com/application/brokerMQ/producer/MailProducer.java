@@ -2,8 +2,8 @@ package nnt.com.application.brokerMQ.producer;
 
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import nnt.com.domain.common.model.dto.EmailRequest;
-import nnt.com.domain.common.model.enums.KafkaTopic;
+import nnt.com.domain.shared.model.dto.EmailRequest;
+import nnt.com.domain.shared.model.enums.KafkaTopic;
 import nnt.com.infrastructure.distributed.kafka.producer.KafkaProducer;
 import org.springframework.stereotype.Service;
 

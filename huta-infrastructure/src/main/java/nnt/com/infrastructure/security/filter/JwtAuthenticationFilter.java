@@ -7,7 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import nnt.com.domain.common.utils.JwtUtil;
+import nnt.com.domain.shared.utils.JwtUtil;
 import nnt.com.infrastructure.persistence.user.database.jpa.TokenInfraRepositoryJpa;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;

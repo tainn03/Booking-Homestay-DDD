@@ -4,12 +4,12 @@ import jakarta.json.JsonObject;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import nnt.com.application.model.dto.request.ChangePasswordRequest;
-import nnt.com.application.model.dto.request.LoginRequest;
-import nnt.com.application.model.dto.response.AuthResponse;
 import nnt.com.application.service.authentication.AuthenticationAppService;
-import nnt.com.domain.aggregates.user.model.entity.User;
-import nnt.com.domain.aggregates.user.service.AuthenticationDomainService;
+import nnt.com.domain.aggregates.model.dto.request.ChangePasswordRequest;
+import nnt.com.domain.aggregates.model.dto.request.LoginRequest;
+import nnt.com.domain.aggregates.model.dto.response.AuthResponse;
+import nnt.com.domain.aggregates.model.entity.User;
+import nnt.com.domain.aggregates.service.AuthenticationDomainService;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;

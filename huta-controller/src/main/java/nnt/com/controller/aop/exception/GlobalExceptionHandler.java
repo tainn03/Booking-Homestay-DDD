@@ -1,8 +1,8 @@
 package nnt.com.controller.aop.exception;
 
 import nnt.com.controller.model.response.ApiResponse;
-import nnt.com.domain.common.exception.BusinessException;
-import nnt.com.domain.common.exception.ErrorCode;
+import nnt.com.domain.shared.exception.BusinessException;
+import nnt.com.domain.shared.exception.ErrorCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;

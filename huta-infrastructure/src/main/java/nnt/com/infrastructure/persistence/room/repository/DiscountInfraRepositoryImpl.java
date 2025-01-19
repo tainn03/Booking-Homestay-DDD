@@ -2,10 +2,10 @@ package nnt.com.infrastructure.persistence.room.repository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import nnt.com.domain.common.exception.BusinessException;
-import nnt.com.domain.common.exception.ErrorCode;
-import nnt.com.domain.aggregates.room.model.entity.Discount;
-import nnt.com.domain.aggregates.room.repository.DiscountDomainRepository;
+import nnt.com.domain.aggregates.model.entity.Discount;
+import nnt.com.domain.aggregates.repository.DiscountDomainRepository;
+import nnt.com.domain.shared.exception.BusinessException;
+import nnt.com.domain.shared.exception.ErrorCode;
 import nnt.com.infrastructure.persistence.room.database.jpa.DiscountInfraRepositoryJpa;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
