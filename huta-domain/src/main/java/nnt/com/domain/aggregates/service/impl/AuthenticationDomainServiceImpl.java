@@ -22,6 +22,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 
 @Service
@@ -37,14 +38,16 @@ public class AuthenticationDomainServiceImpl implements AuthenticationDomainServ
 
 
     @Override
-    public Map<String, String> register(String email, String password) {
+    public Map<String, String> register(String name, String email, String password) {
         if (userDomainRepository.existsUserByEmail(email)) {
             throw new BusinessException(ErrorCode.EMAIL_ALREADY_EXISTS);
         }
         User user = User.builder()
+                .fullName(name)
                 .email(email)
                 .password(passwordEncoder.encode(password))
                 .role(roleDomainRepository.findByRoleName(RoleType.USER.name()))
+                .lastLogin(LocalDateTime.now())
                 .build();
         user = userDomainRepository.save(user);
         return generateToken(user);

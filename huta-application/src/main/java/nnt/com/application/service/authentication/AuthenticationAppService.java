@@ -4,11 +4,12 @@ import jakarta.json.JsonObject;
 import jakarta.servlet.http.HttpServletResponse;
 import nnt.com.domain.aggregates.model.dto.request.ChangePasswordRequest;
 import nnt.com.domain.aggregates.model.dto.request.LoginRequest;
+import nnt.com.domain.aggregates.model.dto.request.RegisterRequest;
 import nnt.com.domain.aggregates.model.dto.response.AuthResponse;
 import nnt.com.domain.aggregates.model.entity.User;
 
 public interface AuthenticationAppService {
-    AuthResponse register(LoginRequest request);
+    AuthResponse register(RegisterRequest request);
 
     AuthResponse login(LoginRequest request);
 

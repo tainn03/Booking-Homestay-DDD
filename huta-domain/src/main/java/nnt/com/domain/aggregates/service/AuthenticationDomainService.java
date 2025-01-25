@@ -7,7 +7,7 @@ import nnt.com.domain.aggregates.model.entity.User;
 import java.util.Map;
 
 public interface AuthenticationDomainService {
-    Map<String, String> register(String email, String password);
+    Map<String, String> register(String name, String email, String password);
 
     Map<String, String> login(String email, String password);
 

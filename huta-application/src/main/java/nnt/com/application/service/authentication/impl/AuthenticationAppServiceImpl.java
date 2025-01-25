@@ -7,6 +7,7 @@ import lombok.experimental.FieldDefaults;
 import nnt.com.application.service.authentication.AuthenticationAppService;
 import nnt.com.domain.aggregates.model.dto.request.ChangePasswordRequest;
 import nnt.com.domain.aggregates.model.dto.request.LoginRequest;
+import nnt.com.domain.aggregates.model.dto.request.RegisterRequest;
 import nnt.com.domain.aggregates.model.dto.response.AuthResponse;
 import nnt.com.domain.aggregates.model.entity.User;
 import nnt.com.domain.aggregates.service.AuthenticationDomainService;
@@ -21,8 +22,8 @@ public class AuthenticationAppServiceImpl implements AuthenticationAppService {
     AuthenticationDomainService authenticationDomainService;
 
     @Override
-    public AuthResponse register(LoginRequest request) {
-        Map<String, String> result = authenticationDomainService.register(request.getEmail(), request.getPassword());
+    public AuthResponse register(RegisterRequest request) {
+        Map<String, String> result = authenticationDomainService.register(request.getName(), request.getEmail(), request.getPassword());
         return createAuthResponse(result);
     }
 

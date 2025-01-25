@@ -60,6 +60,7 @@ public enum ErrorCode {
     EMAIL_MUST_BE_VALID(40005, "Email không hợp lệ", HttpStatus.BAD_REQUEST),
     PASSWORD_MUST_BE_STRONG(40006, "Mật khẩu phải chứa ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường và số", HttpStatus.BAD_REQUEST),
     EMAIL_MUST_NOT_BE_BLANK(40007, "Email không được để trống", HttpStatus.BAD_REQUEST),
+    NAME_MUST_NOT_BE_BLANK(40008, "Tên không được để trống", HttpStatus.BAD_REQUEST),
     PWD_MUST_NOT_BE_BLANK(40008, "Mật khẩu không được để trống", HttpStatus.BAD_REQUEST),
     INVALID_PASSWORD(40009, "Mật khẩu không chính xác", HttpStatus.BAD_REQUEST),
     INVALID_TOKEN(40010, "Token không hợp lệ", HttpStatus.BAD_REQUEST),

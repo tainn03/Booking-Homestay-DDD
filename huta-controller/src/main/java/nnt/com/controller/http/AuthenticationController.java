@@ -9,6 +9,7 @@ import nnt.com.controller.model.builder.ResponseFactory;
 import nnt.com.controller.model.response.ApiResponse;
 import nnt.com.domain.aggregates.model.dto.request.ChangePasswordRequest;
 import nnt.com.domain.aggregates.model.dto.request.LoginRequest;
+import nnt.com.domain.aggregates.model.dto.request.RegisterRequest;
 import nnt.com.domain.shared.exception.ErrorCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class AuthenticationController {
     ResponseFactory responseFactory;
 
     @PostMapping("/public/register")
-    public ResponseEntity<ApiResponse> register(@Valid @RequestBody LoginRequest request) {
+    public ResponseEntity<ApiResponse> register(@Valid @RequestBody RegisterRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(responseFactory.create(authenticationAppService.register(request)));
     }
