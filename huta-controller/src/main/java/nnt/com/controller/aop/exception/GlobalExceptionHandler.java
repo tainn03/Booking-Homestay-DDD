@@ -6,6 +6,7 @@ import nnt.com.domain.shared.exception.ErrorCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -56,6 +57,12 @@ public class GlobalExceptionHandler {
                 .message("Thông tin không hợp lệ: " + e.getMessage())
                 .build();
         return ResponseEntity.status(ErrorCode.INVALID_ENUM_PATTERN.getStatusCode()).body(response);
+    }
+
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    ResponseEntity<ApiResponse> handleAuthorizationDeniedException(Exception e) {
+        String enumKey = ErrorCode.UNAUTHORIZED.name();
+        return getResponseEntity(enumKey);
     }
 
     private ResponseEntity<ApiResponse> getResponseEntity(String enumKey) {

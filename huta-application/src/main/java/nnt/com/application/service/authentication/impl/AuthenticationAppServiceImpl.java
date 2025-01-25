@@ -11,40 +11,46 @@ import nnt.com.domain.aggregates.model.dto.request.RegisterRequest;
 import nnt.com.domain.aggregates.model.dto.response.AuthResponse;
 import nnt.com.domain.aggregates.model.entity.User;
 import nnt.com.domain.aggregates.service.AuthenticationDomainService;
+import nnt.com.infrastructure.cache.redis.RedisCache;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
 public class AuthenticationAppServiceImpl implements AuthenticationAppService {
     AuthenticationDomainService authenticationDomainService;
+    RedisCache redisCache;
 
     @Override
     public AuthResponse register(RegisterRequest request) {
-        Map<String, String> result = authenticationDomainService.register(request.getName(), request.getEmail(), request.getPassword());
-        return createAuthResponse(result);
+        AuthResponse result = authenticationDomainService.register(request.getName(), request.getEmail(), request.getPassword());
+        return createAuthResponse(request.getEmail(), result);
     }
 
     @Override
     public AuthResponse login(LoginRequest request) {
-        Map<String, String> result = authenticationDomainService.login(request.getEmail(), request.getPassword());
-        return createAuthResponse(result);
+        AuthResponse result = authenticationDomainService.login(request.getEmail(), request.getPassword());
+        return createAuthResponse(request.getEmail(), result);
     }
 
-    private AuthResponse createAuthResponse(Map<String, String> result) {
+    private AuthResponse createAuthResponse(String email, AuthResponse result) {
+        String accessToken = result.getAccessToken();
+        String refreshToken = result.getRefreshToken();
+        redisCache.setObject(email + ":accessToken", accessToken, 30L, TimeUnit.DAYS);
+        redisCache.setObject(email + ":refreshToken", refreshToken, 30L, TimeUnit.DAYS);
         return AuthResponse.builder()
-                .accessToken(result.get("accessToken"))
-                .refreshToken(result.get("refreshToken"))
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
                 .build();
     }
 
     @Override
     public AuthResponse refreshToken(String refreshToken, HttpServletResponse response) {
-        Map<String, String> result = authenticationDomainService.refreshToken(refreshToken, response);
+        AuthResponse result = authenticationDomainService.refreshToken(refreshToken, response);
         return AuthResponse.builder()
-                .accessToken(result.get("accessToken"))
+                .accessToken(result.getAccessToken())
                 .refreshToken(refreshToken) // trả về refreshToken cũ
                 .build();
     }

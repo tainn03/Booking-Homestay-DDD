@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import nnt.com.domain.shared.utils.JwtUtil;
-import nnt.com.infrastructure.persistence.user.database.jpa.TokenInfraRepositoryJpa;
+import nnt.com.infrastructure.cache.redis.RedisCache;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,6 +23,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor
@@ -32,7 +33,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     JwtUtil jwtUtil;
     JwtDecoder jwtDecoder;
     UserDetailsService userDetailsService;
-    TokenInfraRepositoryJpa tokenRepository;
+    RedisCache redisCache;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -58,17 +59,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private boolean isValidToken(Jwt jwt, UserDetails userDetails) {
         boolean isTokenValid = jwtUtil.isTokenValid(jwt, userDetails);
-        boolean isTokenRevoked = tokenRepository.findByToken(jwt.getTokenValue()).stream().anyMatch(token -> !token.isRevoked());
+        boolean isTokenRevoked = Objects.equals(redisCache.getObject(jwt.getSubject() + ":accessToken", String.class), jwt.getTokenValue());
         return isTokenValid && isTokenRevoked;
     }
 
     private void authenticateUser(HttpServletRequest request, Jwt jwtToken, String userEmail) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
         if (isValidToken(jwtToken, userDetails)) {
-//            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-//                    userDetails, null, userDetails.getAuthorities());
-//            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
             Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
             JwtAuthenticationToken authToken = new JwtAuthenticationToken(jwtToken, authorities);
             SecurityContextHolder.getContext().setAuthentication(authToken);

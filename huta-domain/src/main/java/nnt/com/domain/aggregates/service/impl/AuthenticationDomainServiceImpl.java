@@ -5,12 +5,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import nnt.com.domain.aggregates.model.entity.Token;
+import nnt.com.domain.aggregates.model.dto.response.AuthResponse;
 import nnt.com.domain.aggregates.model.entity.User;
 import nnt.com.domain.aggregates.model.enums.RoleType;
-import nnt.com.domain.aggregates.model.enums.TokenType;
 import nnt.com.domain.aggregates.repository.RoleDomainRepository;
-import nnt.com.domain.aggregates.repository.TokenDomainRepository;
 import nnt.com.domain.aggregates.repository.UserDomainRepository;
 import nnt.com.domain.aggregates.service.AuthenticationDomainService;
 import nnt.com.domain.shared.exception.BusinessException;
@@ -23,7 +21,6 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -34,11 +31,10 @@ public class AuthenticationDomainServiceImpl implements AuthenticationDomainServ
     PasswordEncoder passwordEncoder;
     JwtUtil jwtUtil;
     JwtDecoder jwtDecoder;
-    TokenDomainRepository tokenDomainRepository;
 
 
     @Override
-    public Map<String, String> register(String name, String email, String password) {
+    public AuthResponse register(String name, String email, String password) {
         if (userDomainRepository.existsUserByEmail(email)) {
             throw new BusinessException(ErrorCode.EMAIL_ALREADY_EXISTS);
         }
@@ -53,31 +49,15 @@ public class AuthenticationDomainServiceImpl implements AuthenticationDomainServ
         return generateToken(user);
     }
 
-    private Map<String, String> generateToken(User user) {
-        String accessToken = jwtUtil.generateAccessToken(user);
-        String refreshToken = jwtUtil.generateRefreshToken(user);
-        saveToken(user, accessToken);
-        return Map.of("accessToken", accessToken, "refreshToken", refreshToken);
-    }
-
-    private void saveToken(User user, String accessToken) {
-        revokeTokensByUserId(user.getId());
-        Token token = Token.builder()
-                .user(user)
-                .token(accessToken)
-                .tokenType(TokenType.BEARER)
-                .expired(false)
-                .revoked(false)
+    private AuthResponse generateToken(User user) {
+        return AuthResponse.builder()
+                .accessToken(jwtUtil.generateAccessToken(user))
+                .refreshToken(jwtUtil.generateRefreshToken(user))
                 .build();
-        tokenDomainRepository.save(token);
-    }
-
-    private void revokeTokensByUserId(long userId) {
-        tokenDomainRepository.revokeTokensByUserId(userId);
     }
 
     @Override
-    public Map<String, String> login(String email, String password) {
+    public AuthResponse login(String email, String password) {
         User user = userDomainRepository.findByEmail(email);
         if (user == null || !passwordEncoder.matches(password, user.getPassword())) {
             throw new BusinessException(ErrorCode.INVALID_CREDENTIALS);
@@ -86,7 +66,7 @@ public class AuthenticationDomainServiceImpl implements AuthenticationDomainServ
     }
 
     @Override
-    public Map<String, String> refreshToken(String refreshToken, HttpServletResponse response) {
+    public AuthResponse refreshToken(String refreshToken, HttpServletResponse response) {
         Jwt jwt = jwtDecoder.decode(refreshToken);
         String username = jwtUtil.getUsername(jwt);
         User user = userDomainRepository.findByEmail(username);

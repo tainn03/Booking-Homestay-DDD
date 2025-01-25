@@ -7,6 +7,7 @@ import nnt.com.controller.model.builder.ResponseFactory;
 import nnt.com.controller.model.response.ApiResponse;
 import nnt.com.domain.aggregates.model.dto.response.UserResponse;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,6 +23,7 @@ public class UserController {
     ResponseFactory responseFactory;
 
     @GetMapping("/profile")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'LANDLORD')")
     public ResponseEntity<ApiResponse> getProfile() {
         UserResponse userResponse = userAppService.getProfile();
         return ResponseEntity.ok(responseFactory.create(userResponse));

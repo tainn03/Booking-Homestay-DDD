@@ -5,10 +5,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import nnt.com.domain.aggregates.model.entity.Token;
-import nnt.com.infrastructure.persistence.user.database.jpa.TokenInfraRepositoryJpa;
+import nnt.com.infrastructure.cache.redis.RedisCache;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.stereotype.Component;
 
@@ -16,22 +17,20 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class LogoutHandlerImpl implements LogoutHandler {
-    TokenInfraRepositoryJpa tokenRepository;
+    RedisCache redisCache;
+    JwtDecoder jwtDecoder;
 
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-        String authHeader = request.getHeader("Authorization");
-        String jwt;
+        String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return;
         }
-        jwt = authHeader.substring(7);
-        Token storedToken = tokenRepository.findByToken(jwt).orElse(null);
-        if (storedToken != null) {
-            storedToken.setExpired(true);
-            storedToken.setRevoked(true);
-            tokenRepository.save(storedToken);
-            SecurityContextHolder.clearContext();
-        }
+        String token = authHeader.substring(7);
+        Jwt jwtToken = jwtDecoder.decode(token);
+        String userEmail = jwtToken.getSubject();
+        
+        redisCache.delete(userEmail + ":accessToken");
+        redisCache.delete(userEmail + ":refreshToken");
     }
 }
