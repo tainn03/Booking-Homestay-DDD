@@ -1,10 +1,15 @@
 package nnt.com.domain.aggregates.model.dto.request;
 
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
-import nnt.com.domain.aggregates.model.enums.UserStatus;
+import nnt.com.domain.aggregates.model.enums.HomestayStatus;
+import nnt.com.domain.aggregates.model.enums.RentalType;
 import org.springframework.data.elasticsearch.annotations.GeoPointField;
 import org.springframework.data.elasticsearch.core.geo.GeoPoint;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -12,7 +17,6 @@ import org.springframework.data.elasticsearch.core.geo.GeoPoint;
 @NoArgsConstructor
 @AllArgsConstructor
 public class HomestayRequest {
-    Long id;
     @NotBlank(message = "NAME_REQUIRED")
     String name;
     String email;
@@ -20,15 +24,30 @@ public class HomestayRequest {
     String standardCheckOut;
     String phone;
     String description;
+    String emailOwner;
+    String typeHomestay;
+    int bathrooms;
+    int bedrooms;
+    int kitchens;
+    int beds;
+    int maxGuests;
+    int maxNights;
+    int minNights;
+
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    HomestayStatus status = HomestayStatus.ACTIVE;
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    RentalType rentalType = RentalType.ALL;
+
+    String ward;
+    String district;
+    String city;
     String addressDetail;
-
-    UserStatus status;
-
     @GeoPointField
     GeoPoint location;
 
-    String emailOwner;
-    String typeHomestay;
-    String district;
-    String city;
+    List<RuleRequest> rules;
+    List<TagRequest> tags;
 }

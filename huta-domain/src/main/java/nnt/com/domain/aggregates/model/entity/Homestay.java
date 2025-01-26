@@ -3,6 +3,7 @@ package nnt.com.domain.aggregates.model.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import nnt.com.domain.aggregates.model.enums.HomestayStatus;
 import nnt.com.domain.aggregates.model.enums.RentalType;
 import nnt.com.domain.shared.model.entity.BaseEntity;
 
@@ -23,7 +24,11 @@ public class Homestay extends BaseEntity<Long> implements Serializable {
     String standardCheckIn;
     String standardCheckOut;
     String phone;
-    String status;
+
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    HomestayStatus status = HomestayStatus.ACTIVE;
+
     String description;
     long lon;
     long lat;
@@ -37,7 +42,8 @@ public class Homestay extends BaseEntity<Long> implements Serializable {
     int minNights;
 
     @Enumerated(EnumType.STRING)
-    RentalType rentalType;
+    @Builder.Default
+    RentalType rentalType = RentalType.ALL;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

@@ -1,18 +1,19 @@
 0
-62
+64
 __consumer_offsets 22 0
 homestay.recommendation 2 0
 __consumer_offsets 30 0
 __consumer_offsets 8 0
 __consumer_offsets 21 0
 __consumer_offsets 4 0
+user.mail 4 0
 __consumer_offsets 27 0
 __consumer_offsets 7 0
 __consumer_offsets 9 0
 booking.mail 2 0
 payment.mail 0 0
 __consumer_offsets 46 0
-user.mail 1 0
+user.mail 1 6
 __consumer_offsets 25 0
 __consumer_offsets 35 0
 __consumer_offsets 41 0
@@ -28,8 +29,9 @@ homestay.recommendation 1 0
 __consumer_offsets 31 0
 __consumer_offsets 36 0
 __consumer_offsets 42 0
-user.mail 2 0
+user.mail 2 5
 __consumer_offsets 3 0
+user.mail 3 0
 __consumer_offsets 18 0
 __consumer_offsets 37 0
 payment.mail 1 0
@@ -50,13 +52,13 @@ __consumer_offsets 20 0
 __consumer_offsets 0 0
 __consumer_offsets 44 0
 __consumer_offsets 39 0
-__consumer_offsets 12 0
+__consumer_offsets 12 24038
 __consumer_offsets 45 0
 __consumer_offsets 1 0
 __consumer_offsets 5 0
 __consumer_offsets 26 0
 booking.mail 1 0
-user.mail 0 0
+user.mail 0 4
 __consumer_offsets 29 0
 __consumer_offsets 34 0
 __consumer_offsets 10 0

@@ -37,14 +37,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (isBearerToken(authHeader)) {
-            String token = authHeader.substring(7);
-            Jwt jwtToken = jwtDecoder.decode(token);
-            String userEmail = jwtToken.getSubject();
-            if (isUserNotAuthenticated()) {
-                authenticateUser(request, jwtToken, userEmail);
+        try {
+            String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+            if (isBearerToken(authHeader)) {
+                String token = authHeader.substring(7);
+                Jwt jwtToken = jwtDecoder.decode(token);
+                String userEmail = jwtToken.getSubject();
+                if (isUserNotAuthenticated()) {
+                    authenticateUser(request, jwtToken, userEmail);
+                }
             }
+        } catch (Exception e) {
+            response.setContentType("application/json");
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().write("{\"code\": 500, \"message\": \"" + e.getMessage() + "\", \"timestamp\": \"" + java.time.LocalDateTime.now() + "\"}");
+            response.getWriter().flush();
         }
         filterChain.doFilter(request, response);
     }

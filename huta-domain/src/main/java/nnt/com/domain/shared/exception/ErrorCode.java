@@ -48,6 +48,7 @@ public enum ErrorCode {
     INVALID_KEY(40001, "Lỗi không xác định", HttpStatus.BAD_REQUEST),
     LOCAL_CACHE_ERROR(40002, "Lỗi cache local", HttpStatus.BAD_REQUEST),
     INVALID_ENUM_PATTERN(40003, "Mẫu enum không hợp lệ", HttpStatus.BAD_REQUEST),
+    JWT_INVALID(40004, "Token không hợp lệ do private key đã thay đổi", HttpStatus.BAD_REQUEST),
 
     // LOCK ERRORS
     DISTRIBUTED_LOCKING(40901, "Đối tượng đang được sử dụng, vui lòng thử lại sau", HttpStatus.CONFLICT),

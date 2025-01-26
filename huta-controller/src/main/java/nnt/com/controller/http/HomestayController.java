@@ -14,6 +14,7 @@ import nnt.com.domain.shared.exception.ErrorCode;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -47,6 +48,7 @@ public class HomestayController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'LANDLORD')")
     public ResponseEntity<ApiResponse> saveHomestay(@Valid @RequestBody HomestayRequest homestay) {
         HomestayResponse response = homestayAppService.save(homestay);
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -54,6 +56,7 @@ public class HomestayController {
     }
 
     @DeleteMapping("/{homestayId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'LANDLORD')")
     public ResponseEntity<ApiResponse> deleteHomestay(@PathVariable Long homestayId) {
         homestayAppService.deleteById(homestayId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
@@ -61,6 +64,7 @@ public class HomestayController {
     }
 
     @PutMapping("/{homestayId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'LANDLORD')")
     public ResponseEntity<ApiResponse> updateHomestay(@PathVariable Long homestayId,
                                                       @Valid @RequestBody HomestayRequest request) {
         HomestayResponse response = homestayAppService.update(homestayId, request);

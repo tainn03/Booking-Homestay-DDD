@@ -3,6 +3,9 @@ package nnt.com.domain.aggregates.model.dto.response;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import nnt.com.domain.aggregates.model.entity.Rule;
+import nnt.com.domain.aggregates.model.entity.Tag;
+import nnt.com.domain.aggregates.model.enums.RentalType;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,10 +30,24 @@ public class HomestayResponse {
     String emailOwner;
 
     //    Integer numLike;
-    List<String> imageUrls;
+//    List<String> imageUrls;
     //    List<Room> rooms;
 //    List<Rating> reviews;
     String typeHomestay;
-    String district;
     Integer version;
+
+    int bathrooms;
+    int bedrooms;
+    int kitchens;
+    int beds;
+    int maxGuests;
+    int maxNights;
+    int minNights;
+
+    RentalType rentalType;
+
+    List<String> images;
+
+    List<Rule> rules;
+    List<Tag> tags;
 }

@@ -16,7 +16,7 @@ import static lombok.AccessLevel.PRIVATE;
 @FieldDefaults(level = PRIVATE, makeFinal = true)
 public class MailConsumer {
 
-    @KafkaListener(topics = "user.mail", groupId = "my-group")
+    @KafkaListener(topics = "user.mail", groupId = "my-group", concurrency = "5")
     public void consumer(ConsumerRecord<String, EmailRequest> record) throws InterruptedException {
         Thread.sleep(5000); // Giả lập xử lý message mất thời gian 5s
         log.info("LẮNG NGHE SỰ KIỆN VỚI KEY {}, VALUE {}, PARTITION {}, OFFSET {}", record.key(), record.value(), record.partition(), record.offset());

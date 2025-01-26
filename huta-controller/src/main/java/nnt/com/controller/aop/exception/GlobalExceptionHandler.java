@@ -1,5 +1,6 @@
 package nnt.com.controller.aop.exception;
 
+import com.nimbusds.jose.proc.BadJWSException;
 import nnt.com.controller.model.response.ApiResponse;
 import nnt.com.domain.shared.exception.BusinessException;
 import nnt.com.domain.shared.exception.ErrorCode;
@@ -7,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
+import org.springframework.security.oauth2.jwt.BadJwtException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -62,6 +64,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AuthorizationDeniedException.class)
     ResponseEntity<ApiResponse> handleAuthorizationDeniedException(Exception e) {
         String enumKey = ErrorCode.UNAUTHORIZED.name();
+        return getResponseEntity(enumKey);
+    }
+
+    @ExceptionHandler({BadJwtException.class,
+            BadJWSException.class})
+    ResponseEntity<ApiResponse> handleBadJwtException(Exception e) {
+        String enumKey = ErrorCode.JWT_INVALID.name();
         return getResponseEntity(enumKey);
     }
 

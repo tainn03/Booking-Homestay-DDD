@@ -40,31 +40,34 @@ public class HomestayAppServiceCache {
     LocalCache<HomestayResponse> localCache;
 
     public Page<HomestayResponse> getAll(int page, int size, String sortBy, String direction) {
-        Page<Homestay> homestays = homestayDomainService.getAll(page, size, sortBy, direction);
-        return homestays.map(homestayMapper::toDTO);
+//        Page<Homestay> homestays = homestayDomainService.getAll(page, size, sortBy, direction);
+//        return homestays.map(homestayMapper::toDTO);
+        return null;
     }
 
     public HomestayResponse getHomestayById(Long homestayId) {
-        HomestayResponse response = getHomestayFromLocalCache(homestayId);
-        if (response != null) {
-            return response;
-        }
-
-        String cacheKey = RedisKey.HOMESTAY.getKey() + homestayId;
-        response = getHomestayFromGlobalCache(homestayId, cacheKey);
-        if (response != null) {
-            return response;
-        }
-
-        return getHomestayFromDatabaseWithLock(homestayId, cacheKey);
+//        HomestayResponse response = getHomestayFromLocalCache(homestayId);
+//        if (response != null) {
+//            return response;
+//        }
+//
+//        String cacheKey = RedisKey.HOMESTAY.getKey() + homestayId;
+//        response = getHomestayFromGlobalCache(homestayId, cacheKey);
+//        if (response != null) {
+//            return response;
+//        }
+//
+//        return getHomestayFromDatabaseWithLock(homestayId, cacheKey);
+        return null;
     }
 
     public HomestayResponse save(HomestayRequest request) {
-        Homestay homestay = homestayMapper.toEntity(request);
-        homestay.setDistrict(districtDomainService.getByName(request.getDistrict(), request.getCity()));
-        homestay.setTypeHomestay(typeHomestayDomainService.getById(request.getTypeHomestay()));
-        homestay.setOwner(userDomainService.getByEmail(request.getEmailOwner()));
-        return homestayMapper.toDTO(homestayDomainService.save(homestay));
+//        Homestay homestay = homestayMapper.toEntity(request);
+//        homestay.setDistrict(districtDomainService.getByName(request.getDistrict(), request.getCity()));
+//        homestay.setTypeHomestay(typeHomestayDomainService.getById(request.getTypeHomestay()));
+//        homestay.setOwner(userDomainService.getByEmail(request.getEmailOwner()));
+//        return homestayMapper.toDTO(homestayDomainService.save(homestay));
+        return HomestayResponse.builder().build();
     }
 
     public void deleteById(Long homestayId) {
@@ -74,10 +77,11 @@ public class HomestayAppServiceCache {
     }
 
     public HomestayResponse update(Long homestayId, HomestayRequest request) {
-        Homestay homestay = homestayDomainService.getById(homestayId);
-        Homestay updatedHomestay = homestayMapper.updateEntity(homestay, request);
-        updatedHomestay = homestayDomainService.update(updatedHomestay);
-        return updateWithCache(updatedHomestay);
+//        Homestay homestay = homestayDomainService.getById(homestayId);
+//        Homestay updatedHomestay = homestayMapper.updateEntity(homestay, request);
+//        updatedHomestay = homestayDomainService.update(updatedHomestay);
+//        return updateWithCache(updatedHomestay);
+        return null;
     }
 
     private HomestayResponse getHomestayFromLocalCache(Long homestayId) {
@@ -100,7 +104,8 @@ public class HomestayAppServiceCache {
     private HomestayResponse getHomestayFromDatabase(Long homestayId) {
         Homestay homestay = homestayDomainService.getById(homestayId);
         log.info("GET HOMESTAY {} FROM DATABASE", homestayId);
-        return homestayMapper.toDTO(homestay);
+//        return homestayMapper.toDTO(homestay);
+        return null;
     }
 
     private HomestayResponse getHomestayFromDatabaseWithLock(Long homestayId, String cacheKey) {
@@ -128,12 +133,13 @@ public class HomestayAppServiceCache {
     }
 
     private HomestayResponse updateWithCache(Homestay homestay) {
-        HomestayResponse response = homestayMapper.toDTO(homestay);
-        if (homestay != null) {
-            redisCache.setObject(RedisKey.HOMESTAY.getKey() + homestay.getId(), response);
-            localCache.put(homestay.getId(), response);
-        }
-        return response;
+//        HomestayResponse response = homestayMapper.toDTO(homestay);
+//        if (homestay != null) {
+//            redisCache.setObject(RedisKey.HOMESTAY.getKey() + homestay.getId(), response);
+//            localCache.put(homestay.getId(), response);
+//        }
+//        return response;
+        return null;
     }
 
 }
