@@ -58,10 +58,10 @@ server:
     accept-count: 25000
 
 logging:
-  level:
-    org:
-      springframework:
-        security: TRACE
+  #  level:
+  #    org:
+  #      springframework:
+  #        security: TRACE
   pattern:
     console: "%green(%d{HH:mm:ss.SSS}) %blue(%-5level) %red([%thread]) %yellow(%logger{15}) - %msg%n"
 

@@ -6,11 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import nnt.com.domain.aggregates.model.dto.request.HomestayRequest;
 import nnt.com.domain.aggregates.model.dto.response.HomestayResponse;
 import nnt.com.domain.aggregates.model.entity.Homestay;
-import nnt.com.domain.aggregates.model.mapper.HomestayMapper;
-import nnt.com.domain.aggregates.service.DistrictDomainService;
 import nnt.com.domain.aggregates.service.HomestayDomainService;
-import nnt.com.domain.aggregates.service.TypeHomestayDomainService;
-import nnt.com.domain.aggregates.service.UserDomainService;
 import nnt.com.domain.shared.model.enums.LockKey;
 import nnt.com.domain.shared.model.enums.RedisKey;
 import nnt.com.infrastructure.cache.local.LocalCache;
@@ -30,10 +26,6 @@ import static lombok.AccessLevel.PRIVATE;
 @Slf4j
 public class HomestayAppServiceCache {
     HomestayDomainService homestayDomainService;
-    DistrictDomainService districtDomainService;
-    TypeHomestayDomainService typeHomestayDomainService;
-    UserDomainService userDomainService;
-    HomestayMapper homestayMapper;
 
     RedisDistributedService distributedCache;
     RedisCache redisCache;

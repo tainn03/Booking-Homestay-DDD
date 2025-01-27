@@ -2,9 +2,11 @@ version: "3.8"
 networks:
   booking-net:
     driver: bridge
+volumes:
+  postgres_data:
 services:
   postgres:
-    image: postgres:latest
+    image: bitnami/postgresql:latest
     container_name: my-postgres
     restart: on-failure
     environment:
@@ -16,7 +18,10 @@ services:
     networks:
       - booking-net
     volumes:
-      - postgresvolume:/var/lib/postgresql/data
+      # This setup will ensure that PostgreSQL data from inside container is synced to host machine, enabling persistence across container restarts.
+      #      - ./environment/postgres/data:/bitnami/postgresql/data
+      # Most relational databases support a special docker-entrypoint-initdb.d folder. This folder is used to initialise the database automatically when the container is first created.
+      - ./environment/postgres/scripts/postgres-init.sql:/docker-entrypoint-initdb.d/init.sql:ro
 
   redis:
     image: redis:latest
@@ -34,8 +39,8 @@ services:
     container_name: my-prometheus
     restart: on-failure
     volumes:
-      - ./environment/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-      - ./environment/data/prometheus_data:/prometheus
+      - ./environment/prometheus/scripts/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./environment/prometheus/data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
@@ -80,8 +85,6 @@ services:
       - "9200:9200"
     networks:
       - booking-net
-    volumes:
-      - elasticvolume:/usr/share/elasticsearch/data
     deploy:
       resources:
         limits:
@@ -199,8 +202,3 @@ services:
       interval: 5s
       timeout: 10s
       retries: 10
-
-volumes:
-  postgresvolume:
-  elasticvolume:
-  logstashvolume:
