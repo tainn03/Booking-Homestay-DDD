@@ -1,5 +1,6 @@
 package nnt.com.domain.aggregates.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -20,6 +21,7 @@ public class Rule extends BaseEntity<Long> {
     String name;
     String value;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "homestay_id")
     Homestay homestay;

@@ -1,11 +1,13 @@
 package nnt.com.domain.aggregates.service;
 
 import nnt.com.domain.aggregates.model.document.HomestayDocument;
+import nnt.com.domain.aggregates.model.dto.request.HomestayRequest;
+import nnt.com.domain.aggregates.model.dto.response.HomestayResponse;
 
 import java.util.List;
 
 public interface HomestaySearchDomainService {
-    HomestayDocument save(HomestayDocument homestaySearch);
+    HomestayDocument save(HomestayRequest request, HomestayResponse response);
 
     List<HomestayDocument> findAll();
 

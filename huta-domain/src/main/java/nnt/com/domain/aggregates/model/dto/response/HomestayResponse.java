@@ -3,8 +3,8 @@ package nnt.com.domain.aggregates.model.dto.response;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import nnt.com.domain.aggregates.model.entity.Rule;
-import nnt.com.domain.aggregates.model.entity.Tag;
+import nnt.com.domain.aggregates.model.dto.request.RuleRequest;
+import nnt.com.domain.aggregates.model.dto.request.TagRequest;
 import nnt.com.domain.aggregates.model.enums.RentalType;
 
 import java.time.LocalDateTime;
@@ -24,13 +24,12 @@ public class HomestayResponse {
     String phone;
     String status;
     String description;
-    Double lon;
-    Double lat;
+    double lon;
+    double lat;
     String addressDetail;
     String emailOwner;
 
-    //    Integer numLike;
-//    List<String> imageUrls;
+    //    List<String> imageUrls;
     //    List<Room> rooms;
 //    List<Rating> reviews;
     String typeHomestay;
@@ -46,8 +45,6 @@ public class HomestayResponse {
 
     RentalType rentalType;
 
-    List<String> images;
-
-    List<Rule> rules;
-    List<Tag> tags;
+    List<RuleRequest> rules;
+    List<TagRequest> tags;
 }

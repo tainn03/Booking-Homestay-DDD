@@ -5,10 +5,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import nnt.com.application.service.homestay.HomestayAppService;
 import nnt.com.application.service.homestay.cache.HomestayAppServiceCache;
-import nnt.com.domain.aggregates.model.document.HomestayDocument;
 import nnt.com.domain.aggregates.model.dto.request.HomestayRequest;
 import nnt.com.domain.aggregates.model.dto.response.HomestayResponse;
-import nnt.com.domain.aggregates.model.mapper.HomestaySearchMapper;
 import nnt.com.domain.aggregates.service.HomestaySearchDomainService;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -19,7 +17,6 @@ import org.springframework.stereotype.Service;
 public class HomestayAppServiceImpl implements HomestayAppService {
     HomestayAppServiceCache homestayAppServiceCache;
     HomestaySearchDomainService homestaySearchDomainService;
-    HomestaySearchMapper homestaySearchMapper;
 
     @Override
     public Page<HomestayResponse> getAll(int page, int size, String sortBy, String direction) {
@@ -55,9 +52,7 @@ public class HomestayAppServiceImpl implements HomestayAppService {
     }
 
     private HomestayResponse saveHomestaySearch(HomestayRequest request, HomestayResponse response) {
-        HomestayDocument homestaySearch = homestaySearchMapper.toDocument(request);
-        homestaySearch.setId(String.valueOf(response.getId()));
-        homestaySearchDomainService.save(homestaySearch);
+        homestaySearchDomainService.save(request, response);
         return response;
     }
 }

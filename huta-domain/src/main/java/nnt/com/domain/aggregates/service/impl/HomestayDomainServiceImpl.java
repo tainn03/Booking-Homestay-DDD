@@ -4,10 +4,16 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import nnt.com.domain.aggregates.model.entity.Homestay;
+import nnt.com.domain.aggregates.model.dto.request.HomestayRequest;
+import nnt.com.domain.aggregates.model.dto.response.HomestayResponse;
+import nnt.com.domain.aggregates.model.entity.*;
+import nnt.com.domain.aggregates.model.mapper.HomestayMapper;
 import nnt.com.domain.aggregates.repository.HomestayDomainRepository;
+import nnt.com.domain.aggregates.repository.TypeHomestayDomainRepository;
 import nnt.com.domain.aggregates.service.HomestayDomainService;
+import nnt.com.domain.aggregates.service.UserDomainService;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,7 +21,10 @@ import org.springframework.stereotype.Service;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
 public class HomestayDomainServiceImpl implements HomestayDomainService {
+    HomestayMapper homestayMapper;
+    UserDomainService userDomainService;
     HomestayDomainRepository homestayDomainRepository;
+    TypeHomestayDomainRepository typeHomestayDomainRepository;
 
     @Override
     public Page<Homestay> getAll(int page, int size, String sortBy, String direction) {
@@ -40,5 +49,50 @@ public class HomestayDomainServiceImpl implements HomestayDomainService {
     @Override
     public Homestay update(Homestay homestay) {
         return homestayDomainRepository.update(homestay);
+    }
+
+    @Override
+    public HomestayResponse save(HomestayRequest request) {
+        Homestay homestay = homestayMapper.toEntity(request);
+
+        homestay.setOwner(request.getEmailOwner() != null ?
+                userDomainService.getByEmail(request.getEmailOwner()) : (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        homestay.setRules(request.getRules().stream().map(ruleRequest -> Rule.builder()
+                .name(ruleRequest.getName())
+                .value(ruleRequest.getValue())
+                .homestay(homestay)
+                .build()
+        ).toList());
+        homestay.setTags(request.getTags().stream().map(tagRequest -> Tag.builder()
+                .tag(tagRequest.getTag())
+                .homestay(homestay)
+                .build()
+        ).toList());
+        homestay.setAddressDetail(request.getAddressDetail() + ", " + request.getWard() + ", " + request.getDistrict() + ", " + request.getCity());
+        try {
+            homestay.setTypeHomestay(typeHomestayDomainRepository.getById(request.getTypeHomestay()));
+        } catch (Exception e) {
+            homestay.setTypeHomestay(TypeHomestay.builder()
+                    .name(request.getTypeHomestay())
+                    .build());
+            typeHomestayDomainRepository.save(homestay.getTypeHomestay());
+        }
+        return homestayMapper.toDTO(save(homestay));
+    }
+
+    @Override
+    public Page<HomestayResponse> getAllHomestay(int page, int size, String sortBy, String direction) {
+        Page<Homestay> homestays = getAll(page, size, sortBy, direction);
+        return homestays.map(homestayMapper::toDTO);
+    }
+
+    @Override
+    public HomestayResponse getHomestayById(long homestayId) {
+        return homestayMapper.toDTO(getById(homestayId));
+    }
+
+    @Override
+    public HomestayResponse updateHomestay(long homestayId, HomestayRequest request) {
+        return null;
     }
 }

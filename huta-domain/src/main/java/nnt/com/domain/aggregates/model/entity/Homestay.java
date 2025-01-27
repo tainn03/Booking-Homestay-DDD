@@ -30,8 +30,8 @@ public class Homestay extends BaseEntity<Long> implements Serializable {
     HomestayStatus status = HomestayStatus.ACTIVE;
 
     String description;
-    long lon;
-    long lat;
+    double lon;
+    double lat;
     String addressDetail;
     int bathrooms;
     int bedrooms;
@@ -62,11 +62,11 @@ public class Homestay extends BaseEntity<Long> implements Serializable {
     List<Rating> reviews;
 
     @ManyToOne
-    @JoinColumn(name = "name", nullable = false)
+    @JoinColumn(name = "name")
     TypeHomestay typeHomestay;
 
     @ManyToOne
-    @JoinColumn(name = "district_id", nullable = false)
+    @JoinColumn(name = "district_id")
     District district;
 
     @OneToMany(mappedBy = "homestay", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)

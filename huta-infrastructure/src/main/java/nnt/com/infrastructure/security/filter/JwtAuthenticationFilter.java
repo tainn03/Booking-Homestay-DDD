@@ -11,18 +11,17 @@ import lombok.extern.slf4j.Slf4j;
 import nnt.com.domain.shared.utils.JwtUtil;
 import nnt.com.infrastructure.cache.redis.RedisCache;
 import org.springframework.http.HttpHeaders;
-import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.Objects;
 
 @Component
@@ -73,8 +72,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private void authenticateUser(HttpServletRequest request, Jwt jwtToken, String userEmail) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
         if (isValidToken(jwtToken, userDetails)) {
-            Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
-            JwtAuthenticationToken authToken = new JwtAuthenticationToken(jwtToken, authorities);
+            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                    userDetails, null, userDetails.getAuthorities()
+            );
+            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authToken);
         }
     }

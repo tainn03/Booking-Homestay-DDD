@@ -3,6 +3,9 @@ package nnt.com.domain.aggregates.service.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import nnt.com.domain.aggregates.model.document.HomestayDocument;
+import nnt.com.domain.aggregates.model.dto.request.HomestayRequest;
+import nnt.com.domain.aggregates.model.dto.response.HomestayResponse;
+import nnt.com.domain.aggregates.model.mapper.HomestaySearchMapper;
 import nnt.com.domain.aggregates.repository.HomestaySearchDomainRepository;
 import nnt.com.domain.aggregates.service.HomestaySearchDomainService;
 import org.springframework.data.elasticsearch.core.geo.GeoPoint;
@@ -16,9 +19,16 @@ import java.util.List;
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
 public class HomestaySearchDomainServiceImpl implements HomestaySearchDomainService {
     HomestaySearchDomainRepository homestaySearchDomainRepository;
+    HomestaySearchMapper homestaySearchMapper;
 
     @Override
-    public HomestayDocument save(HomestayDocument homestaySearch) {
+    public HomestayDocument save(HomestayRequest request, HomestayResponse response) {
+        HomestayDocument document = homestaySearchMapper.toDocument(response);
+        document.setLocation(request.getLocation());
+        return save(document);
+    }
+
+    private HomestayDocument save(HomestayDocument homestaySearch) {
         return homestaySearchDomainRepository.save(homestaySearch);
     }
 
@@ -38,6 +48,7 @@ public class HomestaySearchDomainServiceImpl implements HomestaySearchDomainServ
         Criteria criteria = new Criteria()
                 .or(new Criteria("name").expression(query))
                 .or(new Criteria("description").expression(query))
+                .or(new Criteria("typeHomestay").expression(query))
                 .or(new Criteria("addressDetail").expression(query));
         return homestaySearchDomainRepository.search(criteria);
     }
