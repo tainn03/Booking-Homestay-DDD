@@ -16,7 +16,6 @@ public class ChangePasswordRequest {
     String email;
 
     @NotBlank(message = "PWD_MUST_NOT_BE_BLANK")
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[a-zA-Z\\d@$!%*?&]{8,}$", message = "PASSWORD_MUST_BE_STRONG")
     String currentPassword;
 
     @NotBlank(message = "PWD_MUST_NOT_BE_BLANK")

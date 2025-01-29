@@ -3,12 +3,15 @@ package nnt.com.application.service.authentication.impl;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import nnt.com.application.brokerMQ.producer.MailProducerImpl;
 import nnt.com.application.service.authentication.AuthenticationAppService;
 import nnt.com.domain.aggregates.model.dto.request.ChangePasswordRequest;
 import nnt.com.domain.aggregates.model.dto.request.LoginRequest;
 import nnt.com.domain.aggregates.model.dto.request.RegisterRequest;
 import nnt.com.domain.aggregates.model.dto.response.AuthResponse;
 import nnt.com.domain.aggregates.service.AuthenticationDomainService;
+import nnt.com.domain.aggregates.service.UserDomainService;
+import nnt.com.domain.shared.utils.StringUtil;
 import nnt.com.infrastructure.cache.redis.RedisCache;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +23,10 @@ import java.util.concurrent.TimeUnit;
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
 public class AuthenticationAppServiceImpl implements AuthenticationAppService {
     AuthenticationDomainService authenticationDomainService;
+    UserDomainService userDomainService;
     RedisCache redisCache;
+    MailProducerImpl mailProducer;
+    StringUtil stringUtil;
 
 
     @Override
@@ -31,6 +37,10 @@ public class AuthenticationAppServiceImpl implements AuthenticationAppService {
 
     @Override
     public AuthResponse login(LoginRequest request) {
+        if (request.getPassword().equals(redisCache.getObject(request.getEmail() + ":pwd", String.class))) {
+            AuthResponse result = authenticationDomainService.generateToken(userDomainService.getByEmail(request.getEmail()));
+            return createAuthResponse(request.getEmail(), result);
+        }
         AuthResponse result = authenticationDomainService.login(request.getEmail(), request.getPassword());
         return createAuthResponse(request.getEmail(), result);
     }
@@ -38,8 +48,7 @@ public class AuthenticationAppServiceImpl implements AuthenticationAppService {
     private AuthResponse createAuthResponse(String email, AuthResponse result) {
         String accessToken = result.getAccessToken();
         String refreshToken = result.getRefreshToken();
-        redisCache.setObject(email + ":accessToken", accessToken, 30L, TimeUnit.DAYS);
-        redisCache.setObject(email + ":refreshToken", refreshToken, 30L, TimeUnit.DAYS);
+        redisCache.setObject(email + ":jwt", accessToken, 30L, TimeUnit.DAYS);
         return AuthResponse.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
@@ -57,7 +66,13 @@ public class AuthenticationAppServiceImpl implements AuthenticationAppService {
 
     @Override
     public void changePassword(ChangePasswordRequest request) {
-        authenticationDomainService.changePassword(request.getEmail(), request.getCurrentPassword(), request.getNewPassword());
+        if (request.getCurrentPassword().equals(redisCache.getObject(request.getEmail() + ":pwd", String.class))) {
+            authenticationDomainService.changePassword(request.getEmail(), request.getCurrentPassword(), request.getNewPassword(), false);
+            redisCache.delete(request.getEmail() + ":pwd");
+            return;
+        }
+        authenticationDomainService.changePassword(request.getEmail(), request.getCurrentPassword(), request.getNewPassword(), true);
+
     }
 
     @Override
@@ -86,12 +101,9 @@ public class AuthenticationAppServiceImpl implements AuthenticationAppService {
     }
 
     @Override
-    public String forgotPassword(String email) {
-        return "";
-    }
-
-    @Override
-    public String generateRandomPassword() {
-        return "";
+    public void forgotPassword(String email) {
+        String password = stringUtil.generateRandomPassword();
+        mailProducer.sendForgotPasswordMail(email, password);
+        redisCache.setObject(email + ":pwd", password, 5L, TimeUnit.MINUTES);
     }
 }

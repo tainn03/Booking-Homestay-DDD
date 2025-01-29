@@ -65,7 +65,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private boolean isValidToken(Jwt jwt, UserDetails userDetails) {
         boolean isTokenValid = jwtUtil.isTokenValid(jwt, userDetails);
-        boolean isTokenRevoked = Objects.equals(redisCache.getObject(jwt.getSubject() + ":accessToken", String.class), jwt.getTokenValue());
+        boolean isTokenRevoked = Objects.equals(redisCache.getObject(jwt.getSubject() + ":jwt", String.class), jwt.getTokenValue());
         return isTokenValid && isTokenRevoked;
     }
 

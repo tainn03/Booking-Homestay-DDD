@@ -20,7 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -31,6 +30,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -67,7 +67,8 @@ public class AuthenticationDomainServiceImpl implements AuthenticationDomainServ
         return generateToken(user);
     }
 
-    private AuthResponse generateToken(User user) {
+    @Override
+    public AuthResponse generateToken(User user) {
         return AuthResponse.builder()
                 .accessToken(jwtUtil.generateAccessToken(user))
                 .refreshToken(jwtUtil.generateRefreshToken(user))
@@ -77,7 +78,7 @@ public class AuthenticationDomainServiceImpl implements AuthenticationDomainServ
     @Override
     public AuthResponse login(String email, String password) {
         User user = userDomainRepository.findByEmail(email);
-        if (user == null || !passwordEncoder.matches(password, user.getPassword())) {
+        if (!Objects.equals(user.getPassword(), "google") && !passwordEncoder.matches(password, user.getPassword())) {
             throw new BusinessException(ErrorCode.INVALID_CREDENTIALS);
         }
         return generateToken(user);
@@ -95,13 +96,9 @@ public class AuthenticationDomainServiceImpl implements AuthenticationDomainServ
     }
 
     @Override
-    public void changePassword(String email, String currentPassword, String newPassword) {
+    public void changePassword(String email, String currentPassword, String newPassword, boolean isNeedToCheck) {
         User user = userDomainRepository.findByEmail(email);
-        boolean isValid = SecurityContextHolder.getContext().getAuthentication().getName().equals(email);
-        if (!isValid) {
-            throw new BusinessException(ErrorCode.UNAUTHORIZED);
-        }
-        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+        if (isNeedToCheck && !Objects.equals(user.getPassword(), "google") && !passwordEncoder.matches(currentPassword, user.getPassword())) {
             throw new BusinessException(ErrorCode.INVALID_PASSWORD);
         }
         user.setPassword(passwordEncoder.encode(newPassword));
@@ -166,7 +163,7 @@ public class AuthenticationDomainServiceImpl implements AuthenticationDomainServ
         return restTemplate.postForObject(url, requestEntity, String.class);
     }
 
-    public void getProfileDetailsGoogle(String accessToken, HttpServletResponse servletResponse) throws IOException {
+    private void getProfileDetailsGoogle(String accessToken, HttpServletResponse servletResponse) throws IOException {
         ResponseEntity<String> response = callRestApiToGetProfile(accessToken);
 
         // Phân tích cú pháp JSON để lấy thông tin người dùng
@@ -202,19 +199,10 @@ public class AuthenticationDomainServiceImpl implements AuthenticationDomainServ
                     .fullName(userInfo.get("name").getAsString())
                     .email(email)
                     .password("google") // Mật khẩu mặc định
-                    .role(roleDomainRepository.findByRoleName("USER"))
+                    .role(roleDomainRepository.findByRoleName(RoleType.USER.name()))
+                    .lastLogin(LocalDateTime.now())
                     .avatar(userInfo.get("picture").getAsString())
                     .build());
         }
-    }
-
-    @Override
-    public String forgotPassword(String email) {
-        return "";
-    }
-
-    @Override
-    public String generateRandomPassword() {
-        return "";
     }
 }

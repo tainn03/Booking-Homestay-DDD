@@ -64,10 +64,8 @@ public class AuthenticationController {
 
     @PostMapping("/forgot-password")
     public ApiResponse forgotPassword(@RequestParam String email) {
-//        return ApiResponse.<String>builder()
-//                .result(service.forgotPassword(email))
-//                .build();
-        return null;
+        authenticationAppService.forgotPassword(email);
+        return responseFactory.create(ErrorCode.SUCCESS);
     }
 
     @PostMapping("/register-landlord")

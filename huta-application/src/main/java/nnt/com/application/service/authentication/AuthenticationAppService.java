@@ -27,7 +27,5 @@ public interface AuthenticationAppService {
 
     void getOauthAccessTokenGoogle(String code, HttpServletResponse servletResponse) throws IOException;
 
-    String forgotPassword(String email);
-
-    String generateRandomPassword();
+    void forgotPassword(String email);
 }
