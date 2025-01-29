@@ -1,12 +1,12 @@
 package nnt.com.application.service.authentication;
 
-import jakarta.json.JsonObject;
 import jakarta.servlet.http.HttpServletResponse;
 import nnt.com.domain.aggregates.model.dto.request.ChangePasswordRequest;
 import nnt.com.domain.aggregates.model.dto.request.LoginRequest;
 import nnt.com.domain.aggregates.model.dto.request.RegisterRequest;
 import nnt.com.domain.aggregates.model.dto.response.AuthResponse;
-import nnt.com.domain.aggregates.model.entity.User;
+
+import java.io.IOException;
 
 public interface AuthenticationAppService {
     AuthResponse register(RegisterRequest request);
@@ -23,13 +23,9 @@ public interface AuthenticationAppService {
 
     void confirmLandlord(String token, HttpServletResponse response);
 
-    void loginGoogleAuth(HttpServletResponse response);
+    void loginGoogleAuth(HttpServletResponse response) throws IOException;
 
-    void getOauthAccessTokenGoogle(String code, HttpServletResponse servletResponse);
-
-    void getProfileDetailsGoogle(String accessToken, HttpServletResponse servletResponse);
-
-    User checkAndCreateUser(JsonObject userInfo);
+    void getOauthAccessTokenGoogle(String code, HttpServletResponse servletResponse) throws IOException;
 
     String forgotPassword(String email);
 

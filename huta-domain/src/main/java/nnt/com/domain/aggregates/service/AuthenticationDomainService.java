@@ -1,9 +1,9 @@
 package nnt.com.domain.aggregates.service;
 
-import jakarta.json.JsonObject;
 import jakarta.servlet.http.HttpServletResponse;
 import nnt.com.domain.aggregates.model.dto.response.AuthResponse;
-import nnt.com.domain.aggregates.model.entity.User;
+
+import java.io.IOException;
 
 public interface AuthenticationDomainService {
     AuthResponse register(String name, String email, String password);
@@ -20,13 +20,9 @@ public interface AuthenticationDomainService {
 
     void confirmLandlord(String token, HttpServletResponse response);
 
-    void loginGoogleAuth(HttpServletResponse response);
+    void loginGoogleAuth(HttpServletResponse response) throws IOException;
 
-    void getOauthAccessTokenGoogle(String code, HttpServletResponse servletResponse);
-
-    void getProfileDetailsGoogle(String accessToken, HttpServletResponse servletResponse);
-
-    User checkAndCreateUser(JsonObject userInfo);
+    void getOauthAccessTokenGoogle(String code, HttpServletResponse servletResponse) throws IOException;
 
     String forgotPassword(String email);
 

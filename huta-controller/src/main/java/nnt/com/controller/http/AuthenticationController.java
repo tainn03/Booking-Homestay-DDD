@@ -16,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
@@ -46,5 +48,38 @@ public class AuthenticationController {
     public ResponseEntity<ApiResponse> changePassword(@Valid @RequestBody ChangePasswordRequest request) {
         authenticationAppService.changePassword(request);
         return ResponseEntity.ok(responseFactory.create(ErrorCode.SUCCESS));
+    }
+
+    @GetMapping("/public/google")
+    public ResponseEntity<ApiResponse> loginGoogleAuth(HttpServletResponse response) throws IOException {
+        authenticationAppService.loginGoogleAuth(response);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/grantcode")
+    public void grantCode(@RequestParam("code") String code, HttpServletResponse response) throws IOException {
+        // Gọi hàm lấy access token từ Google
+        authenticationAppService.getOauthAccessTokenGoogle(code, response);
+    }
+
+    @PostMapping("/forgot-password")
+    public ApiResponse forgotPassword(@RequestParam String email) {
+//        return ApiResponse.<String>builder()
+//                .result(service.forgotPassword(email))
+//                .build();
+        return null;
+    }
+
+    @PostMapping("/register-landlord")
+    public ApiResponse registerLandlord(@RequestParam String email) {
+//        return ApiResponse.<String>builder()
+//                .result(service.registerLandlord(email))
+//                .build();
+        return null;
+    }
+
+    @GetMapping("/confirm-landlord")
+    public void confirmLandlord(@RequestParam String token, HttpServletResponse response) throws IOException {
+//        service.confirmLandlord(token, response);
     }
 }

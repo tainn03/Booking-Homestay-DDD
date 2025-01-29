@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -38,13 +39,14 @@ import java.util.Collections;
 @EnableJpaRepositories(basePackages = "nnt.com.infrastructure.persistence")
 @EnableConfigurationProperties(RSAKeyRecord.class)
 @EnableScheduling
+@EnableAsync
 public class SecurityConfig {
     JwtAuthenticationFilter jwtAuthenticationFilter;
     RateLimitFilter rateLimitFilter;
     LogoutHandler logoutHandler;
     String[] WHITE_LIST_URL = {
             "/actuator/**",
-            "/api/v1/auth/public/**",
+            "/api/v1/auth/**",
             "api/v1/perf/**",
             "/api/v1/homestays/public/**",
             "/api/v1/search/**",

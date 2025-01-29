@@ -1,6 +1,5 @@
 package nnt.com.application.service.authentication.impl;
 
-import jakarta.json.JsonObject;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -9,11 +8,11 @@ import nnt.com.domain.aggregates.model.dto.request.ChangePasswordRequest;
 import nnt.com.domain.aggregates.model.dto.request.LoginRequest;
 import nnt.com.domain.aggregates.model.dto.request.RegisterRequest;
 import nnt.com.domain.aggregates.model.dto.response.AuthResponse;
-import nnt.com.domain.aggregates.model.entity.User;
 import nnt.com.domain.aggregates.service.AuthenticationDomainService;
 import nnt.com.infrastructure.cache.redis.RedisCache;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -22,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 public class AuthenticationAppServiceImpl implements AuthenticationAppService {
     AuthenticationDomainService authenticationDomainService;
     RedisCache redisCache;
+
 
     @Override
     public AuthResponse register(RegisterRequest request) {
@@ -76,23 +76,13 @@ public class AuthenticationAppServiceImpl implements AuthenticationAppService {
     }
 
     @Override
-    public void loginGoogleAuth(HttpServletResponse response) {
-
+    public void loginGoogleAuth(HttpServletResponse response) throws IOException {
+        authenticationDomainService.loginGoogleAuth(response);
     }
 
     @Override
-    public void getOauthAccessTokenGoogle(String code, HttpServletResponse servletResponse) {
-
-    }
-
-    @Override
-    public void getProfileDetailsGoogle(String accessToken, HttpServletResponse servletResponse) {
-
-    }
-
-    @Override
-    public User checkAndCreateUser(JsonObject userInfo) {
-        return null;
+    public void getOauthAccessTokenGoogle(String code, HttpServletResponse servletResponse) throws IOException {
+        authenticationDomainService.getOauthAccessTokenGoogle(code, servletResponse);
     }
 
     @Override
