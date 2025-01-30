@@ -72,7 +72,6 @@ public class AuthenticationAppServiceImpl implements AuthenticationAppService {
             return;
         }
         authenticationDomainService.changePassword(request.getEmail(), request.getCurrentPassword(), request.getNewPassword(), true);
-
     }
 
     @Override
@@ -81,8 +80,9 @@ public class AuthenticationAppServiceImpl implements AuthenticationAppService {
     }
 
     @Override
-    public String registerLandlord(String email) {
-        return "";
+    public void registerLandlord(String email) {
+        String name = authenticationDomainService.registerLandlord(email);
+        mailProducer.sendRegisterMail(email, name);
     }
 
     @Override

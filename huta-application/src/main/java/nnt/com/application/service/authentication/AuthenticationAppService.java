@@ -19,7 +19,7 @@ public interface AuthenticationAppService {
 
     void confirm(String token, HttpServletResponse response);
 
-    String registerLandlord(String email);
+    void registerLandlord(String email);
 
     void confirmLandlord(String token, HttpServletResponse response);
 

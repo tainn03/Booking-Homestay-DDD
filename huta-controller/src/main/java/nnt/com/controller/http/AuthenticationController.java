@@ -69,11 +69,10 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register-landlord")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'LANDLORD')")
     public ApiResponse registerLandlord(@RequestParam String email) {
-//        return ApiResponse.<String>builder()
-//                .result(service.registerLandlord(email))
-//                .build();
-        return null;
+        authenticationAppService.registerLandlord(email);
+        return responseFactory.create(ErrorCode.SUCCESS);
     }
 
     @GetMapping("/confirm-landlord")

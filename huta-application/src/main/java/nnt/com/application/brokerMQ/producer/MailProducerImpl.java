@@ -33,4 +33,15 @@ public class MailProducerImpl implements MailProducer {
                 .build();
         sendMail(email, emailRequest);
     }
+
+    @Override
+    public void sendRegisterMail(String email, String name) {
+        EmailRequest emailRequest = EmailRequest.builder()
+                .to(email)
+                .subject("Đăng ký thành công")
+                .templateId(MailTemplate.REGISTER_LANDLORD.getValue())
+                .templateParams(Map.of("name", name))
+                .build();
+        sendMail(email, emailRequest);
+    }
 }

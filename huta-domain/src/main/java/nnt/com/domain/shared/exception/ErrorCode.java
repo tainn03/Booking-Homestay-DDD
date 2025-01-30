@@ -68,6 +68,7 @@ public enum ErrorCode {
     NAME_REQUIRED(40011, "Tên không được để trống", HttpStatus.BAD_REQUEST),
     EMAIL_ALREADY_EXISTS(40012, "Email đã tồn tại", HttpStatus.BAD_REQUEST),
     TOKEN_EXPIRED(40013, "Token đã hết hạn", HttpStatus.BAD_REQUEST),
+    USER_ALREADY_LANDLORD(40014, "Người dùng đã là chủ nhà", HttpStatus.BAD_REQUEST),
 
 
     ;

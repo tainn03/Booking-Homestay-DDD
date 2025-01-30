@@ -112,7 +112,13 @@ public class AuthenticationDomainServiceImpl implements AuthenticationDomainServ
 
     @Override
     public String registerLandlord(String email) {
-        return "";
+        User user = userDomainRepository.findByEmail(email);
+        if (Objects.equals(user.getRole().getRole(), RoleType.LANDLORD.name())) {
+            throw new BusinessException(ErrorCode.USER_ALREADY_LANDLORD);
+        }
+        user.setRole(roleDomainRepository.findByRoleName(RoleType.LANDLORD.name()));
+        userDomainRepository.save(user);
+        return user.getFullName();
     }
 
     @Override

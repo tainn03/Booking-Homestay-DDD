@@ -6,4 +6,6 @@ public interface MailProducer {
     void sendMail(String key, EmailRequest emailRequest);
 
     void sendForgotPasswordMail(String email, String password);
+
+    void sendRegisterMail(String email, String name);
 }
