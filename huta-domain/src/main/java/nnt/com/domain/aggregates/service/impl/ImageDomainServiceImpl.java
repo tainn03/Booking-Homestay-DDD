@@ -22,28 +22,17 @@ public class ImageDomainServiceImpl implements ImageDomainService {
 
     @Override
     public String uploadFile(MultipartFile file) {
-        String url = cloudinaryUtil.uploadFile(file);
-        return save(Image.builder()
-                .url(url)
-                .build())
-                .getUrl();
+        return cloudinaryUtil.uploadFile(file);
     }
 
     @Override
     public List<String> uploadFiles(List<MultipartFile> files) {
-        List<String> urls = cloudinaryUtil.uploadFiles(files);
-        return urls.stream()
-                .map(url -> save(Image.builder()
-                        .url(url)
-                        .build())
-                        .getUrl())
-                .toList();
+        return cloudinaryUtil.uploadFiles(files);
     }
 
     @Override
     public void deleteFiles(List<String> urls) {
         cloudinaryUtil.deleteFiles(urls);
-        urls.forEach(this::delete);
     }
 
     @Override

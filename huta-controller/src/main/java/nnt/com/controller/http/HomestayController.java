@@ -16,6 +16,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/homestays")
@@ -42,9 +45,25 @@ public class HomestayController {
     }
 
     @GetMapping("/{homestayId}")
-    public ResponseEntity<ApiResponse> getHomestayById(@PathVariable Long homestayId) {
+    public ApiResponse getHomestayById(@PathVariable Long homestayId) {
         HomestayResponse data = homestayAppService.getHomestayById(homestayId);
-        return ResponseEntity.ok(responseFactory.create(data));
+        return responseFactory.create(data);
+    }
+
+    @GetMapping("/owner")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'LANDLORD')")
+    public ApiResponse getHomestayByOwner() {
+        return responseFactory.create(homestayAppService.getHomestayByOwner());
+    }
+
+    @GetMapping("/{homestayId}/img")
+    public ApiResponse getHomestayImages(@PathVariable Long homestayId) {
+        return responseFactory.create(homestayAppService.getHomestayImages(homestayId));
+    }
+
+    @PostMapping("/{homestayId}/img")
+    public ApiResponse uploadHomestayImage(@PathVariable Long homestayId, @RequestParam String type, @RequestBody List<MultipartFile> files) {
+        return responseFactory.create(homestayAppService.uploadHomestayImage(homestayId, type, files));
     }
 
     @PostMapping

@@ -7,9 +7,13 @@ import nnt.com.application.service.homestay.HomestayAppService;
 import nnt.com.application.service.homestay.cache.HomestayAppServiceCache;
 import nnt.com.domain.aggregates.model.dto.request.HomestayRequest;
 import nnt.com.domain.aggregates.model.dto.response.HomestayResponse;
+import nnt.com.domain.aggregates.model.dto.response.ImageResponse;
 import nnt.com.domain.aggregates.service.HomestaySearchDomainService;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -44,6 +48,21 @@ public class HomestayAppServiceImpl implements HomestayAppService {
     public HomestayResponse update(Long homestayId, HomestayRequest request) {
         HomestayResponse response = homestayAppServiceCache.update(homestayId, request);
         return updateHomestaySearch(request, response);
+    }
+
+    @Override
+    public List<ImageResponse> getHomestayImages(Long homestayId) {
+        return homestayAppServiceCache.getHomestayImages(homestayId);
+    }
+
+    @Override
+    public List<ImageResponse> uploadHomestayImage(Long homestayId, String type, List<MultipartFile> files) {
+        return homestayAppServiceCache.uploadHomestayImage(homestayId, type, files);
+    }
+
+    @Override
+    public List<HomestayResponse> getHomestayByOwner() {
+        return homestayAppServiceCache.getHomestayByOwner();
     }
 
     private HomestayResponse updateHomestaySearch(HomestayRequest request, HomestayResponse response) {

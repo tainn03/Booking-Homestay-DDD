@@ -16,6 +16,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -94,5 +96,11 @@ public class HomestayDomainServiceImpl implements HomestayDomainService {
     @Override
     public HomestayResponse updateHomestay(long homestayId, HomestayRequest request) {
         return null;
+    }
+
+    @Override
+    public List<HomestayResponse> getByOwner(Long id) {
+        List<Homestay> homestays = homestayDomainRepository.getByOwner(id);
+        return homestays.stream().map(homestayMapper::toDTO).toList();
     }
 }

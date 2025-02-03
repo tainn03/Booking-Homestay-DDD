@@ -13,6 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 import static lombok.AccessLevel.PRIVATE;
 
 @Service
@@ -45,5 +47,10 @@ public class HomestayInfraRepositoryImpl implements HomestayDomainRepository {
     @Override
     public Homestay update(Homestay homestay) {
         return homestayInfraRepositoryJpa.save(homestay);
+    }
+
+    @Override
+    public List<Homestay> getByOwner(Long id) {
+        return homestayInfraRepositoryJpa.findByOwnerId(id);
     }
 }

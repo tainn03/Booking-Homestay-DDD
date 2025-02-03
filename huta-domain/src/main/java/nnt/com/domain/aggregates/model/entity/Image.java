@@ -1,5 +1,6 @@
 package nnt.com.domain.aggregates.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -18,6 +19,7 @@ public class Image extends BaseEntity<Long> {
     String url;
     String type;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "homestay_id")
     Homestay homestay;

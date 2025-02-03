@@ -6,6 +6,8 @@ import nnt.com.domain.aggregates.model.entity.Homestay;
 import nnt.com.domain.shared.behaviors.BaseBehaviors;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
+
 public interface HomestayDomainService extends BaseBehaviors<Homestay, Long> {
     HomestayResponse save(HomestayRequest request);
 
@@ -14,4 +16,6 @@ public interface HomestayDomainService extends BaseBehaviors<Homestay, Long> {
     HomestayResponse getHomestayById(long homestayId);
 
     HomestayResponse updateHomestay(long homestayId, HomestayRequest request);
+
+    List<HomestayResponse> getByOwner(Long id);
 }

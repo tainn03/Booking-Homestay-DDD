@@ -5,7 +5,13 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import nnt.com.domain.aggregates.model.dto.request.HomestayRequest;
 import nnt.com.domain.aggregates.model.dto.response.HomestayResponse;
+import nnt.com.domain.aggregates.model.dto.response.ImageResponse;
+import nnt.com.domain.aggregates.model.entity.Homestay;
+import nnt.com.domain.aggregates.model.entity.Image;
+import nnt.com.domain.aggregates.model.entity.User;
 import nnt.com.domain.aggregates.service.HomestayDomainService;
+import nnt.com.domain.aggregates.service.ImageDomainService;
+import nnt.com.domain.aggregates.service.UserDomainService;
 import nnt.com.domain.shared.model.enums.LockKey;
 import nnt.com.domain.shared.model.enums.RedisKey;
 import nnt.com.infrastructure.cache.local.LocalCache;
@@ -13,8 +19,11 @@ import nnt.com.infrastructure.cache.redis.RedisCache;
 import nnt.com.infrastructure.distributed.redisson.RedisDistributedLocker;
 import nnt.com.infrastructure.distributed.redisson.RedisDistributedService;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static lombok.AccessLevel.PRIVATE;
@@ -25,6 +34,8 @@ import static lombok.AccessLevel.PRIVATE;
 @Slf4j
 public class HomestayAppServiceCache {
     HomestayDomainService homestayDomainService;
+    ImageDomainService imageDomainService;
+    UserDomainService userDomainService;
 
     RedisDistributedService distributedCache;
     RedisCache redisCache;
@@ -54,6 +65,8 @@ public class HomestayAppServiceCache {
     }
 
     public void deleteById(Long homestayId) {
+        imageDomainService.deleteFiles(homestayDomainService.getById(homestayId).getImages()
+                .stream().map(Image::getUrl).toList());
         homestayDomainService.delete(homestayId);
         deleteCache(homestayId);
     }
@@ -113,5 +126,39 @@ public class HomestayAppServiceCache {
     private void deleteCache(Long homestayId) {
         localCache.invalidate(homestayId);
         redisCache.delete(RedisKey.HOMESTAY.getKey() + homestayId);
+    }
+
+    public List<ImageResponse> getHomestayImages(Long homestayId) {
+        return convertImages(homestayDomainService.getById(homestayId).getImages());
+    }
+
+    public List<ImageResponse> uploadHomestayImage(Long homestayId, String type, List<MultipartFile> files) {
+        Homestay homestay = homestayDomainService.getById(homestayId);
+        imageDomainService.uploadFiles(files).stream()
+                .map(url -> Image.builder()
+                        .url(url)
+                        .type(type)
+                        .homestay(homestay)
+                        .build())
+                .forEach(imageDomainService::save);
+        return convertImages(homestay.getImages());
+    }
+
+    private List<ImageResponse> convertImages(List<Image> images) {
+        return images.stream()
+                .map(image -> ImageResponse.builder()
+                        .id(image.getId())
+                        .url(image.getUrl())
+                        .type(image.getType())
+                        .build())
+                .toList();
+    }
+
+    public List<HomestayResponse> getHomestayByOwner() {
+        return homestayDomainService.getByOwner(getCurrentUser().getId());
+    }
+
+    private User getCurrentUser() {
+        return userDomainService.getByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
     }
 }
