@@ -4,10 +4,19 @@ BEGIN;
 
 -- structure setup
 
-create table role (
-                      role varchar(255) not null,
-                      primary key (role)
+create table if not exists public.role (
+      role varchar(255) not null,
+      primary key (role)
 );
+
+create table if not exists public.permission
+(
+    permission varchar(255) not null
+    primary key,
+    api_path   varchar(255),
+    method     varchar(255),
+    module     varchar(255)
+    );
 
 -- data setup
 

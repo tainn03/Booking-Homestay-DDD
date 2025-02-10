@@ -31,4 +31,6 @@ public interface HomestayAppService {
     HomestayResponse ratingHomestay(Long homestayId, RatingRequest request);
 
     List<RatingRequest> getRating(Long homestayId);
+
+    List<ImageResponse> uploadHomestayImageByUrl(Long homestayId, String type, List<String> urls);
 }

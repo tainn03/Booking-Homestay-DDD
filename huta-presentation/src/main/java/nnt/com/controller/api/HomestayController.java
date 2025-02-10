@@ -62,9 +62,14 @@ public class HomestayController {
         return responseFactory.create(homestayAppService.getHomestayImages(homestayId));
     }
 
-    @PostMapping("/{homestayId}/img")
-    public ApiResponse uploadHomestayImage(@PathVariable Long homestayId, @RequestParam String type, @RequestBody List<MultipartFile> files) {
+    @PostMapping("/{homestayId}/img/file")
+    public ApiResponse uploadHomestayImageByFile(@PathVariable Long homestayId, @RequestParam String type, @RequestBody List<MultipartFile> files) {
         return responseFactory.create(homestayAppService.uploadHomestayImage(homestayId, type, files));
+    }
+
+    @PostMapping("/{homestayId}/img/url")
+    public ApiResponse uploadHomestayImageByUrl(@PathVariable Long homestayId, @RequestParam String type, @RequestBody List<String> urls) {
+        return responseFactory.create(homestayAppService.uploadHomestayImageByUrl(homestayId, type, urls));
     }
 
     @PostMapping

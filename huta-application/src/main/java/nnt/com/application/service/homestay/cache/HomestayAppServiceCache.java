@@ -184,4 +184,16 @@ public class HomestayAppServiceCache {
                         .build())
                 .toList();
     }
+
+    public List<ImageResponse> uploadHomestayImageByUrl(Long homestayId, String type, List<String> urls) {
+        Homestay homestay = homestayDomainService.getById(homestayId);
+        urls.stream()
+                .map(url -> Image.builder()
+                        .url(url)
+                        .type(type)
+                        .homestay(homestay)
+                        .build())
+                .forEach(imageDomainService::save);
+        return convertImages(homestay.getImages());
+    }
 }

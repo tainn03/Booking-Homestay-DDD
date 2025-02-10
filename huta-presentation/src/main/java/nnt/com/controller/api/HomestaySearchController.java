@@ -3,13 +3,12 @@ package nnt.com.controller.api;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import nnt.com.application.service.search.HomestaySearchAppService;
-import nnt.com.domain.aggregates.model.document.HomestayDocument;
+import nnt.com.controller.model.builder.ResponseFactory;
+import nnt.com.controller.model.vo.ApiResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/search")
@@ -17,15 +16,16 @@ import java.util.List;
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
 public class HomestaySearchController {
     HomestaySearchAppService homestaySearchAppService;
+    ResponseFactory responseFactory;
 
     @GetMapping
-    public List<HomestayDocument> searchByContent(@RequestParam String content) {
-        return homestaySearchAppService.searchByContent(content);
+    public ApiResponse searchByContent(@RequestParam String content) {
+        return responseFactory.create(homestaySearchAppService.searchByContent(content));
     }
 
     @GetMapping("/location")
-    public List<HomestayDocument> searchByLocation(@RequestParam String lat, @RequestParam String lon, @RequestParam int distance) {
-        return homestaySearchAppService.searchByLocation(lat, lon, distance);
+    public ApiResponse searchByLocation(@RequestParam String lat, @RequestParam String lon, @RequestParam int distance) {
+        return responseFactory.create(homestaySearchAppService.searchByLocation(lat, lon, distance));
     }
 
 }
