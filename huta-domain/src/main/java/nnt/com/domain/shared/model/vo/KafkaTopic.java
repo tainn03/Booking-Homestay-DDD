@@ -13,7 +13,8 @@ public enum KafkaTopic {
     MAIL_TOPIC("user.mail"),
     BOOKING_TOPIC("booking.mail"),
     PAYMENT_TOPIC("payment.mail"),
-    RECOMMENDATION_TOPIC("homestay.recommendation");
+    RECOMMENDATION_TOPIC("homestay.recommendation"),
+    SYNC_TOPIC("database.sync");
 
 
     String topic;

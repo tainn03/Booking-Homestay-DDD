@@ -45,7 +45,7 @@ public class Homestay extends BaseEntity<Long> implements Serializable {
     @Builder.Default
     RentalType rentalType = RentalType.ALL;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     User owner;
 
@@ -58,7 +58,7 @@ public class Homestay extends BaseEntity<Long> implements Serializable {
     @OneToMany(mappedBy = "homestay", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     List<Room> rooms;
 
-    @OneToMany(mappedBy = "homestay", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "homestay", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     List<Review> reviews;
 
     @ManyToOne
@@ -69,10 +69,10 @@ public class Homestay extends BaseEntity<Long> implements Serializable {
     @JoinColumn(name = "district_id")
     District district;
 
-    @OneToMany(mappedBy = "homestay", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "homestay", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     List<Rule> rules;
 
-    @OneToMany(mappedBy = "homestay", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "homestay", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     List<Tag> tags;
 
     @OneToMany(mappedBy = "homestay", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

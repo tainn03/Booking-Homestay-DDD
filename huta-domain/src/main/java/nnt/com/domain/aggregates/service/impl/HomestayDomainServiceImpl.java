@@ -122,6 +122,11 @@ public class HomestayDomainServiceImpl implements HomestayDomainService {
         return convertToResponse(update(homestay));
     }
 
+    @Override
+    public List<HomestayResponse> getAllHomestay() {
+        return homestayDomainRepository.getAll().stream().map(this::convertToResponse).toList();
+    }
+
     private HomestayResponse convertToResponse(Homestay homestay) {
         HomestayResponse response = homestayMapper.toDTO(homestay);
         if (homestay.getReviews() != null && !homestay.getReviews().isEmpty()) {

@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface HomestayDomainRepository extends BaseBehaviors<Homestay, Long> {
     List<Homestay> getByOwner(Long id);
+
+    List<Homestay> getAll();
 }

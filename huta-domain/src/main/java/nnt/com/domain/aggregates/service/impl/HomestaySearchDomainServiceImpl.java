@@ -31,6 +31,7 @@ public class HomestaySearchDomainServiceImpl implements HomestaySearchDomainServ
     @Override
     public HomestayDocument save(HomestayResponse response) {
         HomestayDocument document = homestaySearchMapper.toDocument(response);
+        document.setLocation(new GeoPoint(response.getLat(), response.getLon()));
         return save(document);
     }
 

@@ -53,4 +53,9 @@ public class HomestayInfraRepositoryImpl implements HomestayDomainRepository {
     public List<Homestay> getByOwner(Long id) {
         return homestayInfraRepositoryJpa.findByOwnerId(id);
     }
+
+    @Override
+    public List<Homestay> getAll() {
+        return homestayInfraRepositoryJpa.findAll();
+    }
 }
