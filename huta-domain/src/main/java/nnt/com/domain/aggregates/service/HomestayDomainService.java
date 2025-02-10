@@ -1,6 +1,7 @@
 package nnt.com.domain.aggregates.service;
 
 import nnt.com.domain.aggregates.model.dto.request.HomestayRequest;
+import nnt.com.domain.aggregates.model.dto.request.RatingRequest;
 import nnt.com.domain.aggregates.model.dto.response.HomestayResponse;
 import nnt.com.domain.aggregates.model.entity.Homestay;
 import nnt.com.domain.aggregates.model.entity.User;
@@ -21,4 +22,6 @@ public interface HomestayDomainService extends BaseBehaviors<Homestay, Long> {
     List<HomestayResponse> getByOwner(Long id);
 
     List<HomestayResponse> getWishlist(User currentUser);
+
+    void ratingHomestay(Homestay homestay, User user, RatingRequest request);
 }

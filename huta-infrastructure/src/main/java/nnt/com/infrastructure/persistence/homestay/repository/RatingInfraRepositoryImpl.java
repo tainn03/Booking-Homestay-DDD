@@ -2,7 +2,7 @@ package nnt.com.infrastructure.persistence.homestay.repository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import nnt.com.domain.aggregates.model.entity.Rating;
+import nnt.com.domain.aggregates.model.entity.Review;
 import nnt.com.domain.aggregates.repository.RatingDomainRepository;
 import nnt.com.domain.shared.exception.BusinessException;
 import nnt.com.domain.shared.exception.ErrorCode;
@@ -24,22 +24,22 @@ public class RatingInfraRepositoryImpl implements RatingDomainRepository {
     RatingInfraRepositoryJpa ratingInfraRepositoryJpa;
 
     @Override
-    public Rating save(Rating rating) {
+    public Review save(Review rating) {
         return ratingInfraRepositoryJpa.save(rating);
     }
 
     @Override
-    public Rating update(Rating rating) {
+    public Review update(Review rating) {
         return ratingInfraRepositoryJpa.save(rating);
     }
 
     @Override
-    public Rating getById(Long id) {
+    public Review getById(Long id) {
         return ratingInfraRepositoryJpa.findById(id).orElseThrow(() -> new BusinessException(ErrorCode.RATING_NOT_FOUND));
     }
 
     @Override
-    public Page<Rating> getAll(int page, int size, String sort, String direction) {
+    public Page<Review> getAll(int page, int size, String sort, String direction) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(direction), sort));
         return ratingInfraRepositoryJpa.findAll(pageable);
     }
@@ -50,7 +50,7 @@ public class RatingInfraRepositoryImpl implements RatingDomainRepository {
     }
 
     @Override
-    public List<Rating> findAll() {
+    public List<Review> findAll() {
         return ratingInfraRepositoryJpa.findAll();
     }
 }

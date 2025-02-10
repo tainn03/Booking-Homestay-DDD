@@ -3,7 +3,7 @@ package nnt.com.domain.aggregates.service.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import nnt.com.domain.aggregates.model.entity.Homestay;
-import nnt.com.domain.aggregates.model.entity.Rating;
+import nnt.com.domain.aggregates.model.entity.Review;
 import nnt.com.domain.aggregates.repository.RatingDomainRepository;
 import nnt.com.domain.aggregates.service.HomestayDomainService;
 import nnt.com.domain.aggregates.service.RecommendationService;
@@ -27,7 +27,7 @@ public class RecommendationServiceImpl implements RecommendationService {
     @Override
     public List<Homestay> recommendItemsForUser(Long userId) {
         // Retrieve all interactions to build the user-item matrix
-        List<Rating> allInteractions = ratingDomainRepository.findAll();
+        List<Review> allInteractions = ratingDomainRepository.findAll();
         Map<Long, Map<Long, Integer>> userHomestayMatrix = new HashMap<>();
 
         allInteractions.forEach(interaction -> {

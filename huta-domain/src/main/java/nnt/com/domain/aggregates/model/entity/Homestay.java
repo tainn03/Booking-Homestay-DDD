@@ -59,7 +59,7 @@ public class Homestay extends BaseEntity<Long> implements Serializable {
     List<Room> rooms;
 
     @OneToMany(mappedBy = "homestay", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
-    List<Rating> reviews;
+    List<Review> reviews;
 
     @ManyToOne
     @JoinColumn(name = "name")

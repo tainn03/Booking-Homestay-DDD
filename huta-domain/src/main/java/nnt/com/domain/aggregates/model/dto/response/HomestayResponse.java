@@ -33,7 +33,7 @@ public class HomestayResponse {
 
     //    List<String> imageUrls;
     //    List<Room> rooms;
-//    List<Rating> reviews;
+    double rating;
     String typeHomestay;
     Integer version;
 

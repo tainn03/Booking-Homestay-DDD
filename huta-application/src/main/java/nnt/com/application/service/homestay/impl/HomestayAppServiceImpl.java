@@ -6,6 +6,7 @@ import lombok.experimental.FieldDefaults;
 import nnt.com.application.service.homestay.HomestayAppService;
 import nnt.com.application.service.homestay.cache.HomestayAppServiceCache;
 import nnt.com.domain.aggregates.model.dto.request.HomestayRequest;
+import nnt.com.domain.aggregates.model.dto.request.RatingRequest;
 import nnt.com.domain.aggregates.model.dto.response.HomestayResponse;
 import nnt.com.domain.aggregates.model.dto.response.ImageResponse;
 import nnt.com.domain.aggregates.service.HomestaySearchDomainService;
@@ -68,6 +69,16 @@ public class HomestayAppServiceImpl implements HomestayAppService {
     @Override
     public List<HomestayResponse> getWishlist() {
         return homestayAppServiceCache.getWishlist();
+    }
+
+    @Override
+    public void ratingHomestay(Long homestayId, RatingRequest request) {
+        homestayAppServiceCache.ratingHomestay(homestayId, request);
+    }
+
+    @Override
+    public List<RatingRequest> getRating(Long homestayId) {
+        return homestayAppServiceCache.getRating(homestayId);
     }
 
     private HomestayResponse updateHomestaySearch(HomestayRequest request, HomestayResponse response) {

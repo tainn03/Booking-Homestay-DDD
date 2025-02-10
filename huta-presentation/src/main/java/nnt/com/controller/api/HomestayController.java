@@ -9,6 +9,7 @@ import nnt.com.application.service.homestay.HomestayAppService;
 import nnt.com.controller.model.builder.ResponseFactory;
 import nnt.com.controller.model.vo.ApiResponse;
 import nnt.com.domain.aggregates.model.dto.request.HomestayRequest;
+import nnt.com.domain.aggregates.model.dto.request.RatingRequest;
 import nnt.com.domain.aggregates.model.dto.response.HomestayResponse;
 import nnt.com.domain.shared.exception.ErrorCode;
 import org.springframework.data.domain.Page;
@@ -94,5 +95,17 @@ public class HomestayController {
     @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'LANDLORD')")
     public ResponseEntity<ApiResponse> getWishlist() {
         return ResponseEntity.ok(responseFactory.create(homestayAppService.getWishlist()));
+    }
+
+    @PostMapping("/{homestayId}/rating")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'LANDLORD')")
+    public ResponseEntity<ApiResponse> ratingHomestay(@PathVariable Long homestayId, @Valid @RequestBody RatingRequest request) {
+        homestayAppService.ratingHomestay(homestayId, request);
+        return ResponseEntity.ok(responseFactory.create(ErrorCode.SUCCESS));
+    }
+
+    @GetMapping("/{homestayId}/rating")
+    public ResponseEntity<ApiResponse> getRating(@PathVariable Long homestayId) {
+        return ResponseEntity.ok(responseFactory.create(homestayAppService.getRating(homestayId)));
     }
 }

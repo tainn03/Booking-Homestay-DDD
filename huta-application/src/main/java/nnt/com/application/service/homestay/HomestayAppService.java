@@ -1,6 +1,7 @@
 package nnt.com.application.service.homestay;
 
 import nnt.com.domain.aggregates.model.dto.request.HomestayRequest;
+import nnt.com.domain.aggregates.model.dto.request.RatingRequest;
 import nnt.com.domain.aggregates.model.dto.response.HomestayResponse;
 import nnt.com.domain.aggregates.model.dto.response.ImageResponse;
 import org.springframework.data.domain.Page;
@@ -26,4 +27,8 @@ public interface HomestayAppService {
     List<HomestayResponse> getHomestayByOwner();
 
     List<HomestayResponse> getWishlist();
+
+    void ratingHomestay(Long homestayId, RatingRequest request);
+
+    List<RatingRequest> getRating(Long homestayId);
 }

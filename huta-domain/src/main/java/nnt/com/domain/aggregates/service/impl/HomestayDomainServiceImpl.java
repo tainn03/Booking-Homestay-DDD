@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import nnt.com.domain.aggregates.model.dto.request.HomestayRequest;
+import nnt.com.domain.aggregates.model.dto.request.RatingRequest;
 import nnt.com.domain.aggregates.model.dto.response.HomestayResponse;
 import nnt.com.domain.aggregates.model.entity.*;
 import nnt.com.domain.aggregates.model.mapper.HomestayMapper;
@@ -79,18 +80,18 @@ public class HomestayDomainServiceImpl implements HomestayDomainService {
                     .build());
             typeHomestayDomainRepository.save(homestay.getTypeHomestay());
         }
-        return homestayMapper.toDTO(save(homestay));
+        return convertToResponse(save(homestay));
     }
 
     @Override
     public Page<HomestayResponse> getAllHomestay(int page, int size, String sortBy, String direction) {
         Page<Homestay> homestays = getAll(page, size, sortBy, direction);
-        return homestays.map(homestayMapper::toDTO);
+        return homestays.map(this::convertToResponse);
     }
 
     @Override
     public HomestayResponse getHomestayById(long homestayId) {
-        return homestayMapper.toDTO(getById(homestayId));
+        return convertToResponse(getById(homestayId));
     }
 
     @Override
@@ -101,12 +102,34 @@ public class HomestayDomainServiceImpl implements HomestayDomainService {
     @Override
     public List<HomestayResponse> getByOwner(Long id) {
         List<Homestay> homestays = homestayDomainRepository.getByOwner(id);
-        return homestays.stream().map(homestayMapper::toDTO).toList();
+        return homestays.stream().map(this::convertToResponse).toList();
     }
 
     @Override
     public List<HomestayResponse> getWishlist(User currentUser) {
         List<Homestay> homestays = currentUser.getWishlist();
-        return homestays.stream().map(homestayMapper::toDTO).toList();
+        return homestays.stream().map(this::convertToResponse).toList();
     }
+
+    @Override
+    public void ratingHomestay(Homestay homestay, User user, RatingRequest request) {
+        homestay.getReviews().add(Review.builder()
+                .user(user)
+                .homestay(homestay)
+                .rating(request.getRating())
+                .comment(request.getComment())
+                .build());
+        homestayDomainRepository.update(homestay);
+    }
+
+    private HomestayResponse convertToResponse(Homestay homestay) {
+        HomestayResponse response = homestayMapper.toDTO(homestay);
+        double rating = homestay.getReviews().stream()
+                .mapToDouble(Review::getRating)
+                .average()
+                .orElse(0);
+        response.setRating(rating);
+        return response;
+    }
+
 }

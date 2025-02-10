@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import nnt.com.domain.aggregates.model.dto.request.HomestayRequest;
+import nnt.com.domain.aggregates.model.dto.request.RatingRequest;
 import nnt.com.domain.aggregates.model.dto.response.HomestayResponse;
 import nnt.com.domain.aggregates.model.dto.response.ImageResponse;
 import nnt.com.domain.aggregates.model.entity.Homestay;
@@ -164,5 +165,23 @@ public class HomestayAppServiceCache {
 
     public List<HomestayResponse> getWishlist() {
         return homestayDomainService.getWishlist(getCurrentUser());
+    }
+
+    public void ratingHomestay(Long homestayId, RatingRequest request) {
+        Homestay homestay = homestayDomainService.getById(homestayId);
+        User user = getCurrentUser();
+        homestayDomainService.ratingHomestay(homestay, user, request);
+        deleteCache(homestayId);
+    }
+
+    public List<RatingRequest> getRating(Long homestayId) {
+        Homestay homestay = homestayDomainService.getById(homestayId);
+        return homestay.getReviews().stream()
+                .map(review -> RatingRequest.builder()
+                        .rating(review.getRating())
+                        .comment(review.getComment())
+                        .createdAt(review.getCreatedAt())
+                        .build())
+                .toList();
     }
 }

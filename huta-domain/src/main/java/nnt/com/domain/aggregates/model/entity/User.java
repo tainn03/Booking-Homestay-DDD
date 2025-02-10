@@ -67,7 +67,7 @@ public class User extends BaseEntity<Long> implements UserDetails {
     List<Booking> bookings;
 
     @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
-    List<Rating> reviews;
+    List<Review> reviews;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     List<Recommend> recommends;
