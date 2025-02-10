@@ -2,9 +2,9 @@ package nnt.com.domain.aggregates.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import nnt.com.domain.aggregates.model.entity.Homestay;
+import nnt.com.domain.aggregates.model.dto.response.HomestayResponse;
 import nnt.com.domain.aggregates.model.entity.Review;
-import nnt.com.domain.aggregates.repository.RatingDomainRepository;
+import nnt.com.domain.aggregates.repository.ReviewDomainRepository;
 import nnt.com.domain.aggregates.service.HomestayDomainService;
 import nnt.com.domain.aggregates.service.RecommendationService;
 import org.springframework.stereotype.Service;
@@ -21,13 +21,13 @@ import static lombok.AccessLevel.PRIVATE;
 @RequiredArgsConstructor
 @FieldDefaults(level = PRIVATE, makeFinal = true)
 public class RecommendationServiceImpl implements RecommendationService {
-    RatingDomainRepository ratingDomainRepository;
+    ReviewDomainRepository reviewDomainRepository;
     HomestayDomainService homestayDomainService;
 
     @Override
-    public List<Homestay> recommendItemsForUser(Long userId) {
+    public List<HomestayResponse> recommendHomestaysForUser(Long userId) {
         // Retrieve all interactions to build the user-item matrix
-        List<Review> allInteractions = ratingDomainRepository.findAll();
+        List<Review> allInteractions = reviewDomainRepository.findAll();
         Map<Long, Map<Long, Integer>> userHomestayMatrix = new HashMap<>();
 
         allInteractions.forEach(interaction -> {
@@ -36,7 +36,7 @@ public class RecommendationServiceImpl implements RecommendationService {
         });
 
         // Calculate similarities with other users
-        Map<Long, Double> similarityScores = new HashMap<>();
+        Map<Long, Double> similarityScores = new HashMap<>(20); // Assume 20 users for now
         Map<Long, Integer> currentUserHomestayRatings = userHomestayMatrix.get(userId);
 
         userHomestayMatrix.forEach((otherUserId, homestayRatings) -> {
@@ -55,11 +55,14 @@ public class RecommendationServiceImpl implements RecommendationService {
                 .filter(entry -> !currentUserHomestayRatings.containsKey(entry.getKey()))
                 .map(Map.Entry::getKey)
                 .distinct()
-                .map(homestayDomainService::getById)
+                .map(homestayDomainService::getHomestayById)
                 .collect(Collectors.toList());
     }
 
     private double cosineSimilarity(Map<Long, Integer> userRatings, Map<Long, Integer> otherUserRatings) {
+        if (userRatings == null || otherUserRatings == null) {
+            return 0.0;
+        }
         double dotProduct = 0;
         double normA = 0;
         double normB = 0;

@@ -1,9 +1,9 @@
 package nnt.com.domain.aggregates.service;
 
-import nnt.com.domain.aggregates.model.entity.Homestay;
+import nnt.com.domain.aggregates.model.dto.response.HomestayResponse;
 
 import java.util.List;
 
 public interface RecommendationService {
-    List<Homestay> recommendItemsForUser(Long userId);
+    List<HomestayResponse> recommendHomestaysForUser(Long userId);
 }

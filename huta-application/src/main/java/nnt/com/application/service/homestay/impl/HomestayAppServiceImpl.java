@@ -89,6 +89,11 @@ public class HomestayAppServiceImpl implements HomestayAppService {
         return homestayAppServiceCache.uploadHomestayImageByUrl(homestayId, type, urls);
     }
 
+    @Override
+    public List<HomestayResponse> recommendHomestay() {
+        return homestayAppServiceCache.recommendHomestay();
+    }
+
     private HomestayResponse updateHomestaySearch(HomestayRequest request, HomestayResponse response) {
         homestaySearchDomainService.deleteById(response.getId());
         return saveHomestaySearch(request, response);

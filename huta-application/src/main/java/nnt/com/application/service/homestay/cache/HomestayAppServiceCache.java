@@ -10,8 +10,10 @@ import nnt.com.domain.aggregates.model.dto.response.ImageResponse;
 import nnt.com.domain.aggregates.model.entity.Homestay;
 import nnt.com.domain.aggregates.model.entity.Image;
 import nnt.com.domain.aggregates.model.entity.User;
+import nnt.com.domain.aggregates.model.mapper.HomestayMapper;
 import nnt.com.domain.aggregates.service.HomestayDomainService;
 import nnt.com.domain.aggregates.service.ImageDomainService;
+import nnt.com.domain.aggregates.service.RecommendationService;
 import nnt.com.domain.aggregates.service.UserDomainService;
 import nnt.com.domain.shared.model.vo.LockKey;
 import nnt.com.domain.shared.model.vo.RedisKey;
@@ -35,12 +37,14 @@ import static lombok.AccessLevel.PRIVATE;
 @Slf4j
 public class HomestayAppServiceCache {
     HomestayDomainService homestayDomainService;
+    RecommendationService recommendationService;
     ImageDomainService imageDomainService;
     UserDomainService userDomainService;
 
     RedisDistributedService distributedCache;
     RedisCache redisCache;
     LocalCache<HomestayResponse> localCache;
+    HomestayMapper homestayMapper;
 
     public Page<HomestayResponse> getAll(int page, int size, String sortBy, String direction) {
         return homestayDomainService.getAllHomestay(page, size, sortBy, direction);
@@ -195,5 +199,9 @@ public class HomestayAppServiceCache {
                         .build())
                 .forEach(imageDomainService::save);
         return convertImages(homestay.getImages());
+    }
+
+    public List<HomestayResponse> recommendHomestay() {
+        return recommendationService.recommendHomestaysForUser(getCurrentUser().getId());
     }
 }
