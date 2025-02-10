@@ -65,6 +65,11 @@ public class HomestayAppServiceImpl implements HomestayAppService {
         return homestayAppServiceCache.getHomestayByOwner();
     }
 
+    @Override
+    public List<HomestayResponse> getWishlist() {
+        return homestayAppServiceCache.getWishlist();
+    }
+
     private HomestayResponse updateHomestaySearch(HomestayRequest request, HomestayResponse response) {
         homestaySearchDomainService.deleteById(response.getId());
         return saveHomestaySearch(request, response);

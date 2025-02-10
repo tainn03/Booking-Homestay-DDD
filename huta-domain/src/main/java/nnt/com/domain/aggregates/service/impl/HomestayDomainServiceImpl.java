@@ -103,4 +103,10 @@ public class HomestayDomainServiceImpl implements HomestayDomainService {
         List<Homestay> homestays = homestayDomainRepository.getByOwner(id);
         return homestays.stream().map(homestayMapper::toDTO).toList();
     }
+
+    @Override
+    public List<HomestayResponse> getWishlist(User currentUser) {
+        List<Homestay> homestays = currentUser.getWishlist();
+        return homestays.stream().map(homestayMapper::toDTO).toList();
+    }
 }

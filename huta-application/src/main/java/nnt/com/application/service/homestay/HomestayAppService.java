@@ -24,4 +24,6 @@ public interface HomestayAppService {
     List<ImageResponse> uploadHomestayImage(Long homestayId, String type, List<MultipartFile> files);
 
     List<HomestayResponse> getHomestayByOwner();
+
+    List<HomestayResponse> getWishlist();
 }

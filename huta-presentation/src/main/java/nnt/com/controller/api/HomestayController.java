@@ -89,4 +89,10 @@ public class HomestayController {
         HomestayResponse response = homestayAppService.update(homestayId, request);
         return ResponseEntity.ok(responseFactory.create(response));
     }
+
+    @GetMapping("/wishlist")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'LANDLORD')")
+    public ResponseEntity<ApiResponse> getWishlist() {
+        return ResponseEntity.ok(responseFactory.create(homestayAppService.getWishlist()));
+    }
 }

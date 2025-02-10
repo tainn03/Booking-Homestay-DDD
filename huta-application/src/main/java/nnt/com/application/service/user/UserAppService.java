@@ -10,4 +10,7 @@ public interface UserAppService {
     void updateAvatar(MultipartFile file);
 
     UserResponse updateProfile(UserUpdateRequest request);
+
+    void likeHomestay(Long homestayId);
+
 }

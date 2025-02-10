@@ -161,4 +161,8 @@ public class HomestayAppServiceCache {
     private User getCurrentUser() {
         return userDomainService.getByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
     }
+
+    public List<HomestayResponse> getWishlist() {
+        return homestayDomainService.getWishlist(getCurrentUser());
+    }
 }

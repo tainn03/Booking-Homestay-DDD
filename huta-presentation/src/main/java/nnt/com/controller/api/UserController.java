@@ -7,6 +7,7 @@ import nnt.com.controller.model.builder.ResponseFactory;
 import nnt.com.controller.model.vo.ApiResponse;
 import nnt.com.domain.aggregates.model.dto.request.UserUpdateRequest;
 import nnt.com.domain.aggregates.model.dto.response.UserResponse;
+import nnt.com.domain.shared.exception.ErrorCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -41,5 +42,12 @@ public class UserController {
     public ResponseEntity<ApiResponse> updateAvatar(@RequestBody MultipartFile file) {
         userAppService.updateAvatar(file);
         return ResponseEntity.ok(responseFactory.create("Cập nhật ảnh đại diện thành công"));
+    }
+
+    @PatchMapping("/like")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'LANDLORD')")
+    public ResponseEntity<ApiResponse> likeHomestay(@RequestParam Long homestayId) {
+        userAppService.likeHomestay(homestayId);
+        return ResponseEntity.ok(responseFactory.create(ErrorCode.SUCCESS));
     }
 }

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import nnt.com.domain.aggregates.model.dto.request.UserUpdateRequest;
 import nnt.com.domain.aggregates.model.dto.response.UserResponse;
+import nnt.com.domain.aggregates.model.entity.Homestay;
 import nnt.com.domain.aggregates.model.entity.User;
 import nnt.com.domain.aggregates.model.mapper.UserMapper;
 import nnt.com.domain.aggregates.repository.UserDomainRepository;
@@ -77,5 +78,11 @@ public class UserDomainServiceImpl implements UserDomainService {
         User user = getByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         user = userMapper.updateEntity(request, user);
         return userMapper.toDTO(update(user));
+    }
+
+    @Override
+    public void likeHomestay(User user, Homestay homestay) {
+        user.getWishlist().add(homestay);
+        update(user);
     }
 }

@@ -3,6 +3,7 @@ package nnt.com.domain.aggregates.service;
 import nnt.com.domain.aggregates.model.dto.request.HomestayRequest;
 import nnt.com.domain.aggregates.model.dto.response.HomestayResponse;
 import nnt.com.domain.aggregates.model.entity.Homestay;
+import nnt.com.domain.aggregates.model.entity.User;
 import nnt.com.domain.shared.behaviors.BaseBehaviors;
 import org.springframework.data.domain.Page;
 
@@ -18,4 +19,6 @@ public interface HomestayDomainService extends BaseBehaviors<Homestay, Long> {
     HomestayResponse updateHomestay(long homestayId, HomestayRequest request);
 
     List<HomestayResponse> getByOwner(Long id);
+
+    List<HomestayResponse> getWishlist(User currentUser);
 }

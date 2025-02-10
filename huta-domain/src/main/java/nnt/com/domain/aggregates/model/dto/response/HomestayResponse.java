@@ -1,8 +1,9 @@
 package nnt.com.domain.aggregates.model.dto.response;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import nnt.com.domain.aggregates.model.dto.request.RuleRequest;
 import nnt.com.domain.aggregates.model.dto.request.TagRequest;
 import nnt.com.domain.aggregates.model.vo.RentalType;
@@ -10,8 +11,9 @@ import nnt.com.domain.aggregates.model.vo.RentalType;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Setter
-@Getter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class HomestayResponse {
     long id;
