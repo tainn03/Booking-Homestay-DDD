@@ -82,7 +82,12 @@ public class UserDomainServiceImpl implements UserDomainService {
 
     @Override
     public void likeHomestay(User user, Homestay homestay) {
-        user.getWishlist().add(homestay);
+        user.getWishlist().stream()
+                .filter(h -> h.getId().equals(homestay.getId()))
+                .findFirst().ifPresentOrElse(
+                        user.getWishlist()::remove,
+                        () -> user.getWishlist().add(homestay)
+                );
         update(user);
     }
 }

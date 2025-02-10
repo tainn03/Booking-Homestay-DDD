@@ -17,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -80,6 +81,19 @@ public class HomestayDomainServiceImpl implements HomestayDomainService {
                     .build());
             typeHomestayDomainRepository.save(homestay.getTypeHomestay());
         }
+        List<Room> rooms = new ArrayList<>(List.of());
+        for (int i = 0; i < request.getBedrooms(); i++) {
+            rooms.add(Room.builder()
+                    .name("R-" + (i + 1))
+                    .homestay(homestay)
+                    .size(request.getBeds())
+                    .beds(request.getBeds())
+                    .dailyPrice(request.getDailyPrice())
+                    .weekendPrice(request.getWeekendPrice())
+                    .status("ACTIVE")
+                    .build());
+        }
+        homestay.setRooms(rooms);
         return convertToResponse(save(homestay));
     }
 

@@ -33,6 +33,9 @@ public class HomestayRequest {
     int maxGuests;
     int maxNights;
     int minNights;
+    int dailyPrice;
+    int weekendPrice;
+    float monthlyDiscount;
 
     @Enumerated(EnumType.STRING)
     @Builder.Default
