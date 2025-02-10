@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @RequiredArgsConstructor
@@ -72,8 +73,10 @@ public class HomestayAppServiceImpl implements HomestayAppService {
     }
 
     @Override
-    public void ratingHomestay(Long homestayId, RatingRequest request) {
-        homestayAppServiceCache.ratingHomestay(homestayId, request);
+    public HomestayResponse ratingHomestay(Long homestayId, RatingRequest request) {
+        HomestayResponse response = homestayAppServiceCache.ratingHomestay(homestayId, request);
+        CompletableFuture.runAsync(() -> updateHomestaySearch(response));
+        return response;
     }
 
     @Override
@@ -84,6 +87,11 @@ public class HomestayAppServiceImpl implements HomestayAppService {
     private HomestayResponse updateHomestaySearch(HomestayRequest request, HomestayResponse response) {
         homestaySearchDomainService.deleteById(response.getId());
         return saveHomestaySearch(request, response);
+    }
+
+    private void updateHomestaySearch(HomestayResponse response) {
+        homestaySearchDomainService.deleteById(response.getId());
+        homestaySearchDomainService.save(response);
     }
 
     private HomestayResponse saveHomestaySearch(HomestayRequest request, HomestayResponse response) {

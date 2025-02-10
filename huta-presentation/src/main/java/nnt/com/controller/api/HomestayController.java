@@ -100,8 +100,7 @@ public class HomestayController {
     @PostMapping("/{homestayId}/rating")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'LANDLORD')")
     public ResponseEntity<ApiResponse> ratingHomestay(@PathVariable Long homestayId, @Valid @RequestBody RatingRequest request) {
-        homestayAppService.ratingHomestay(homestayId, request);
-        return ResponseEntity.ok(responseFactory.create(ErrorCode.SUCCESS));
+        return ResponseEntity.ok(responseFactory.create(homestayAppService.ratingHomestay(homestayId, request)));
     }
 
     @GetMapping("/{homestayId}/rating")

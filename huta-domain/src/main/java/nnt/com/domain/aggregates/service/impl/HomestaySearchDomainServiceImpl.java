@@ -28,6 +28,12 @@ public class HomestaySearchDomainServiceImpl implements HomestaySearchDomainServ
         return save(document);
     }
 
+    @Override
+    public HomestayDocument save(HomestayResponse response) {
+        HomestayDocument document = homestaySearchMapper.toDocument(response);
+        return save(document);
+    }
+
     private HomestayDocument save(HomestayDocument homestaySearch) {
         return homestaySearchDomainRepository.save(homestaySearch);
     }

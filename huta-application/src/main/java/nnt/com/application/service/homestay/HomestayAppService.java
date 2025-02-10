@@ -28,7 +28,7 @@ public interface HomestayAppService {
 
     List<HomestayResponse> getWishlist();
 
-    void ratingHomestay(Long homestayId, RatingRequest request);
+    HomestayResponse ratingHomestay(Long homestayId, RatingRequest request);
 
     List<RatingRequest> getRating(Long homestayId);
 }

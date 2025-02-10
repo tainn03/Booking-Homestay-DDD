@@ -9,6 +9,8 @@ import java.util.List;
 public interface HomestaySearchDomainService {
     HomestayDocument save(HomestayRequest request, HomestayResponse response);
 
+    HomestayDocument save(HomestayResponse response);
+
     List<HomestayDocument> findAll();
 
     void deleteById(Long id);

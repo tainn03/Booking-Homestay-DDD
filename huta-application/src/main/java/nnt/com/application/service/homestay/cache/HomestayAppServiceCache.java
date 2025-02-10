@@ -167,11 +167,11 @@ public class HomestayAppServiceCache {
         return homestayDomainService.getWishlist(getCurrentUser());
     }
 
-    public void ratingHomestay(Long homestayId, RatingRequest request) {
+    public HomestayResponse ratingHomestay(Long homestayId, RatingRequest request) {
         Homestay homestay = homestayDomainService.getById(homestayId);
         User user = getCurrentUser();
-        homestayDomainService.ratingHomestay(homestay, user, request);
         deleteCache(homestayId);
+        return homestayDomainService.ratingHomestay(homestay, user, request);
     }
 
     public List<RatingRequest> getRating(Long homestayId) {

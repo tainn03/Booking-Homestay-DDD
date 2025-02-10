@@ -44,6 +44,7 @@ public class HomestayDocument {
     int maxGuests;
     int maxNights;
     int minNights;
+    double rating;
 
     RentalType rentalType;
 

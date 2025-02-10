@@ -23,5 +23,5 @@ public interface HomestayDomainService extends BaseBehaviors<Homestay, Long> {
 
     List<HomestayResponse> getWishlist(User currentUser);
 
-    void ratingHomestay(Homestay homestay, User user, RatingRequest request);
+    HomestayResponse ratingHomestay(Homestay homestay, User user, RatingRequest request);
 }

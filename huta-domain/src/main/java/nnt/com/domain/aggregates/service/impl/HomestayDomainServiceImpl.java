@@ -112,23 +112,25 @@ public class HomestayDomainServiceImpl implements HomestayDomainService {
     }
 
     @Override
-    public void ratingHomestay(Homestay homestay, User user, RatingRequest request) {
+    public HomestayResponse ratingHomestay(Homestay homestay, User user, RatingRequest request) {
         homestay.getReviews().add(Review.builder()
                 .user(user)
                 .homestay(homestay)
                 .rating(request.getRating())
                 .comment(request.getComment())
                 .build());
-        homestayDomainRepository.update(homestay);
+        return convertToResponse(update(homestay));
     }
 
     private HomestayResponse convertToResponse(Homestay homestay) {
         HomestayResponse response = homestayMapper.toDTO(homestay);
-        double rating = homestay.getReviews().stream()
-                .mapToDouble(Review::getRating)
-                .average()
-                .orElse(0);
-        response.setRating(rating);
+        if (homestay.getReviews() != null && !homestay.getReviews().isEmpty()) {
+            double rating = homestay.getReviews().stream()
+                    .mapToDouble(Review::getRating)
+                    .average()
+                    .orElse(0);
+            response.setRating(rating);
+        }
         return response;
     }
 
