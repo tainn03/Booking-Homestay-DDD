@@ -40,7 +40,7 @@ public class HomestayScheduler {
     private void syncDataToElasticSearch(List<HomestayResponse> homestays, List<HomestayDocument> homestayDocuments) {
         homestays.forEach(homestay -> {
             if (homestayDocuments.stream().noneMatch(homestayDocument -> homestayDocument.getId() == homestay.getId())) {
-                kafkaProducer.sendFireAndForgot(KafkaTopic.SYNC_TOPIC.getTopic(), null, homestay);
+                kafkaProducer.sendFireAndForgot(KafkaTopic.SYNC_TOPIC.getTopic(), String.valueOf(homestay.getId()), homestay);
             }
         });
     }
