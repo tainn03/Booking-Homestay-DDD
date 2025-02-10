@@ -3,7 +3,7 @@ package nnt.com.domain.aggregates.model.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
-import nnt.com.domain.aggregates.model.enums.AmenityType;
+import nnt.com.domain.aggregates.model.vo.AmenityType;
 
 import java.util.List;
 

@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import nnt.com.domain.shared.model.dto.EmailRequest;
-import nnt.com.domain.shared.model.enums.MailTemplate;
+import nnt.com.domain.shared.model.vo.MailTemplate;
 import nnt.com.infrastructure.persistence.mail.service.MailService;
 import nnt.com.infrastructure.persistence.mail.utils.DynamicTemplatePersonalization;
 import org.springframework.beans.factory.annotation.Value;

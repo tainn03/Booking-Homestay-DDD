@@ -3,7 +3,7 @@ package nnt.com.domain.aggregates.model.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import nnt.com.domain.aggregates.model.enums.UserStatus;
+import nnt.com.domain.aggregates.model.vo.UserStatus;
 import nnt.com.domain.shared.model.entity.BaseEntity;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;

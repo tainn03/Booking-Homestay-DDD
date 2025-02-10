@@ -3,8 +3,8 @@ package nnt.com.domain.aggregates.model.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import nnt.com.domain.aggregates.model.enums.HomestayStatus;
-import nnt.com.domain.aggregates.model.enums.RentalType;
+import nnt.com.domain.aggregates.model.vo.HomestayStatus;
+import nnt.com.domain.aggregates.model.vo.RentalType;
 import nnt.com.domain.shared.model.entity.BaseEntity;
 
 import java.io.Serializable;

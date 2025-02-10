@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import nnt.com.domain.aggregates.model.dto.response.AuthResponse;
 import nnt.com.domain.aggregates.model.entity.User;
-import nnt.com.domain.aggregates.model.enums.RoleType;
+import nnt.com.domain.aggregates.model.vo.RoleType;
 import nnt.com.domain.aggregates.repository.RoleDomainRepository;
 import nnt.com.domain.aggregates.repository.UserDomainRepository;
 import nnt.com.domain.aggregates.service.AuthenticationDomainService;

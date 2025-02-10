@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nnt.com.domain.aggregates.model.dto.request.RuleRequest;
 import nnt.com.domain.aggregates.model.dto.request.TagRequest;
-import nnt.com.domain.aggregates.model.enums.RentalType;
+import nnt.com.domain.aggregates.model.vo.RentalType;
 
 import java.time.LocalDateTime;
 import java.util.List;

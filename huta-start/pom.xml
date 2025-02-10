@@ -20,7 +20,7 @@
     <dependencies>
         <dependency>
             <groupId>nnt.com</groupId>
-            <artifactId>huta-controller</artifactId>
+            <artifactId>huta-presentation</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

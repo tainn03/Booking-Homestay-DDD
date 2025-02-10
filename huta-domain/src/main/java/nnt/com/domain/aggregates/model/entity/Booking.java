@@ -2,7 +2,7 @@ package nnt.com.domain.aggregates.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import nnt.com.domain.aggregates.model.enums.BookingStatus;
+import nnt.com.domain.aggregates.model.vo.BookingStatus;
 import nnt.com.domain.shared.model.entity.BaseEntity;
 
 import java.time.LocalDate;

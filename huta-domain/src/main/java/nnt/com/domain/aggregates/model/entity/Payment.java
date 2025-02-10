@@ -3,7 +3,7 @@ package nnt.com.domain.aggregates.model.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import nnt.com.domain.aggregates.model.enums.PaymentMethod;
+import nnt.com.domain.aggregates.model.vo.PaymentMethod;
 import nnt.com.domain.shared.model.entity.BaseEntity;
 
 import java.time.LocalDate;

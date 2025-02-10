@@ -10,7 +10,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>huta-start</module>
-        <module>huta-controller</module>
+        <module>huta-presentation</module>
         <module>huta-application</module>
         <module>huta-infrastructure</module>
         <module>huta-domain</module>

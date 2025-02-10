@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
-import nnt.com.domain.aggregates.model.enums.UserStatus;
+import nnt.com.domain.aggregates.model.vo.UserStatus;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

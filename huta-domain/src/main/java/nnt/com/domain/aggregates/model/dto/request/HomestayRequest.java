@@ -4,8 +4,8 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
-import nnt.com.domain.aggregates.model.enums.HomestayStatus;
-import nnt.com.domain.aggregates.model.enums.RentalType;
+import nnt.com.domain.aggregates.model.vo.HomestayStatus;
+import nnt.com.domain.aggregates.model.vo.RentalType;
 import org.springframework.data.elasticsearch.annotations.GeoPointField;
 import org.springframework.data.elasticsearch.core.geo.GeoPoint;
 

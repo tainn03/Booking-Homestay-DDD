@@ -8,7 +8,7 @@ import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import nnt.com.domain.aggregates.model.dto.request.RuleRequest;
 import nnt.com.domain.aggregates.model.dto.request.TagRequest;
-import nnt.com.domain.aggregates.model.enums.RentalType;
+import nnt.com.domain.aggregates.model.vo.RentalType;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.GeoPointField;
 import org.springframework.data.elasticsearch.core.geo.GeoPoint;
