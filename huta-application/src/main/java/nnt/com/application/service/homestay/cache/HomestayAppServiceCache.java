@@ -202,6 +202,9 @@ public class HomestayAppServiceCache {
     }
 
     public List<HomestayResponse> recommendHomestay() {
-        return recommendationService.recommendHomestaysForUser(getCurrentUser().getId());
+        User user = getCurrentUser();
+        if (!user.getReviews().isEmpty())
+            return recommendationService.recommendIBCF(user.getId());
+        return recommendationService.recommendPopularity();
     }
 }

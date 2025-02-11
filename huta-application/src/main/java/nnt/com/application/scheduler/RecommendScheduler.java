@@ -28,7 +28,8 @@ public class RecommendScheduler {
     HomestayDomainService homestayDomainService;
     PasswordEncoder passwordEncoder;
 
-    @Scheduled(fixedRate = 10000)
+    // Tạo dữ liệu đánh giá tự động cho thuật toán gợi ý
+    @Scheduled(fixedRate = 1000 * 60 * 60)
     public void autoRateHomestay() {
         Faker faker = new Faker();
 
