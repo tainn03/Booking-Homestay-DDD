@@ -10,7 +10,6 @@ import nnt.com.domain.aggregates.model.dto.response.ImageResponse;
 import nnt.com.domain.aggregates.model.entity.Homestay;
 import nnt.com.domain.aggregates.model.entity.Image;
 import nnt.com.domain.aggregates.model.entity.User;
-import nnt.com.domain.aggregates.model.mapper.HomestayMapper;
 import nnt.com.domain.aggregates.service.HomestayDomainService;
 import nnt.com.domain.aggregates.service.ImageDomainService;
 import nnt.com.domain.aggregates.service.RecommendationService;
@@ -27,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import static lombok.AccessLevel.PRIVATE;
@@ -44,7 +44,6 @@ public class HomestayAppServiceCache {
     RedisDistributedService distributedCache;
     RedisCache redisCache;
     LocalCache<HomestayResponse> localCache;
-    HomestayMapper homestayMapper;
 
     public Page<HomestayResponse> getAll(int page, int size, String sortBy, String direction) {
         return homestayDomainService.getAllHomestay(page, size, sortBy, direction);
@@ -201,10 +200,38 @@ public class HomestayAppServiceCache {
         return convertImages(homestay.getImages());
     }
 
-    public List<HomestayResponse> recommendHomestay() {
-        User user = getCurrentUser();
-        if (!user.getReviews().isEmpty())
-            return recommendationService.recommendIBCF(user.getId());
-        return recommendationService.recommendPopularity();
+    public List recommendHomestay() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (!Objects.equals(email, "anonymousUser")) {
+            User user = userDomainService.getByEmail(email);
+            if (!user.getReviews().isEmpty()) {
+                return getRecommendByCache(user);
+            }
+        }
+        return getPopularityByCache();
+    }
+
+    private List getRecommendByCache(User user) {
+        List responses = redisCache.getObject(RedisKey.HOMESTAY.getKey() + "RECOMMEND:" + user.getId(), List.class);
+        if (responses != null) {
+            log.info("GET RECOMMENDATION FOR USER {} FROM CACHE", user.getId());
+            return responses;
+        }
+        responses = recommendationService.recommendIBCF(user.getId());
+        redisCache.setObject(RedisKey.HOMESTAY.getKey() + "RECOMMEND:" + user.getId(), responses, 1L, TimeUnit.HOURS); // short term cache
+        log.info("GET RECOMMENDATION FOR USER {} FROM SERVICE", user.getId());
+        return responses;
+    }
+
+    private List getPopularityByCache() {
+        List responses = redisCache.getObject(RedisKey.HOMESTAY.getKey() + "RECOMMEND:POPULAR", List.class);
+        if (responses != null) {
+            log.info("GET POPULAR RECOMMENDATION FROM CACHE");
+            return responses;
+        }
+        responses = recommendationService.recommendPopularity();
+        redisCache.setObject(RedisKey.HOMESTAY.getKey() + "RECOMMEND:POPULAR", responses, 1L, TimeUnit.DAYS); // long term cache
+        log.info("GET POPULAR RECOMMENDATION FROM SERVICE");
+        return responses;
     }
 }

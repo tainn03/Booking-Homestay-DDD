@@ -29,6 +29,9 @@ public class RecommendationServiceImpl implements RecommendationService {
 
         Map<Long, Double> similarityScores = new HashMap<>();
         Map<Long, Integer> currentUserHomestayRatings = userHomestayMatrix.get(userId);
+        if (currentUserHomestayRatings == null) {
+            return List.of();
+        }
 
         userHomestayMatrix.forEach((otherUserId, homestayRatings) -> {
             if (!otherUserId.equals(userId)) {
@@ -55,6 +58,9 @@ public class RecommendationServiceImpl implements RecommendationService {
         Map<Long, Map<Long, Integer>> userHomestayMatrix = createUserHomestayMatrix(allInteractions);
 
         Map<Long, Integer> currentUserHomestayRatings = userHomestayMatrix.get(userId);
+        if (currentUserHomestayRatings == null) {
+            return List.of();
+        }
 
         Map<Long, Map<Long, Double>> itemSimilarityMatrix = new HashMap<>();
         Set<Long> homestayIds = userHomestayMatrix.values().stream()

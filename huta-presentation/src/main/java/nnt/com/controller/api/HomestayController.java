@@ -114,7 +114,6 @@ public class HomestayController {
     }
 
     @GetMapping("/recommend")
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'LANDLORD')")
     public ResponseEntity<ApiResponse> recommendHomestay() {
         return ResponseEntity.ok(responseFactory.create(homestayAppService.recommendHomestay()));
     }
