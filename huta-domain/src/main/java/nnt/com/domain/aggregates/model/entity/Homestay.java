@@ -65,10 +65,6 @@ public class Homestay extends BaseEntity<Long> implements Serializable {
     @JoinColumn(name = "name")
     TypeHomestay typeHomestay;
 
-    @ManyToOne
-    @JoinColumn(name = "district_id")
-    District district;
-
     @OneToMany(mappedBy = "homestay", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     List<Rule> rules;
 

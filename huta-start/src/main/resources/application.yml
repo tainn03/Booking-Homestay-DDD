@@ -130,3 +130,5 @@ application:
     cluster: ${PUSHER_CLUSTER}
   huta:
     email: ${HUTA_EMAIL}
+  ghn:
+    token: ${GHN_TOKEN}

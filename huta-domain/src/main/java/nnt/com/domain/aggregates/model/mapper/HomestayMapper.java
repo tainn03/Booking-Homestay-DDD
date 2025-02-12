@@ -8,7 +8,6 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface HomestayMapper {
-    @Mapping(target = "district", ignore = true)
     @Mapping(target = "homestayName", source = "name")
     @Mapping(target = "lon", source = "location.lon")
     @Mapping(target = "lat", source = "location.lat")

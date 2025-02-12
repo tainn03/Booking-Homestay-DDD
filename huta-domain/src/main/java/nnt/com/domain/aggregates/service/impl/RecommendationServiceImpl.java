@@ -90,7 +90,7 @@ public class RecommendationServiceImpl implements RecommendationService {
     @Override // Phương pháp tính điểm phổ biến (Popularity Score)
     public List<HomestayResponse> recommendPopularity() {
         List<Review> allReviews = reviewDomainRepository.findAll();
-        int totalReviews = allReviews.size();
+        long totalReviews = allReviews.size();
         List<Homestay> popularHomestays = allReviews.stream()
                 .collect(Collectors.groupingBy(Review::getHomestay,
                         Collectors.averagingDouble(review -> calculatePopularityScore(review.getHomestay(), totalReviews))))
