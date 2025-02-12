@@ -103,12 +103,13 @@ public class SyncDBScheduler {
     }
 
     private void saveLocation(Province province, District district, Ward ward) {
-        locationSearchDomainService.save(LocationDocument.builder()
+        LocationDocument locationDocument = LocationDocument.builder()
                 .id(ward.getWardCode())
                 .ward(ward.getWardName())
                 .district(district.getDistrictName())
                 .city(province.getProvinceName())
-                .build());
+                .build();
+        kafkaProducer.sendFireAndForgot(KafkaTopic.SYNC_TOPIC.getTopic(), ward.getWardCode(), locationDocument);
     }
 
     private List<Province> getProvinces() {
