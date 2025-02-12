@@ -28,4 +28,9 @@ public class HomestaySearchController {
         return responseFactory.create(homestaySearchAppService.searchByLocation(lat, lon, distance));
     }
 
+    @GetMapping("/address")
+    public ApiResponse searchByAddress(@RequestParam String address) {
+        return responseFactory.create(homestaySearchAppService.searchByAddress(address));
+    }
+
 }

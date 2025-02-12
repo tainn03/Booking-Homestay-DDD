@@ -8,4 +8,6 @@ public interface HomestaySearchAppService {
     List<HomestayDocument> searchByContent(String content);
 
     List<HomestayDocument> searchByLocation(String lat, String lon, int distance);
+
+    List<String> searchByAddress(String address);
 }
