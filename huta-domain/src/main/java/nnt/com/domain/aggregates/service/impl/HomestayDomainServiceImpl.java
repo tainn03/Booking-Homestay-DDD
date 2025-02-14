@@ -150,6 +150,9 @@ public class HomestayDomainServiceImpl implements HomestayDomainService {
                     .orElse(0);
             response.setRating(rating);
         }
+        if (homestay.getImages() != null && !homestay.getImages().isEmpty()) {
+            response.setImageUrls(homestay.getImages().stream().map(Image::getUrl).toList());
+        }
         return response;
     }
 

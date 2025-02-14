@@ -31,7 +31,7 @@ public class HomestayResponse {
     String addressDetail;
     String emailOwner;
 
-    //    List<String> imageUrls;
+    List<String> imageUrls;
     //    List<Room> rooms;
     double rating;
     String typeHomestay;
