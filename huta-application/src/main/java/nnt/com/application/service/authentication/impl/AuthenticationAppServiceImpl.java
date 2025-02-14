@@ -26,7 +26,6 @@ public class AuthenticationAppServiceImpl implements AuthenticationAppService {
     UserDomainService userDomainService;
     RedisCache redisCache;
     MailProducerImpl mailProducer;
-    StringUtil stringUtil;
 
 
     @Override
@@ -102,7 +101,7 @@ public class AuthenticationAppServiceImpl implements AuthenticationAppService {
 
     @Override
     public void forgotPassword(String email) {
-        String password = stringUtil.generateRandomPassword();
+        String password = StringUtil.generateRandomPassword();
         mailProducer.sendForgotPasswordMail(email, password);
         redisCache.setObject(email + ":pwd", password, 5L, TimeUnit.MINUTES);
     }

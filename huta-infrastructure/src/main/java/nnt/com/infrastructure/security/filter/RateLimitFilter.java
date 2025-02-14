@@ -19,7 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class RateLimitFilter implements Filter {
     private final Map<String, Bucket> bucketCache = new ConcurrentHashMap<>();
 
-    // Lọc request dựa trên IP address giới hạn 100 request/phút
+    // Lọc request dựa trên IP address giới hạn 100 request/giây
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
@@ -41,7 +41,7 @@ public class RateLimitFilter implements Filter {
     private Bucket createNewBucket(String ip) {
         Bandwidth limit = Bandwidth.builder()
                 .capacity(100)
-                .refillGreedy(100, Duration.ofMinutes(1))
+                .refillGreedy(100, Duration.ofSeconds(1))
                 .build();
         return Bucket.builder().addLimit(limit).build();
     }

@@ -29,10 +29,10 @@ import java.util.Objects;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    JwtUtil jwtUtil;
     JwtDecoder jwtDecoder;
     UserDetailsService userDetailsService;
     RedisCache redisCache;
+    JwtUtil jwtUtil;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {

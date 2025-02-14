@@ -6,7 +6,6 @@ import lombok.experimental.FieldDefaults;
 import nnt.com.infrastructure.security.custom.CustomAccessDeniedHandler;
 import nnt.com.infrastructure.security.custom.CustomBasicAuthenticationEntryPoint;
 import nnt.com.infrastructure.security.filter.JwtAuthenticationFilter;
-import nnt.com.infrastructure.security.filter.RateLimitFilter;
 import nnt.com.infrastructure.security.key.RSAKeyRecord;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -42,7 +41,7 @@ import java.util.Collections;
 @EnableAsync
 public class SecurityConfig {
     JwtAuthenticationFilter jwtAuthenticationFilter;
-    RateLimitFilter rateLimitFilter;
+    //    RateLimitFilter rateLimitFilter;
     LogoutHandler logoutHandler;
     String[] WHITE_LIST_URL = {
             "/actuator/**",
@@ -80,7 +79,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .requiresChannel((requiresChannel) -> requiresChannel.anyRequest().requiresInsecure()) // http
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(rateLimitFilter, JwtAuthenticationFilter.class)
+//                .addFilterBefore(rateLimitFilter, JwtAuthenticationFilter.class)
                 .logout(logout ->
                         logout.logoutUrl("/api/v1/auth/logout")
                                 .addLogoutHandler(logoutHandler)

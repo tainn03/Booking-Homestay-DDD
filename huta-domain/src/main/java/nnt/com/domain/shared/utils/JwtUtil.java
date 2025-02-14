@@ -8,8 +8,9 @@ public interface JwtUtil {
 
     String generateRefreshToken(UserDetails userDetails);
 
+    String generateJwtToken(UserDetails userDetails, long tokenDurationInSeconds);
+
     boolean isTokenValid(Jwt jwtToken, UserDetails userDetails);
 
     String getUsername(Jwt jwtToken);
-
 }

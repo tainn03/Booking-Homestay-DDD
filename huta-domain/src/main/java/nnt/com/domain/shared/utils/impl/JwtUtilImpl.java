@@ -37,7 +37,8 @@ public class JwtUtilImpl implements JwtUtil {
         return generateJwtToken(userDetails, REFRESH_EXPIRATION);
     }
 
-    private String generateJwtToken(UserDetails userDetails, long tokenDurationInSeconds) {
+    @Override
+    public String generateJwtToken(UserDetails userDetails, long tokenDurationInSeconds) {
         JwtEncoder jwtEncoder = applicationContext.getBean(JwtEncoder.class);
         JwtClaimsSet claimsSet = JwtClaimsSet.builder()
                 .subject(userDetails.getUsername())

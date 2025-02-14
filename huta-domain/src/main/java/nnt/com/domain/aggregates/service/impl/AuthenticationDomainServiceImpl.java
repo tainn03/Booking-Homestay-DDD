@@ -40,8 +40,8 @@ public class AuthenticationDomainServiceImpl implements AuthenticationDomainServ
     final UserDomainRepository userDomainRepository;
     final RoleDomainRepository roleDomainRepository;
     final PasswordEncoder passwordEncoder;
-    final JwtUtil jwtUtil;
     final JwtDecoder jwtDecoder;
+    final JwtUtil jwtUtil;
 
     @Value("${application.security.google.client-id}")
     String CLIENTID;
