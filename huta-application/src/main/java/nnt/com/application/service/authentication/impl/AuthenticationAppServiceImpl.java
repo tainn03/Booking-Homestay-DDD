@@ -3,7 +3,7 @@ package nnt.com.application.service.authentication.impl;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import nnt.com.application.brokerMQ.producer.MailProducerImpl;
+import nnt.com.application.brokerMQ.producer.impl.MailProducerImpl;
 import nnt.com.application.service.authentication.AuthenticationAppService;
 import nnt.com.domain.aggregates.model.dto.request.ChangePasswordRequest;
 import nnt.com.domain.aggregates.model.dto.request.LoginRequest;
