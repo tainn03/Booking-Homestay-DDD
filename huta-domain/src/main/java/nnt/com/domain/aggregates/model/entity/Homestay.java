@@ -28,7 +28,7 @@ public class Homestay extends BaseEntity<Long> implements Serializable {
     @Enumerated(EnumType.STRING)
     @Builder.Default
     HomestayStatus status = HomestayStatus.ACTIVE;
-
+    @Lob
     String description;
     double lon;
     double lat;
@@ -40,10 +40,12 @@ public class Homestay extends BaseEntity<Long> implements Serializable {
     int maxGuests;
     int maxNights;
     int minNights;
+    int acreage;
+    int refundValue;
 
     @Enumerated(EnumType.STRING)
     @Builder.Default
-    RentalType rentalType = RentalType.ALL;
+    RentalType rentalType = RentalType.ENTIRE_PLACE;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
@@ -68,8 +70,8 @@ public class Homestay extends BaseEntity<Long> implements Serializable {
     @OneToMany(mappedBy = "homestay", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     List<Rule> rules;
 
-    @OneToMany(mappedBy = "homestay", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-    List<Tag> tags;
+    @ElementCollection
+    List<String> tags;
 
     @OneToMany(mappedBy = "homestay", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     List<Recommend> recommends;

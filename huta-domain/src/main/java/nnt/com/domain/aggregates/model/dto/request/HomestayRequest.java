@@ -3,7 +3,11 @@ package nnt.com.domain.aggregates.model.dto.request;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import nnt.com.domain.aggregates.model.vo.HomestayStatus;
 import nnt.com.domain.aggregates.model.vo.RentalType;
 import org.springframework.data.elasticsearch.annotations.GeoPointField;
@@ -11,11 +15,13 @@ import org.springframework.data.elasticsearch.core.geo.GeoPoint;
 
 import java.util.List;
 
-@Getter
-@Setter
+import static lombok.AccessLevel.PRIVATE;
+
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldDefaults(level = PRIVATE)
 public class HomestayRequest {
     @NotBlank(message = "NAME_REQUIRED")
     String name;
@@ -42,7 +48,7 @@ public class HomestayRequest {
     HomestayStatus status = HomestayStatus.ACTIVE;
     @Enumerated(EnumType.STRING)
     @Builder.Default
-    RentalType rentalType = RentalType.ALL;
+    RentalType rentalType = RentalType.ENTIRE_PLACE;
 
     String ward;
     String district;
@@ -52,5 +58,10 @@ public class HomestayRequest {
     GeoPoint location;
 
     List<RuleRequest> rules;
-    List<TagRequest> tags;
+    List<String> tags;
+    int acreage;
+    List<String> amenities;
+    List<CustomAmenityRequest> customAmenities;
+    int refundValue;
+    List<TypeImageRequest> typeImage;
 }

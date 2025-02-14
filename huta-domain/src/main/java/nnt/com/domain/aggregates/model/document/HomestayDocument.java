@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import nnt.com.domain.aggregates.model.dto.request.RuleRequest;
-import nnt.com.domain.aggregates.model.dto.request.TagRequest;
 import nnt.com.domain.aggregates.model.vo.RentalType;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.GeoPointField;
@@ -45,17 +44,19 @@ public class HomestayDocument {
     int maxNights;
     int minNights;
     double rating;
+    int acreage;
+    int refundValue;
 
     RentalType rentalType;
 
     List<RuleRequest> rules;
-    List<TagRequest> tags;
+    List<String> tags;
     @GeoPointField
     private GeoPoint location;
 
 
     //    Integer numLike;
-//    List<String> imageUrls;
+    List<String> imageUrls;
     //    List<Room> rooms;
 //    List<Rating> reviews;
 }

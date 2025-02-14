@@ -29,12 +29,7 @@ public class Room extends BaseEntity<Long> {
     @ManyToMany(mappedBy = "rooms", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     List<Booking> bookings;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "room_amenity",
-            joinColumns = @JoinColumn(name = "room_id"),
-            inverseJoinColumns = @JoinColumn(name = "amenity_id")
-    )
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     List<Amenity> amenities;
 
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

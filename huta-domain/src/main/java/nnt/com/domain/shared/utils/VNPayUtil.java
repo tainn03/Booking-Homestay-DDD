@@ -18,17 +18,17 @@ import static lombok.AccessLevel.PRIVATE;
 @FieldDefaults(level = PRIVATE)
 public class VNPayUtil {
     @Value("${application.payment.vnPay.tmnCode}")
-    static String vnp_TmnCode;
+    String vnp_TmnCode;
     @Value("${application.payment.vnPay.hashSecret}")
-    static String vnp_HashSecret;
+    String vnp_HashSecret;
     @Value("${application.payment.vnPay.payUrl}")
-    static String vnp_PayUrl;
+    String vnp_PayUrl;
     @Value("${application.payment.vnPay.returnUrl}")
-    static String vnp_Returnurl;
+    String vnp_Returnurl;
     @Value("${application.payment.vnPay.apiUrl}")
-    static String vnp_apiUrl;
+    String vnp_apiUrl;
 
-    public static String hashAllFields(Map fields) {
+    public String hashAllFields(Map fields) {
         List fieldNames = new ArrayList(fields.keySet());
         Collections.sort(fieldNames);
         StringBuilder sb = new StringBuilder();
@@ -48,7 +48,7 @@ public class VNPayUtil {
         return hmacSHA512(sb.toString());
     }
 
-    public static String hmacSHA512(String data) {
+    public String hmacSHA512(String data) {
         String key = vnp_HashSecret;
         try {
             if (key == null || data == null) {
@@ -71,7 +71,7 @@ public class VNPayUtil {
         }
     }
 
-    public static Map<String, String> createVnPayParams(int total, String orderInfor, String urlReturn) {
+    public Map<String, String> createVnPayParams(int total, String orderInfor, String urlReturn) {
         Map<String, String> vnp_Params = new HashMap<>();
         vnp_Params.put("vnp_Version", "2.1.0");
         vnp_Params.put("vnp_Command", "pay");
@@ -100,7 +100,7 @@ public class VNPayUtil {
         return vnp_Params;
     }
 
-    public static String createQueryUrl(String queryUrl, String vnp_SecureHash) {
+    public String createQueryUrl(String queryUrl, String vnp_SecureHash) {
         queryUrl += "&vnp_SecureHash=" + vnp_SecureHash;
         return vnp_PayUrl + "?" + queryUrl;
     }

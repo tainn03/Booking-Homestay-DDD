@@ -5,8 +5,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import nnt.com.domain.aggregates.model.vo.AmenityType;
 
-import java.util.List;
-
 @Entity
 @Getter
 @Setter
@@ -18,9 +16,11 @@ public class Amenity {
     String name;
 
     @Enumerated(EnumType.STRING)
-    AmenityType type;
+    @Builder.Default
+    AmenityType type = AmenityType.DEFAULT;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "amenities", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    List<Room> rooms;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "room_id", nullable = false)
+    Room room;
 }

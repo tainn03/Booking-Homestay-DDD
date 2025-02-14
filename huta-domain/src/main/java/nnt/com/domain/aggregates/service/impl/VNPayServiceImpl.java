@@ -17,10 +17,11 @@ import static lombok.AccessLevel.PRIVATE;
 @RequiredArgsConstructor
 @FieldDefaults(level = PRIVATE, makeFinal = true)
 public class VNPayServiceImpl implements VNPayService {
+    VNPayUtil vnpayUtil;
 
     @Override
     public String createOrder(int total, String orderInfor, String urlReturn) {
-        Map<String, String> vnp_Params = VNPayUtil.createVnPayParams(total, orderInfor, urlReturn);
+        Map<String, String> vnp_Params = vnpayUtil.createVnPayParams(total, orderInfor, urlReturn);
 
         List fieldNames = new ArrayList(vnp_Params.keySet());
         Collections.sort(fieldNames);
@@ -46,8 +47,8 @@ public class VNPayServiceImpl implements VNPayService {
             }
         }
         String queryUrl = query.toString();
-        String vnp_SecureHash = VNPayUtil.hmacSHA512(hashData.toString());
-        return VNPayUtil.createQueryUrl(queryUrl, vnp_SecureHash);
+        String vnp_SecureHash = vnpayUtil.hmacSHA512(hashData.toString());
+        return vnpayUtil.createQueryUrl(queryUrl, vnp_SecureHash);
     }
 
     @Override
@@ -66,7 +67,7 @@ public class VNPayServiceImpl implements VNPayService {
         String vnp_SecureHash = request.getParameter("vnp_SecureHash");
         fields.remove("vnp_SecureHashType");
         fields.remove("vnp_SecureHash");
-        String signValue = VNPayUtil.hashAllFields(fields);
+        String signValue = vnpayUtil.hashAllFields(fields);
         if (signValue.equals(vnp_SecureHash)) {  // 1: success, 0: fail, -1: error
             if ("00".equals(request.getParameter("vnp_TransactionStatus"))) {
                 return 1;

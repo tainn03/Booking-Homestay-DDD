@@ -12,7 +12,6 @@ public interface HomestayMapper {
     @Mapping(target = "lon", source = "location.lon")
     @Mapping(target = "lat", source = "location.lat")
     @Mapping(target = "rules", ignore = true)
-    @Mapping(target = "tags", ignore = true)
     @Mapping(target = "typeHomestay", ignore = true)
     Homestay toEntity(HomestayRequest request);
 

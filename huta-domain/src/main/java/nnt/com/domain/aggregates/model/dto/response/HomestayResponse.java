@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nnt.com.domain.aggregates.model.dto.request.RuleRequest;
-import nnt.com.domain.aggregates.model.dto.request.TagRequest;
 import nnt.com.domain.aggregates.model.vo.RentalType;
 
 import java.time.LocalDateTime;
@@ -44,9 +43,11 @@ public class HomestayResponse {
     int maxGuests;
     int maxNights;
     int minNights;
+    int acreage;
+    int refundValue;
 
     RentalType rentalType;
 
     List<RuleRequest> rules;
-    List<TagRequest> tags;
+    List<String> tags;
 }

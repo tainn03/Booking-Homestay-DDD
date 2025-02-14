@@ -9,6 +9,8 @@ import nnt.com.domain.aggregates.model.dto.request.RatingRequest;
 import nnt.com.domain.aggregates.model.dto.response.HomestayResponse;
 import nnt.com.domain.aggregates.model.entity.*;
 import nnt.com.domain.aggregates.model.mapper.HomestayMapper;
+import nnt.com.domain.aggregates.model.vo.AmenityType;
+import nnt.com.domain.aggregates.model.vo.DiscountType;
 import nnt.com.domain.aggregates.repository.HomestayDomainRepository;
 import nnt.com.domain.aggregates.repository.TypeHomestayDomainRepository;
 import nnt.com.domain.aggregates.service.HomestayDomainService;
@@ -67,11 +69,6 @@ public class HomestayDomainServiceImpl implements HomestayDomainService {
                 .homestay(homestay)
                 .build()
         ).toList());
-        homestay.setTags(request.getTags().stream().map(tagRequest -> Tag.builder()
-                .tag(tagRequest.getTag())
-                .homestay(homestay)
-                .build()
-        ).toList());
         homestay.setAddressDetail(request.getAddressDetail() + ", " + request.getWard() + ", " + request.getDistrict() + ", " + request.getCity());
         try {
             homestay.setTypeHomestay(typeHomestayDomainRepository.getById(request.getTypeHomestay()));
@@ -81,17 +78,44 @@ public class HomestayDomainServiceImpl implements HomestayDomainService {
                     .build());
             typeHomestayDomainRepository.save(homestay.getTypeHomestay());
         }
+        List<Image> images = new ArrayList<>(List.of());
+        request.getTypeImage().forEach(typeImageRequest -> {
+            if (!typeImageRequest.getUrls().isEmpty()) {
+                typeImageRequest.getUrls().forEach(url -> images.add(Image.builder()
+                        .url(url)
+                        .type(typeImageRequest.getTitle())
+                        .homestay(homestay)
+                        .build()));
+            }
+        });
+        homestay.setImages(images);
         List<Room> rooms = new ArrayList<>(List.of());
         for (int i = 0; i < request.getBedrooms(); i++) {
-            rooms.add(Room.builder()
+            Room room = Room.builder()
                     .name("R-" + (i + 1))
                     .homestay(homestay)
-                    .size(request.getBeds())
+                    .size(request.getMaxGuests())
                     .beds(request.getBeds())
                     .dailyPrice(request.getDailyPrice())
                     .weekendPrice(request.getWeekendPrice())
+                    .discounts(List.of(Discount.builder()
+                            .value(request.getMonthlyDiscount())
+                            .type(DiscountType.MONTHLY)
+                            .build()))
                     .status("ACTIVE")
-                    .build());
+                    .build();
+            List<Amenity> amenities = new ArrayList<>(List.of());
+            request.getAmenities().forEach(amenity -> amenities.add(Amenity.builder()
+                    .name(amenity)
+                    .type(AmenityType.DEFAULT)
+                    .room(room)
+                    .build()));
+            request.getCustomAmenities().forEach(customAmenityRequest -> amenities.add(Amenity.builder()
+                    .name(customAmenityRequest.getLabel())
+                    .type(AmenityType.CUSTOM)
+                    .room(room)
+                    .build()));
+            room.setAmenities(amenities);
         }
         homestay.setRooms(rooms);
         return convertToResponse(save(homestay));
