@@ -13,6 +13,7 @@ import org.springframework.data.elasticsearch.annotations.GeoPointField;
 import org.springframework.data.elasticsearch.core.geo.GeoPoint;
 
 import java.util.List;
+import java.util.Map;
 
 import static lombok.AccessLevel.PRIVATE;
 
@@ -24,15 +25,30 @@ public class HomestayDocument {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     long id;
-    String name;
+    String date;
+    String title;
     String email;
     String standardCheckIn;
     String standardCheckOut;
     String phone;
     String status;
     String description;
-    String addressDetail;
-    String emailOwner;
+    String address;
+    String authorId;
+
+    String featuredImage;
+    List<String> galleryImgs;
+    int commentCount;
+    int viewCount;
+    boolean like;
+    float reviewStart;
+    int reviewCount;
+    String price;
+    String saleOff;
+    boolean isAds;
+    Map<String, Double> map;
+    //    List<Room> rooms;
+    double rating;
     String typeHomestay;
     Integer version;
 
@@ -43,7 +59,6 @@ public class HomestayDocument {
     int maxGuests;
     int maxNights;
     int minNights;
-    double rating;
     int acreage;
     int refundValue;
 
@@ -53,10 +68,4 @@ public class HomestayDocument {
     List<String> tags;
     @GeoPointField
     private GeoPoint location;
-
-
-    //    Integer numLike;
-    List<String> imageUrls;
-    //    List<Room> rooms;
-//    List<Rating> reviews;
 }

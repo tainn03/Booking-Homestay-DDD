@@ -16,6 +16,7 @@ import nnt.com.infrastructure.cache.redis.RedisCache;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -96,7 +97,8 @@ public class AuthenticationAppServiceImpl implements AuthenticationAppService {
 
     @Override
     public void getOauthAccessTokenGoogle(String code, HttpServletResponse servletResponse) throws IOException {
-        authenticationDomainService.getOauthAccessTokenGoogle(code, servletResponse);
+        Map<String, String> result = authenticationDomainService.getOauthAccessTokenGoogle(code, servletResponse);
+        redisCache.setObject(result.get("email") + ":jwt", result.get("token"), 30L, TimeUnit.DAYS);
     }
 
     @Override

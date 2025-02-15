@@ -10,6 +10,8 @@ import nnt.com.domain.aggregates.model.mapper.UserMapper;
 import nnt.com.domain.aggregates.repository.UserDomainRepository;
 import nnt.com.domain.aggregates.service.ImageDomainService;
 import nnt.com.domain.aggregates.service.UserDomainService;
+import nnt.com.domain.shared.exception.BusinessException;
+import nnt.com.domain.shared.exception.ErrorCode;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -60,14 +62,19 @@ public class UserDomainServiceImpl implements UserDomainService {
     @Override
     public UserResponse getProfile() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (email == null) {
+            throw new BusinessException(ErrorCode.INVALID_CREDENTIALS);
+        }
         return userMapper.toDTO(getByEmail(email));
     }
 
     @Override
     public void updateAvatar(MultipartFile file) {
         User user = getByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
-        if (!user.getAvatar().contains("google")) {
-            imageDomainService.deleteFiles(List.of(user.getAvatar()));
+        if (user.getAvatar() != null) {
+            if (!user.getAvatar().contains("google")) {
+                imageDomainService.deleteFiles(List.of(user.getAvatar()));
+            }
         }
         user.setAvatar(imageDomainService.uploadFile(file));
         update(user);

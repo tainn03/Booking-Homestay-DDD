@@ -5,15 +5,17 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import nnt.com.domain.aggregates.model.dto.request.RatingRequest;
+import nnt.com.domain.aggregates.model.dto.response.HomestayResponse;
 import nnt.com.domain.aggregates.model.entity.Role;
 import nnt.com.domain.aggregates.model.entity.User;
-import nnt.com.domain.aggregates.service.AuthenticationDomainService;
+import nnt.com.domain.aggregates.model.vo.RoleType;
 import nnt.com.domain.aggregates.service.HomestayDomainService;
 import nnt.com.domain.aggregates.service.UserDomainService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static lombok.AccessLevel.PRIVATE;
@@ -24,7 +26,6 @@ import static lombok.AccessLevel.PRIVATE;
 @Slf4j
 public class RecommendScheduler {
     UserDomainService userDomainService;
-    AuthenticationDomainService authenticationDomainService;
     HomestayDomainService homestayDomainService;
     PasswordEncoder passwordEncoder;
 
@@ -33,9 +34,11 @@ public class RecommendScheduler {
     public void autoRateHomestay() {
         Faker faker = new Faker();
 
-        User user = createUser(faker);
-
-        ratingHomestays(user, faker);
+        List<HomestayResponse> homestayResponses = homestayDomainService.getAllHomestay();
+        if (!homestayResponses.isEmpty()) {
+            User user = createUser(faker);
+            ratingHomestays(user, faker, homestayResponses);
+        }
     }
 
     private User createUser(Faker faker) {
@@ -43,14 +46,14 @@ public class RecommendScheduler {
                 .fullName(faker.name().fullName())
                 .email(faker.internet().emailAddress())
                 .password(passwordEncoder.encode("Demo@123"))
-                .role(Role.builder().role("USER").build())
+                .role(Role.builder().role(RoleType.USER.name()).build())
                 .build());
         return userDomainService.save(user);
     }
 
-    private void ratingHomestays(User user, Faker faker) {
+    private void ratingHomestays(User user, Faker faker, List<HomestayResponse> homestayResponses) {
         AtomicInteger count = new AtomicInteger();
-        homestayDomainService.getAllHomestay().forEach(homestay -> {
+        homestayResponses.forEach(homestay -> {
             if (faker.bool().bool()) { // 50% chance to rate
                 homestayDomainService.ratingHomestay(homestayDomainService.getById(homestay.getId()), user, RatingRequest.builder()
                         .rating(faker.number().numberBetween(1, 5))

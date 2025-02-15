@@ -6,6 +6,9 @@ import lombok.extern.slf4j.Slf4j;
 import nnt.com.domain.aggregates.model.document.HomestayDocument;
 import nnt.com.domain.aggregates.model.document.LocationDocument;
 import nnt.com.domain.aggregates.model.dto.response.HomestayResponse;
+import nnt.com.domain.aggregates.model.entity.Role;
+import nnt.com.domain.aggregates.model.vo.RoleType;
+import nnt.com.domain.aggregates.repository.RoleDomainRepository;
 import nnt.com.domain.aggregates.service.GHNDomainService;
 import nnt.com.domain.aggregates.service.HomestayDomainService;
 import nnt.com.domain.aggregates.service.HomestaySearchDomainService;
@@ -29,6 +32,7 @@ import static lombok.AccessLevel.PRIVATE;
 @RequiredArgsConstructor
 @FieldDefaults(level = PRIVATE, makeFinal = true)
 public class SyncDBScheduler {
+    RoleDomainRepository roleDomainRepository;
     HomestayDomainService HomestayDomainService;
     HomestaySearchDomainService homestaySearchDomainService;
     KafkaProducer kafkaProducer;
@@ -37,12 +41,37 @@ public class SyncDBScheduler {
     LocationSearchDomainService locationSearchDomainService;
 
     @Scheduled(fixedRate = 1000 * 60 * 60)
+    public void createRoleWhenStart() {
+        try {
+            roleDomainRepository.findByRoleName(RoleType.USER.name());
+        } catch (Exception e) {
+            syncRoleData();
+        }
+
+    }
+
+    private void syncRoleData() {
+        Role role = Role.builder()
+                .role(RoleType.USER.name())
+                .build();
+        roleDomainRepository.save(role);
+        Role roleAdmin = Role.builder()
+                .role(RoleType.ADMIN.name())
+                .build();
+        roleDomainRepository.save(roleAdmin);
+        Role roleHost = Role.builder()
+                .role(RoleType.LANDLORD.name())
+                .build();
+        roleDomainRepository.save(roleHost);
+    }
+
+    @Scheduled(fixedRate = 1000 * 60 * 60)
     public void syncHomestayData() {
         List<HomestayDocument> homestayDocuments = homestaySearchDomainService.findAll();
         List<HomestayResponse> homestays = HomestayDomainService.getAllHomestay();
         int DBrows = homestays.size();
         int ESrows = homestayDocuments.size();
-        if (DBrows != ESrows) {
+        if (DBrows > ESrows) {
             log.info("SYNC DATA FROM DB TO ELASTICSEARCH FROM {} DB ROWS TO {} ES ROWS", DBrows, ESrows);
             syncDataToElasticSearch(homestays, homestayDocuments);
         }

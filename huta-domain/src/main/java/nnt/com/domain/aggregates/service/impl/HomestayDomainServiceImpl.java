@@ -19,8 +19,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -104,6 +107,12 @@ public class HomestayDomainServiceImpl implements HomestayDomainService {
                             .build()))
                     .status("ACTIVE")
                     .build();
+            Discount discount = Discount.builder()
+                    .value(request.getMonthlyDiscount())
+                    .type(DiscountType.WEEKLY)
+                    .room(room)
+                    .build();
+            room.getDiscounts().add(discount);
             List<Amenity> amenities = new ArrayList<>(List.of());
             request.getAmenities().forEach(amenity -> amenities.add(Amenity.builder()
                     .name(amenity)
@@ -116,6 +125,7 @@ public class HomestayDomainServiceImpl implements HomestayDomainService {
                     .room(room)
                     .build()));
             room.setAmenities(amenities);
+            rooms.add(room);
         }
         homestay.setRooms(rooms);
         return convertToResponse(save(homestay));
@@ -172,11 +182,29 @@ public class HomestayDomainServiceImpl implements HomestayDomainService {
                     .mapToDouble(Review::getRating)
                     .average()
                     .orElse(0);
-            response.setRating(rating);
+            response.setReviewStart((float) rating);
+            response.setReviewCount(homestay.getReviews().size());
+            response.setCommentCount(homestay.getReviews().size());
         }
         if (homestay.getImages() != null && !homestay.getImages().isEmpty()) {
-            response.setImageUrls(homestay.getImages().stream().map(Image::getUrl).toList());
+            response.setGalleryImgs(homestay.getImages().stream().map(Image::getUrl).toList());
+            response.setFeaturedImage(homestay.getImages().getFirst().getUrl());
         }
+        response.setViewCount(9999);
+
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (!Objects.equals(email, "anonymousUser") && !email.isEmpty()) {
+            User user = userDomainService.getByEmail(email);
+            if (user != null) {
+                response.setLike(user.getWishlist().contains(homestay));
+            }
+        }
+        response.setPrice("đ" + String.format("%,d", homestay.getRooms().getFirst().getDailyPrice()).replace(',', '.'));
+        if (homestay.getRooms().getFirst().getDiscounts() != null && !homestay.getRooms().getFirst().getDiscounts().isEmpty()) {
+            response.setSaleOff("-" + (int) homestay.getRooms().getFirst().getDiscounts().getFirst().getValue() + "% hôm nay");
+        }
+        response.setMap(Map.of("lat", homestay.getLat(), "lng", homestay.getLon()));
+        response.setDate(homestay.getCreatedAt().format(DateTimeFormatter.ofPattern("dd 'tháng' MM, yyyy")));
         return response;
     }
 

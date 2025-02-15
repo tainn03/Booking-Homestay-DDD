@@ -17,8 +17,8 @@ import java.util.List;
 public class Room extends BaseEntity<Long> {
     String name;
     int size;
-    double dailyPrice = 0.0;
-    double weekendPrice = 0.0;
+    int dailyPrice;
+    int weekendPrice;
     String status;
     int beds;
 

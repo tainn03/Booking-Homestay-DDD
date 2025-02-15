@@ -30,6 +30,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.Objects;
 
 @Service
@@ -136,7 +137,7 @@ public class AuthenticationDomainServiceImpl implements AuthenticationDomainServ
     }
 
     @Override
-    public void getOauthAccessTokenGoogle(String code, HttpServletResponse servletResponse) throws IOException {
+    public Map<String, String> getOauthAccessTokenGoogle(String code, HttpServletResponse servletResponse) throws IOException {
         // Gửi yêu cầu POST đến Google để đổi code lấy token
         String response = callRestApiToGetAccessToken(code);
 
@@ -146,7 +147,7 @@ public class AuthenticationDomainServiceImpl implements AuthenticationDomainServ
         String accessToken = jsonObject.get("access_token").toString();
 
         // Lấy thông tin người dùng từ Google với access token
-        getProfileDetailsGoogle(accessToken, servletResponse);
+        return getProfileDetailsGoogle(accessToken, servletResponse);
     }
 
     private String callRestApiToGetAccessToken(String code) {
@@ -169,7 +170,7 @@ public class AuthenticationDomainServiceImpl implements AuthenticationDomainServ
         return restTemplate.postForObject(url, requestEntity, String.class);
     }
 
-    private void getProfileDetailsGoogle(String accessToken, HttpServletResponse servletResponse) throws IOException {
+    private Map<String, String> getProfileDetailsGoogle(String accessToken, HttpServletResponse servletResponse) throws IOException {
         ResponseEntity<String> response = callRestApiToGetProfile(accessToken);
 
         // Phân tích cú pháp JSON để lấy thông tin người dùng
@@ -180,8 +181,10 @@ public class AuthenticationDomainServiceImpl implements AuthenticationDomainServ
         User user = checkOrCreateUser(jsonObject);
 
         // Điều hướng về frontend kèm theo accessToken
-        String redirectUrl = "http://localhost:3000?accessToken=" + jwtUtil.generateAccessToken(user);
+        String token = jwtUtil.generateAccessToken(user);
+        String redirectUrl = "http://localhost:3000?accessToken=" + token;
         servletResponse.sendRedirect(redirectUrl);
+        return Map.of("token", token, "email", user.getEmail());
     }
 
     private ResponseEntity<String> callRestApiToGetProfile(String accessToken) {

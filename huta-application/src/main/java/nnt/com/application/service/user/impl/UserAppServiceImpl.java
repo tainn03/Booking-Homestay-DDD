@@ -9,9 +9,12 @@ import nnt.com.domain.aggregates.model.entity.Homestay;
 import nnt.com.domain.aggregates.model.entity.User;
 import nnt.com.domain.aggregates.service.HomestayDomainService;
 import nnt.com.domain.aggregates.service.UserDomainService;
+import nnt.com.infrastructure.cache.redis.RedisCache;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.concurrent.TimeUnit;
 
 import static lombok.AccessLevel.PRIVATE;
 
@@ -21,20 +24,26 @@ import static lombok.AccessLevel.PRIVATE;
 public class UserAppServiceImpl implements UserAppService {
     UserDomainService userDomainService;
     HomestayDomainService homestayDomainService;
+    RedisCache redisCache;
 
     @Override
     public UserResponse getProfile() {
-        return userDomainService.getProfile();
+        UserResponse response = userDomainService.getProfile();
+        redisCache.setObject(SecurityContextHolder.getContext().getAuthentication().getName() + ":profile", response, 30L, TimeUnit.MINUTES);
+        return response;
     }
 
     @Override
     public void updateAvatar(MultipartFile file) {
         userDomainService.updateAvatar(file);
+        redisCache.delete(SecurityContextHolder.getContext().getAuthentication().getName() + ":profile");
     }
 
     @Override
     public UserResponse updateProfile(UserUpdateRequest request) {
-        return userDomainService.updateProfile(request);
+        UserResponse response = userDomainService.updateProfile(request);
+        redisCache.setObject(SecurityContextHolder.getContext().getAuthentication().getName() + ":profile", response, 30L, TimeUnit.MINUTES);
+        return response;
     }
 
     @Override

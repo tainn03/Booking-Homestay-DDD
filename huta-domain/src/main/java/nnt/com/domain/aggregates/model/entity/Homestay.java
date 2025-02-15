@@ -29,6 +29,7 @@ public class Homestay extends BaseEntity<Long> implements Serializable {
     @Builder.Default
     HomestayStatus status = HomestayStatus.ACTIVE;
     @Lob
+    @Column(columnDefinition = "TEXT")
     String description;
     double lon;
     double lat;

@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 import nnt.com.domain.aggregates.model.dto.request.RuleRequest;
 import nnt.com.domain.aggregates.model.vo.RentalType;
 
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Data
 @NoArgsConstructor
@@ -16,9 +16,8 @@ import java.util.List;
 @Builder
 public class HomestayResponse {
     long id;
-    LocalDateTime createdAt;
-    LocalDateTime updatedAt;
-    String name;
+    String date;
+    String title;
     String email;
     String standardCheckIn;
     String standardCheckOut;
@@ -27,10 +26,20 @@ public class HomestayResponse {
     String description;
     double lon;
     double lat;
-    String addressDetail;
-    String emailOwner;
+    String address;
+    String authorId;
 
-    List<String> imageUrls;
+    String featuredImage;
+    List<String> galleryImgs;
+    int commentCount;
+    int viewCount;
+    boolean like;
+    float reviewStart;
+    int reviewCount;
+    String price;
+    String saleOff;
+    boolean isAds;
+    Map<String, Double> map;
     //    List<Room> rooms;
     double rating;
     String typeHomestay;

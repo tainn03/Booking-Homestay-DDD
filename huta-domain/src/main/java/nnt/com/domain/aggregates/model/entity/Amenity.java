@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import nnt.com.domain.aggregates.model.vo.AmenityType;
+import nnt.com.domain.shared.model.entity.BaseEntity;
 
 @Entity
 @Getter
@@ -11,8 +12,7 @@ import nnt.com.domain.aggregates.model.vo.AmenityType;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Amenity {
-    @Id
+public class Amenity extends BaseEntity<Long> {
     String name;
 
     @Enumerated(EnumType.STRING)

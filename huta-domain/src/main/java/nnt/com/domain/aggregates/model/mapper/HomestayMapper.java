@@ -15,9 +15,10 @@ public interface HomestayMapper {
     @Mapping(target = "typeHomestay", ignore = true)
     Homestay toEntity(HomestayRequest request);
 
-    @Mapping(target = "name", source = "homestayName")
+    @Mapping(target = "title", source = "homestayName")
     @Mapping(target = "typeHomestay", source = "typeHomestay.name")
-    @Mapping(target = "emailOwner", source = "owner.email")
+    @Mapping(target = "authorId", source = "owner.id")
     @Mapping(target = "rating", ignore = true)
+    @Mapping(target = "address", source = "addressDetail")
     HomestayResponse toDTO(Homestay homestay);
 }

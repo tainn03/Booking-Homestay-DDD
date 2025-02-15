@@ -5,6 +5,7 @@ import nnt.com.domain.aggregates.model.dto.response.AuthResponse;
 import nnt.com.domain.aggregates.model.entity.User;
 
 import java.io.IOException;
+import java.util.Map;
 
 public interface AuthenticationDomainService {
     AuthResponse register(String name, String email, String password);
@@ -25,5 +26,5 @@ public interface AuthenticationDomainService {
 
     void loginGoogleAuth(HttpServletResponse response) throws IOException;
 
-    void getOauthAccessTokenGoogle(String code, HttpServletResponse servletResponse) throws IOException;
+    Map<String, String> getOauthAccessTokenGoogle(String code, HttpServletResponse servletResponse) throws IOException;
 }
