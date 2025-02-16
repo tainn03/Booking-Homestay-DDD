@@ -71,7 +71,7 @@ public class SyncDBScheduler {
         List<HomestayResponse> homestays = HomestayDomainService.getAllHomestay();
         int DBrows = homestays.size();
         int ESrows = homestayDocuments.size();
-        if (DBrows > ESrows) {
+        if (DBrows >= ESrows) {
             log.info("SYNC DATA FROM DB TO ELASTICSEARCH FROM {} DB ROWS TO {} ES ROWS", DBrows, ESrows);
             syncDataToElasticSearch(homestays, homestayDocuments);
         }
@@ -129,6 +129,6 @@ public class SyncDBScheduler {
                 .district(district.getDistrictName())
                 .city(province.getProvinceName())
                 .build();
-        kafkaProducer.sendFireAndForgot(KafkaTopic.SYNC_TOPIC.getTopic(), ward.getWardCode(), locationDocument);
+        locationSearchDomainService.save(locationDocument);
     }
 }

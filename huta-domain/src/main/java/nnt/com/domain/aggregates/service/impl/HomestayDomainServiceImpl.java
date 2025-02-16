@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import nnt.com.domain.aggregates.model.dto.request.HomestayRequest;
 import nnt.com.domain.aggregates.model.dto.request.RatingRequest;
 import nnt.com.domain.aggregates.model.dto.response.HomestayResponse;
+import nnt.com.domain.aggregates.model.dto.response.ReviewResponse;
 import nnt.com.domain.aggregates.model.entity.*;
 import nnt.com.domain.aggregates.model.mapper.HomestayMapper;
 import nnt.com.domain.aggregates.model.vo.AmenityType;
@@ -72,7 +73,7 @@ public class HomestayDomainServiceImpl implements HomestayDomainService {
                 .homestay(homestay)
                 .build()
         ).toList());
-        homestay.setAddressDetail(request.getAddressDetail() + ", " + request.getWard() + ", " + request.getDistrict() + ", " + request.getCity());
+        homestay.setAddressDetail(request.getAddressDetail() + " " + request.getWard() + ", " + request.getDistrict() + ", " + request.getCity());
         try {
             homestay.setTypeHomestay(typeHomestayDomainRepository.getById(request.getTypeHomestay()));
         } catch (Exception e) {
@@ -101,10 +102,6 @@ public class HomestayDomainServiceImpl implements HomestayDomainService {
                     .beds(request.getBeds())
                     .dailyPrice(request.getDailyPrice())
                     .weekendPrice(request.getWeekendPrice())
-                    .discounts(List.of(Discount.builder()
-                            .value(request.getMonthlyDiscount())
-                            .type(DiscountType.MONTHLY)
-                            .build()))
                     .status("ACTIVE")
                     .build();
             Discount discount = Discount.builder()
@@ -112,7 +109,7 @@ public class HomestayDomainServiceImpl implements HomestayDomainService {
                     .type(DiscountType.WEEKLY)
                     .room(room)
                     .build();
-            room.getDiscounts().add(discount);
+            room.setDiscounts(List.of(discount));
             List<Amenity> amenities = new ArrayList<>(List.of());
             request.getAmenities().forEach(amenity -> amenities.add(Amenity.builder()
                     .name(amenity)
@@ -183,24 +180,34 @@ public class HomestayDomainServiceImpl implements HomestayDomainService {
                     .average()
                     .orElse(0);
             response.setReviewStart((float) rating);
+            response.setRating(rating);
             response.setReviewCount(homestay.getReviews().size());
             response.setCommentCount(homestay.getReviews().size());
+            response.setReviews(homestay.getReviews().stream().map(review -> ReviewResponse.builder()
+                    .name(review.getUser().getFullName())
+                    .date(review.getCreatedAt().format(DateTimeFormatter.ofPattern("HH:mm:ss, dd 'tháng' MM yyyy")))
+                    .comment(review.getComment())
+                    .starPoint(review.getRating())
+                    .build()).toList());
         }
         if (homestay.getImages() != null && !homestay.getImages().isEmpty()) {
-            response.setGalleryImgs(homestay.getImages().stream().map(Image::getUrl).toList());
+            response.setGalleryImgs(homestay.getImages().stream().map(Image::getUrl)
+                    .toList());
             response.setFeaturedImage(homestay.getImages().getFirst().getUrl());
         }
         response.setViewCount(9999);
 
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        String email = SecurityContextHolder.getContext().getAuthentication() != null ?
+                SecurityContextHolder.getContext().getAuthentication().getName() : "anonymousUser";
         if (!Objects.equals(email, "anonymousUser") && !email.isEmpty()) {
             User user = userDomainService.getByEmail(email);
             if (user != null) {
                 response.setLike(user.getWishlist().contains(homestay));
             }
         }
-        response.setPrice("đ" + String.format("%,d", homestay.getRooms().getFirst().getDailyPrice()).replace(',', '.'));
-        if (homestay.getRooms().getFirst().getDiscounts() != null && !homestay.getRooms().getFirst().getDiscounts().isEmpty()) {
+        response.setPrice("đ" + String.format("%,d", homestay.getRooms().getFirst().getDailyPrice()).replace(',', ','));
+        if (homestay.getRooms().getFirst().getDiscounts() != null && !homestay.getRooms().getFirst().getDiscounts().isEmpty() &&
+                homestay.getRooms().getFirst().getDiscounts().getFirst().getValue() > 0) {
             response.setSaleOff("-" + (int) homestay.getRooms().getFirst().getDiscounts().getFirst().getValue() + "% hôm nay");
         }
         response.setMap(Map.of("lat", homestay.getLat(), "lng", homestay.getLon()));

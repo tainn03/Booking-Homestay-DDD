@@ -47,6 +47,9 @@ public class User extends BaseEntity<Long> implements UserDetails {
     String bankNum;
     String bankUsername;
     LocalDateTime lastLogin;
+    @Lob
+    @Column(columnDefinition = "TEXT")
+    String bio;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role", nullable = false)

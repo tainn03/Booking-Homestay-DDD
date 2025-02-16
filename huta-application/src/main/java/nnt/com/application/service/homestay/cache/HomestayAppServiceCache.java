@@ -117,7 +117,7 @@ public class HomestayAppServiceCache {
             }
 
             HomestayResponse homestayResponse = getHomestayFromDatabase(homestayId);
-            redisCache.setObject(cacheKey, homestayResponse);
+            redisCache.setObject(cacheKey, homestayResponse, 1L, TimeUnit.HOURS);
             localCache.put(homestayId, homestayResponse);
             return homestayResponse;
         } catch (InterruptedException e) {

@@ -59,4 +59,5 @@ public class HomestayResponse {
 
     List<RuleRequest> rules;
     List<String> tags;
+    List<ReviewResponse> reviews;
 }

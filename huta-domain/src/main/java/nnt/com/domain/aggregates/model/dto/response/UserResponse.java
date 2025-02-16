@@ -1,5 +1,6 @@
 package nnt.com.domain.aggregates.model.dto.response;
 
+import jakarta.persistence.Lob;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,4 +32,6 @@ public class UserResponse {
     String bankUsername;
     LocalDateTime lastLogin;
     String role;
+    @Lob
+    String bio;
 }

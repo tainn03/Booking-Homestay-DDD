@@ -33,7 +33,7 @@ public class HomestaySearchAppServiceImpl implements HomestaySearchAppService {
 
     @Override
     public List<HomestayDocument> searchByLocation(String lat, String lon, int distance) {
-        String key = "searchByLocation:" + lat + ":" + lon + ":" + distance;
+        String key = "searchByLocation:" + String.format("%.2f", Double.parseDouble(lat)) + ":" + String.format("%.2f", Double.parseDouble(lon)) + ":" + distance;
         if (redisCache.hasKey(key)) {
             return redisCache.getObject(key, List.class);
         }

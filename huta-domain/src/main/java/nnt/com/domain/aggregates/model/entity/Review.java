@@ -19,7 +19,7 @@ public class Review extends BaseEntity<Long> {
     Integer rating;
     String comment;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
     User user;
 

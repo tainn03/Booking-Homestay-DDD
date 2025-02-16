@@ -55,10 +55,10 @@ public class Homestay extends BaseEntity<Long> implements Serializable {
     @ManyToMany(mappedBy = "wishlist", fetch = FetchType.LAZY)
     List<User> likedUsers;
 
-    @OneToMany(mappedBy = "homestay", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "homestay", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     List<Image> images;
 
-    @OneToMany(mappedBy = "homestay", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "homestay", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     List<Room> rooms;
 
     @OneToMany(mappedBy = "homestay", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
@@ -71,7 +71,7 @@ public class Homestay extends BaseEntity<Long> implements Serializable {
     @OneToMany(mappedBy = "homestay", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     List<Rule> rules;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     List<String> tags;
 
     @OneToMany(mappedBy = "homestay", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

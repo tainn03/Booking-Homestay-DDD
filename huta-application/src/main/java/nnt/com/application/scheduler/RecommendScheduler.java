@@ -30,12 +30,12 @@ public class RecommendScheduler {
     PasswordEncoder passwordEncoder;
 
     // Tạo dữ liệu đánh giá tự động cho thuật toán gợi ý
-    @Scheduled(fixedRate = 1000 * 60 * 60)
+    @Scheduled(fixedRate = 1000 * 60 * 30)
     public void autoRateHomestay() {
         Faker faker = new Faker();
 
         List<HomestayResponse> homestayResponses = homestayDomainService.getAllHomestay();
-        if (!homestayResponses.isEmpty()) {
+        if (homestayResponses.size() > 1) {
             User user = createUser(faker);
             ratingHomestays(user, faker, homestayResponses);
         }

@@ -1,5 +1,6 @@
 package nnt.com.domain.aggregates.model.dto.request;
 
+import jakarta.persistence.Lob;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -23,4 +24,6 @@ public class UserUpdateRequest {
     String bankName;
     String bankNum;
     String bankUsername;
+    @Lob
+    String bio;
 }
