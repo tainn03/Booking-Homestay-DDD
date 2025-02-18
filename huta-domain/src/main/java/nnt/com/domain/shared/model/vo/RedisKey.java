@@ -11,7 +11,8 @@ import lombok.experimental.FieldDefaults;
 public enum RedisKey {
     HOMESTAY("HOMESTAY:"),
     ALL_HOMESTAY("HOMESTAY:ALL"),
-    ;
+    BOOKING("BOOKING:"),
+    ROOM_AVAILABILITY("ROOM_AVAILABILITY:");
 
     String key;
 }

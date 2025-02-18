@@ -13,7 +13,7 @@ import java.time.Instant;
 @Aspect
 @Component
 public class LoggerAspect {
-    @Around("execution(* nnt.com.controller.api..*.*(..))")
+    @Around("execution(* nnt.com.controller.resource..*.*(..))")
     public Object logAroundApiController(ProceedingJoinPoint joinPoint) throws Throwable {
         Instant start = Instant.now();
         Object result = joinPoint.proceed();

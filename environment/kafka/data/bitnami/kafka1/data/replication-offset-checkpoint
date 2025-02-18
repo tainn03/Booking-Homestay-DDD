@@ -1,5 +1,5 @@
 0
-69
+70
 __consumer_offsets 43 0
 __consumer_offsets 30 0
 __consumer_offsets 32 0
@@ -11,7 +11,7 @@ __consumer_offsets 49 0
 user.mail 0 4
 __consumer_offsets 40 0
 __consumer_offsets 27 0
-__consumer_offsets 12 1408496
+__consumer_offsets 12 1688560
 __consumer_offsets 36 0
 __consumer_offsets 45 0
 __consumer_offsets 10 0
@@ -42,6 +42,7 @@ __consumer_offsets 26 0
 __consumer_offsets 21 0
 __consumer_offsets 19 0
 __consumer_offsets 33 0
+homestay.booking 0 22
 booking.mail 1 0
 __consumer_offsets 37 0
 __consumer_offsets 8 0

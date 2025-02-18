@@ -8,7 +8,8 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
 public enum LockKey {
-    HOMESTAY("LOCK:HOMESTAY:");
+    HOMESTAY("LOCK:HOMESTAY:"),
+    BOOKING("LOCK:BOOKING:");
 
     String key;
 }

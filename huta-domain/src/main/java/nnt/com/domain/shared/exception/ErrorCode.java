@@ -69,6 +69,14 @@ public enum ErrorCode {
     EMAIL_ALREADY_EXISTS(40012, "Email đã tồn tại", HttpStatus.BAD_REQUEST),
     TOKEN_EXPIRED(40013, "Token đã hết hạn", HttpStatus.BAD_REQUEST),
     USER_ALREADY_LANDLORD(40014, "Người dùng đã là chủ nhà", HttpStatus.BAD_REQUEST),
+    PHONE_MUST_BE_VALID(40015, "Số điện thoại không hợp lệ", HttpStatus.BAD_REQUEST),
+    CHECKIN_CHECKOUT_IN_PAST(40017, "Ngày checkin hoặc checkout không thể ở quá khứ", HttpStatus.BAD_REQUEST),
+    CHECKIN_AFTER_CHECKOUT(40018, "Ngày checkin không thể sau ngày checkout", HttpStatus.BAD_REQUEST),
+    NO_ROOM_AVAILABLE(40019, "Không còn phòng trống", HttpStatus.BAD_REQUEST),
+    MAX_GUESTS_EXCEEDED(40020, "Số lượng khách vượt quá giới hạn", HttpStatus.BAD_REQUEST),
+    CHECK_IN_MUST_BE_NOT_BLANK(40021, "Ngày checkin không được để trống", HttpStatus.BAD_REQUEST),
+    CHECK_OUT_MUST_BE_NOT_BLANK(40022, "Ngày checkout không được để trống", HttpStatus.BAD_REQUEST),
+    ROOM_NOT_FOUND(40023, "Không tìm thấy phòng", HttpStatus.BAD_REQUEST),
 
 
     ;

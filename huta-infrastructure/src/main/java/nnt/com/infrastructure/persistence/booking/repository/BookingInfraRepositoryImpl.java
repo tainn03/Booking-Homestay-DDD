@@ -3,6 +3,7 @@ package nnt.com.infrastructure.persistence.booking.repository;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import nnt.com.domain.aggregates.model.entity.Booking;
+import nnt.com.domain.aggregates.model.vo.BookingStatus;
 import nnt.com.domain.aggregates.repository.BookingDomainRepository;
 import nnt.com.domain.shared.exception.BusinessException;
 import nnt.com.domain.shared.exception.ErrorCode;
@@ -12,6 +13,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 import static lombok.AccessLevel.PRIVATE;
 
@@ -45,5 +48,10 @@ public class BookingInfraRepositoryImpl implements BookingDomainRepository {
     @Override
     public void delete(Long id) {
         bookingInfraRepositoryJpa.deleteById(id);
+    }
+
+    @Override
+    public List<Booking> getByStatus(BookingStatus bookingStatus) {
+        return bookingInfraRepositoryJpa.findByStatus(bookingStatus);
     }
 }

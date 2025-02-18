@@ -11,7 +11,6 @@ import nnt.com.domain.aggregates.model.entity.User;
 import nnt.com.domain.aggregates.model.vo.RoleType;
 import nnt.com.domain.aggregates.service.HomestayDomainService;
 import nnt.com.domain.aggregates.service.UserDomainService;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +29,7 @@ public class RecommendScheduler {
     PasswordEncoder passwordEncoder;
 
     // Tạo dữ liệu đánh giá tự động cho thuật toán gợi ý
-    @Scheduled(fixedRate = 1000 * 60 * 30)
+//    @Scheduled(fixedRate = 1000 * 60 * 30)
     public void autoRateHomestay() {
         Faker faker = new Faker();
 

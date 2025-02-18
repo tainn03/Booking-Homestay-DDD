@@ -34,7 +34,7 @@ public class KafkaProducerImpl implements KafkaProducer {
             SendResult<String, Object> result = future.get();
             log.info("GỬI YÊU CẦU {}:{}-{} BẰNG SYNC VỚI TOTAL TIME = {} ms VÀ KẾT QUẢ LÀ {}", topic, key, message, System.currentTimeMillis() - startTime, result.getRecordMetadata());
         } catch (Exception e) {
-            log.error(e.getMessage(), e);
+            log.error(e.getMessage());
         }
     }
 
@@ -46,7 +46,7 @@ public class KafkaProducerImpl implements KafkaProducer {
             if (ex == null) {
                 log.info("2: PHẢN HỒI YÊU CẦU {}:{}-{} BẰNG ASYNC VỚI TOTAL TIME = {} ms VÀ KẾT QUẢ LÀ {}", topic, key, message, System.currentTimeMillis() - startTime, result.getRecordMetadata());
             } else {
-                log.error(ex.getMessage(), ex);
+                log.error(ex.getMessage());
             }
         });
         log.info("1: GỬI YÊU CẦU {}:{}-{} BẰNG ASYNC VỚI TOTAL TIME = {} ms", topic, key, message, System.currentTimeMillis() - startTime);

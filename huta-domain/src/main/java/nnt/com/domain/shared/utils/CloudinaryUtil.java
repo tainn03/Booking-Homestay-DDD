@@ -23,10 +23,10 @@ import java.util.stream.Collectors;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
 public class CloudinaryUtil {
-    static Cloudinary cloudinary;
-    static ExecutorService executorService = Executors.newFixedThreadPool(10);
+    Cloudinary cloudinary;
+    ExecutorService executorService = Executors.newFixedThreadPool(10);
 
-    public static List<String> uploadFiles(List<MultipartFile> files) {
+    public List<String> uploadFiles(List<MultipartFile> files) {
         List<CompletableFuture<String>> futures = files.stream()
                 .map(file -> CompletableFuture.supplyAsync(() -> uploadFile(file), executorService)
                         .handle((result, ex) -> {
@@ -44,7 +44,7 @@ public class CloudinaryUtil {
                 .collect(Collectors.toList());
     }
 
-    public static String uploadFile(MultipartFile file) {
+    public String uploadFile(MultipartFile file) {
         try {
             File convFile = FileUtil.convertMultiPartToFile(file);
             Map uploadResult = cloudinary.uploader().upload(convFile, ObjectUtils.emptyMap());
@@ -58,7 +58,7 @@ public class CloudinaryUtil {
         }
     }
 
-    public static void deleteFiles(List<String> urls) {
+    public void deleteFiles(List<String> urls) {
         List<CompletableFuture<Void>> futures = urls.stream()
                 .map(url -> CompletableFuture.runAsync(() -> {
                     String publicId = extractPublicId(url);
@@ -73,7 +73,7 @@ public class CloudinaryUtil {
         CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
     }
 
-    private static String extractPublicId(String url) {
+    private String extractPublicId(String url) {
         return url.substring(url.lastIndexOf("/") + 1, url.lastIndexOf("."));
     }
 }

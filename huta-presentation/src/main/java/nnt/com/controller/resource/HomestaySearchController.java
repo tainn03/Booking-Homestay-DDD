@@ -1,4 +1,4 @@
-package nnt.com.controller.api;
+package nnt.com.controller.resource;
 
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

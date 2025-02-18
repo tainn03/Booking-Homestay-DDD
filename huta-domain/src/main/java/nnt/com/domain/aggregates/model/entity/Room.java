@@ -38,6 +38,9 @@ public class Room extends BaseEntity<Long> {
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     List<PriceCalendar> priceCalendars;
 
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    List<RoomAvailable> roomAvailables;
+
     @Version
     Integer version;
 }

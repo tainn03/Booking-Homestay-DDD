@@ -1,5 +1,6 @@
 package nnt.com.domain.aggregates.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import nnt.com.domain.aggregates.model.vo.BookingStatus;
@@ -17,19 +18,27 @@ import java.util.List;
 public class Booking extends BaseEntity<Long> {
     LocalDate checkIn;
     LocalDate checkOut;
+    String code;
+    @Lob
+    @Column(columnDefinition = "TEXT")
     String note;
-    int totalCost;
-    int guests;
+    long totalCost;
+    int night;
+    int adults;
+    int children;
+    int infants;
 
     @Enumerated(EnumType.STRING)
     @Builder.Default
     BookingStatus status = BookingStatus.PENDING;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     User user;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "booking_room",
             joinColumns = @JoinColumn(name = "booking_id"),

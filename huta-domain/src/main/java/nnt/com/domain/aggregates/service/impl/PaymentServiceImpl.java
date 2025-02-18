@@ -3,7 +3,7 @@ package nnt.com.domain.aggregates.service.impl;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import nnt.com.domain.aggregates.service.VNPayService;
+import nnt.com.domain.aggregates.service.PaymentService;
 import nnt.com.domain.shared.utils.VNPayUtil;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +16,7 @@ import static lombok.AccessLevel.PRIVATE;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = PRIVATE, makeFinal = true)
-public class VNPayServiceImpl implements VNPayService {
+public class PaymentServiceImpl implements PaymentService {
     VNPayUtil vnpayUtil;
 
     @Override

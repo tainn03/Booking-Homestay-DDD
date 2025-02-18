@@ -1,4 +1,4 @@
-package nnt.com.controller.api;
+package nnt.com.controller.resource;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

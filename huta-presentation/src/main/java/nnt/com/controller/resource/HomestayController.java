@@ -1,4 +1,4 @@
-package nnt.com.controller.api;
+package nnt.com.controller.resource;
 
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import jakarta.validation.Valid;

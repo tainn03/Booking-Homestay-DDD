@@ -71,7 +71,7 @@ public class SyncDBScheduler {
         List<HomestayResponse> homestays = HomestayDomainService.getAllHomestay();
         int DBrows = homestays.size();
         int ESrows = homestayDocuments.size();
-        if (DBrows >= ESrows) {
+        if (DBrows > ESrows) {
             log.info("SYNC DATA FROM DB TO ELASTICSEARCH FROM {} DB ROWS TO {} ES ROWS", DBrows, ESrows);
             syncDataToElasticSearch(homestays, homestayDocuments);
         }

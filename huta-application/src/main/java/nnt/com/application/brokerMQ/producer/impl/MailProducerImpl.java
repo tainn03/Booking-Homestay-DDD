@@ -2,6 +2,7 @@ package nnt.com.application.brokerMQ.producer.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import nnt.com.application.brokerMQ.producer.MailProducer;
 import nnt.com.domain.shared.model.dto.EmailRequest;
 import nnt.com.domain.shared.model.vo.KafkaTopic;
@@ -16,6 +17,7 @@ import static lombok.AccessLevel.PRIVATE;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = PRIVATE, makeFinal = true)
+@Slf4j
 public class MailProducerImpl implements MailProducer {
     KafkaProducer kafkaProducer;
 
@@ -45,4 +47,17 @@ public class MailProducerImpl implements MailProducer {
                 .build();
         sendMail(email, emailRequest);
     }
+
+    @Override
+    public void sendBookingMail(String email, String name) {
+        log.info("SEND BOOKING MAIL TO {}", email);
+//        EmailRequest emailRequest = EmailRequest.builder()
+//                .to(email)
+//                .subject("Xác nhận đặt phòng")
+//                .templateId(MailTemplate.BOOKING.getValue())
+//                .templateParams(Map.of("name", name, "code", code))
+//                .build();
+//        sendMail(email, emailRequest);
+    }
+
 }

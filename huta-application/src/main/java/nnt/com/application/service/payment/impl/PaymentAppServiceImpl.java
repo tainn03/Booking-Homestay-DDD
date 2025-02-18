@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import nnt.com.application.service.payment.PaymentAppService;
-import nnt.com.domain.aggregates.service.VNPayService;
+import nnt.com.domain.aggregates.service.PaymentService;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -20,7 +20,7 @@ import static lombok.AccessLevel.PRIVATE;
 @FieldDefaults(level = PRIVATE, makeFinal = true)
 @Slf4j
 public class PaymentAppServiceImpl implements PaymentAppService {
-    VNPayService vnPayService;
+    PaymentService vnPayService;
 
     @Override
     public void redirectToPaymentGateway(int amount, String orderInfor, String baseUrl, HttpServletResponse response) throws IOException {
@@ -45,7 +45,7 @@ public class PaymentAppServiceImpl implements PaymentAppService {
 
     private void redirectToReactClient(HttpServletResponse response, String orderInfo) throws IOException {
         if (orderInfo != null) {
-            String redirectUrl = "http://localhost:3000/bookingdetail?id=" + orderInfo;
+            String redirectUrl = "http://localhost:3000/pay-done?id=" + orderInfo;
             response.sendRedirect(redirectUrl);
         } else {
             response.sendRedirect("http://localhost:3000/paymentfail");

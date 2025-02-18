@@ -1,5 +1,5 @@
 0
-69
+70
 __consumer_offsets 22 0
 homestay.recommendation 2 0
 __consumer_offsets 30 0
@@ -10,7 +10,7 @@ __consumer_offsets 4 0
 user.mail 4 0
 __consumer_offsets 27 0
 __consumer_offsets 7 0
-database.sync 1 0
+database.sync 1 5
 __consumer_offsets 9 0
 booking.mail 2 0
 payment.mail 0 0
@@ -52,7 +52,8 @@ __consumer_offsets 43 0
 __consumer_offsets 6 0
 __consumer_offsets 14 0
 booking.mail 0 0
-database.sync 2 0
+homestay.booking 0 0
+database.sync 2 6
 __consumer_offsets 20 0
 __consumer_offsets 0 0
 __consumer_offsets 44 0

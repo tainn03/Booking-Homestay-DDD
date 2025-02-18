@@ -8,4 +8,6 @@ public interface MailProducer {
     void sendForgotPasswordMail(String email, String password);
 
     void sendRegisterMail(String email, String name);
+
+    void sendBookingMail(String email, String name);
 }

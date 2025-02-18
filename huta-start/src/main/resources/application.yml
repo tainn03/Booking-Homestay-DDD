@@ -14,6 +14,8 @@ spring:
     hikari:
       maximum-pool-size: 30
       minimum-idle: 10
+      auto-commit: false # fix for PostgreSQL 9.4
+
   jpa:
     database: postgresql
     show-sql: false
@@ -26,6 +28,9 @@ spring:
     properties:
       hibernate:
         format_sql: true
+      jdbc:
+        lob:
+          non_contextual_creation: true # fix for PostgreSQL 9.4
     defer-datasource-initialization: true
   sql:
     init:
@@ -60,7 +65,6 @@ server:
 logging:
   level:
     org.apache.kafka: OFF
-    org.hibernate.sql: DEBUG
   pattern:
     console: "%green(%d{HH:mm:ss.SSS}) %blue(%-5level) %red([%thread]) %yellow(%logger{15}) - %msg%n"
 
@@ -132,3 +136,7 @@ application:
     email: ${HUTA_EMAIL}
   ghn:
     token: ${GHN_TOKEN}
+bloom:
+  filter:
+    capacity: 500000
+    errorRate: 0.0001

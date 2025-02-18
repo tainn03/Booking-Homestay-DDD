@@ -72,11 +72,12 @@ public class UserDomainServiceImpl implements UserDomainService {
     public void updateAvatar(MultipartFile file) {
         User user = getByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         if (user.getAvatar() != null) {
-            if (!user.getAvatar().contains("google")) {
+            if (user.getAvatar().contains("cloudinary")) {
                 imageDomainService.deleteFiles(List.of(user.getAvatar()));
             }
         }
-        user.setAvatar(imageDomainService.uploadFile(file));
+        String url = imageDomainService.uploadFile(file);
+        user.setAvatar(url);
         update(user);
     }
 

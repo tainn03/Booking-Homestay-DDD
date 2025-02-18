@@ -18,20 +18,21 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ImageDomainServiceImpl implements ImageDomainService {
     ImageDomainRepository imageDomainRepository;
+    CloudinaryUtil cloudinaryUtil;
 
     @Override
     public String uploadFile(MultipartFile file) {
-        return CloudinaryUtil.uploadFile(file);
+        return cloudinaryUtil.uploadFile(file);
     }
 
     @Override
     public List<String> uploadFiles(List<MultipartFile> files) {
-        return CloudinaryUtil.uploadFiles(files);
+        return cloudinaryUtil.uploadFiles(files);
     }
 
     @Override
     public void deleteFiles(List<String> urls) {
-        CloudinaryUtil.deleteFiles(urls);
+        cloudinaryUtil.deleteFiles(urls);
     }
 
     @Override
