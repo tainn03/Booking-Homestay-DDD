@@ -180,7 +180,7 @@ public class BookingAppServiceImpl implements BookingAppService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         for (LocalDate i = checkIn; i.isBefore(checkOut); i = i.plusDays(1)) {
             String fullKey = key + ":" + i.format(formatter);
-            redisCache.setObject(fullKey, false, 1L, TimeUnit.MINUTES);
+            redisCache.setObject(fullKey, false, 1L, TimeUnit.HOURS);
             bloomFilterService.add(fullKey);
             log.info("ROOM AVAILABLE SAVED IN Redis FOR KEY {}", fullKey);
         }
