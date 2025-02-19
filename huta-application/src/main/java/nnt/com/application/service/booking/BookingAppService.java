@@ -6,7 +6,7 @@ import nnt.com.domain.aggregates.model.dto.response.PriceResponse;
 import java.time.LocalDate;
 
 public interface BookingAppService {
-    void booking(BookingRequest request);
+    String booking(BookingRequest request);
 
     PriceResponse calculatePrice(long homestayId, LocalDate checkIn, LocalDate checkOut, int guests, long roomId);
 }

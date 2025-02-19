@@ -62,22 +62,22 @@ public class BookingDomainServiceImpl implements BookingDomainService {
     }
 
     @Override
-    public void booking(BookingRequest request) {
+    public String booking(BookingRequest request) {
         Homestay homestay = homestayDomainRepository.getById(request.getHomestayId());
         int guests = request.getAdult() + request.getChildren() + request.getInfant() / 2;
 
         Room selectedRoom = getRoomAvailable(homestay, request.getRoomId(), guests, request.getCheckIn(), request.getCheckOut());
 
-        saveBookingToDB(request, selectedRoom);
         saveAvailableRoomToDB(selectedRoom, request.getCheckIn(), request.getCheckOut());
+        return saveBookingToDB(request, selectedRoom);
     }
 
-    private void saveBookingToDB(BookingRequest request, Room selectedRoom) {
+    private String saveBookingToDB(BookingRequest request, Room selectedRoom) {
         int nights = (int) ChronoUnit.DAYS.between(request.getCheckIn(), request.getCheckOut());
         Booking savedBooking = bookingDomainRepository.save(Booking.builder()
                 .checkIn(request.getCheckIn())
                 .checkOut(request.getCheckOut())
-                .code("BK-" + String.valueOf(System.currentTimeMillis()).substring(0, 6))
+                .code("BK" + StringUtil.generateRandomString(6))
                 .note(request.getNote())
                 .totalCost(request.getTotalCost())
                 .night(nights)
@@ -88,7 +88,8 @@ public class BookingDomainServiceImpl implements BookingDomainService {
                 .user(userDomainRepository.getByEmail(request.getEmail()))
                 .rooms(List.of(selectedRoom))
                 .build());
-        log.info("SAVE BOOKING: {}", savedBooking.getId());
+        log.info("SAVE BOOKING: {}", savedBooking.getCode());
+        return savedBooking.getId().toString();
     }
 
     private void saveAvailableRoomToDB(Room room, LocalDate checkIn, LocalDate checkOut) {
@@ -155,7 +156,7 @@ public class BookingDomainServiceImpl implements BookingDomainService {
                         }
                     });
                 });
-                booking.setStatus(BookingStatus.CANCELLED);
+                booking.setStatus(BookingStatus.EXPIRED);
                 bookingDomainRepository.update(booking);
             }
         });

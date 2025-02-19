@@ -44,7 +44,7 @@ public class BookingAppServiceImpl implements BookingAppService {
 
     @Override
     @Transactional
-    public void booking(BookingRequest request) {
+    public String booking(BookingRequest request) {
         int guests = request.getAdult() + request.getChildren() + request.getInfant() / 2;
         validateBookingRequest(request.getCheckIn(), request.getCheckOut(), guests, request.getHomestayId());
 
@@ -61,9 +61,10 @@ public class BookingAppServiceImpl implements BookingAppService {
                 throw new BusinessException(ErrorCode.NO_ROOM_AVAILABLE);
             }
 
-            saveBookingToDatabase(request);
+            String bookingId = saveBookingToDatabase(request);
             sendBookingMessageToKafka(request.getEmail(), "Nguyễn Văn A");
             setAvailableRoomInCache(request.getCheckIn(), request.getCheckOut(), RedisKey.ROOM_AVAILABILITY.getKey() + request.getHomestayId() + ":" + request.getRoomId());
+            return bookingId;
         } catch (InterruptedException e) {
             log.error("BOOKING PROCESS INTERRUPTED DUE TO: {}", e.getMessage());
             Thread.currentThread().interrupt();
@@ -140,14 +141,14 @@ public class BookingAppServiceImpl implements BookingAppService {
         LocalDate checkOut = request.getCheckOut();
         String key = RedisKey.ROOM_AVAILABILITY.getKey() + request.getHomestayId() + ":" + roomId;
 
-        // Step 1: Check cache first
-        if (hasRoomAvailableInCacheWithBloomFilter(checkIn, checkOut, key)) {
-            return false;
+        // Step 1: Check bloom filter first, not found means room has not been booked
+        if (!hasRoomAvailableInCacheWithBloomFilter(checkIn, checkOut, key)) {
+            return true;
         }
 
-        // Step 2: If not in cache, check database
+        // Step 2: If bloom filter suggests room might be booked, check database
         boolean available = bookingDomainService.isRoomAvailable(roomId, checkIn, checkOut);
-        log.info("RETURN {} WHEN GET ROOM AVAILABILITY FROM DATABASE FOR ROOM {} WITH CHECKIN {} AND CHECKOUT {}", available, roomId, checkIn, checkOut);
+        log.info("ROOM AVAILABLE IN RANGE {} TO {} IS {}", checkIn, checkOut, available);
 
         return available;
     }
@@ -158,21 +159,13 @@ public class BookingAppServiceImpl implements BookingAppService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         for (LocalDate i = checkIn; i.isBefore(checkOut); i = i.plusDays(1)) {
             String fullKey = key + ":" + i.format(formatter);
-
-            // Step 1: Check Bloom Filter first
-            if (!bloomFilterService.mightContain(fullKey)) {
-                log.info("BLOOM FILTER CONFIRMS ROOM AVAILABILITY NOT FOUND FOR KEY {}", fullKey);
-                return false;
-            }
-
-            // Step 2: Check Redis if Bloom Filter suggests key might exist
-            if (redisCache.hasKey(fullKey)) {
-                log.info("ROOM AVAILABLE FOUND IN Redis FOR KEY {}", fullKey);
+            if (bloomFilterService.mightContain(fullKey)) {
+                log.info("BLOOM FILTER SUGGESTS ROOM AVAILABILITY MIGHT BE FOUND IN DATE {}, CHECK AGAIN IN DATABASE", i);
                 return true;
             }
         }
 
-        log.info("ROOM AVAILABILITY NOT FOUND IN REDIS FOR KEY {}", key);
+        log.info("BLOOM FILTER CONFIRMS ROOM AVAILABILITY NOT FOUND IN RANGE {} TO {}", checkIn, checkOut);
         return false;
     }
 
@@ -180,15 +173,14 @@ public class BookingAppServiceImpl implements BookingAppService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         for (LocalDate i = checkIn; i.isBefore(checkOut); i = i.plusDays(1)) {
             String fullKey = key + ":" + i.format(formatter);
-            redisCache.setObject(fullKey, false, 1L, TimeUnit.HOURS);
             bloomFilterService.add(fullKey);
             log.info("ROOM AVAILABLE SAVED IN Redis FOR KEY {}", fullKey);
         }
     }
 
-    private void saveBookingToDatabase(BookingRequest request) {
-        bookingDomainService.booking(request);
+    private String saveBookingToDatabase(BookingRequest request) {
         log.info("SAVE BOOKING TO DATABASE");
+        return bookingDomainService.booking(request);
     }
 
     private void sendBookingMessageToKafka(String email, String name) {

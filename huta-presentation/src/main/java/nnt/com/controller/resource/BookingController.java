@@ -25,8 +25,7 @@ public class BookingController {
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'LANDLORD')")
     public ApiResponse createBooking(@Valid @RequestBody BookingRequest bookingRequest) {
-        bookingAppService.booking(bookingRequest);
-        return responseFactory.create("Booking created successfully");
+        return responseFactory.create(bookingAppService.booking(bookingRequest));
     }
 
     @GetMapping("/homestays/{homestayId}")

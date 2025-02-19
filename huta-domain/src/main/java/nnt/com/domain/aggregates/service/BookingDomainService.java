@@ -8,7 +8,7 @@ import nnt.com.domain.shared.behaviors.BaseBehaviors;
 import java.time.LocalDate;
 
 public interface BookingDomainService extends BaseBehaviors<Booking, Long> {
-    void booking(BookingRequest request);
+    String booking(BookingRequest request);
 
     boolean isRoomAvailable(long roomId, LocalDate checkIn, LocalDate checkOut);
 

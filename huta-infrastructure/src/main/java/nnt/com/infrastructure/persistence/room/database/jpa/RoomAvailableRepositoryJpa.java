@@ -11,9 +11,10 @@ import java.time.LocalDate;
 
 @Repository
 public interface RoomAvailableRepositoryJpa extends JpaRepository<RoomAvailable, Long> {
+    // If exists any room available in the given date range, return false, otherwise return true
     @Query("SELECT CASE WHEN COUNT(ra) > 0 THEN FALSE ELSE TRUE END " +
             "FROM RoomAvailable ra " +
-            "WHERE ra.room.id = ?1 AND ra.date BETWEEN ?2 AND ?3 AND ra.available = 1")
+            "WHERE ra.room.id = ?1 AND ra.date BETWEEN ?2 AND ?3 AND ra.available = 0")
     boolean isRoomAvailable(Long roomId, LocalDate checkIn, LocalDate checkOut);
 
     @Query("DELETE FROM RoomAvailable ra " +

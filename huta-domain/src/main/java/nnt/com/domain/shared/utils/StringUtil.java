@@ -33,4 +33,14 @@ public class StringUtil {
     public static String formatCurrency(long value) {
         return NumberFormat.getCurrencyInstance(Locale.forLanguageTag("vi-VN")).format(value);
     }
+
+    public static String generateRandomString(int length) {
+        String charSet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        SecureRandom random = new SecureRandom();
+        StringBuilder password = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            password.append(charSet.charAt(random.nextInt(charSet.length())));
+        }
+        return password.toString();
+    }
 }
