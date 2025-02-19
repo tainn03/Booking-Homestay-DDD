@@ -8,10 +8,9 @@ import nnt.com.controller.model.builder.ResponseFactory;
 import nnt.com.controller.model.vo.ApiResponse;
 import nnt.com.domain.aggregates.model.dto.request.BookingRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 
 import static lombok.AccessLevel.PRIVATE;
 
@@ -28,5 +27,14 @@ public class BookingController {
     public ApiResponse createBooking(@Valid @RequestBody BookingRequest bookingRequest) {
         bookingAppService.booking(bookingRequest);
         return responseFactory.create("Booking created successfully");
+    }
+
+    @GetMapping("/homestays/{homestayId}")
+    public ApiResponse calculatePrice(@PathVariable long homestayId,
+                                      @RequestParam LocalDate checkIn,
+                                      @RequestParam LocalDate checkOut,
+                                      @RequestParam int guests,
+                                      @RequestParam long roomId) {
+        return responseFactory.create(bookingAppService.calculatePrice(homestayId, checkIn, checkOut, guests, roomId));
     }
 }

@@ -3,6 +3,8 @@ package nnt.com.domain.shared.utils;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
+import java.text.NumberFormat;
+import java.util.Locale;
 import java.util.Random;
 
 @Service
@@ -26,5 +28,9 @@ public class StringUtil {
             sb.append(chars.charAt(rnd.nextInt(chars.length())));
         }
         return sb.toString();
+    }
+
+    public static String formatCurrency(long value) {
+        return NumberFormat.getCurrencyInstance(Locale.forLanguageTag("vi-VN")).format(value);
     }
 }

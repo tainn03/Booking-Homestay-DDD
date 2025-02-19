@@ -6,14 +6,16 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import nnt.com.application.brokerMQ.producer.MailProducer;
 import nnt.com.application.service.booking.BookingAppService;
+import nnt.com.application.service.homestay.cache.HomestayAppServiceCache;
 import nnt.com.domain.aggregates.model.dto.request.BookingRequest;
-import nnt.com.domain.aggregates.model.entity.Homestay;
+import nnt.com.domain.aggregates.model.dto.response.HomestayResponse;
+import nnt.com.domain.aggregates.model.dto.response.PriceResponse;
 import nnt.com.domain.aggregates.service.BookingDomainService;
-import nnt.com.domain.aggregates.service.HomestayDomainService;
 import nnt.com.domain.shared.exception.BusinessException;
 import nnt.com.domain.shared.exception.ErrorCode;
 import nnt.com.domain.shared.model.vo.LockKey;
 import nnt.com.domain.shared.model.vo.RedisKey;
+import nnt.com.infrastructure.cache.local.LocalCache;
 import nnt.com.infrastructure.cache.redis.RedisCache;
 import nnt.com.infrastructure.distributed.redisson.BloomFilterService;
 import nnt.com.infrastructure.distributed.redisson.RedisDistributedLocker;
@@ -31,17 +33,20 @@ import static lombok.AccessLevel.PRIVATE;
 @FieldDefaults(level = PRIVATE, makeFinal = true)
 @Slf4j
 public class BookingAppServiceImpl implements BookingAppService {
-    RedisCache redisCache;
-    RedisDistributedService distributedCache;
     MailProducer mailProducer;
+    RedisCache redisCache;
+    LocalCache<PriceResponse> localCache;
+    RedisDistributedService distributedCache;
+
     BookingDomainService bookingDomainService;
-    HomestayDomainService homestayDomainService;
     BloomFilterService bloomFilterService;
+    HomestayAppServiceCache homestayAppServiceCache;
 
     @Override
     @Transactional
     public void booking(BookingRequest request) {
-        validateBookingRequest(request);
+        int guests = request.getAdult() + request.getChildren() + request.getInfant() / 2;
+        validateBookingRequest(request.getCheckIn(), request.getCheckOut(), guests, request.getHomestayId());
 
         // Problem: nhiều request đặt phòng cùng lúc cho cùng 1 homestay gây xung đột dữ liệu
         // Solution: sử dụng Redis distributed lock để đồng bộ hóa việc xử lý booking
@@ -68,15 +73,57 @@ public class BookingAppServiceImpl implements BookingAppService {
         }
     }
 
-    private void validateBookingRequest(BookingRequest request) {
-        if (request.getCheckIn().isBefore(LocalDate.now()) || request.getCheckOut().isBefore(LocalDate.now())) {
+    @Override
+    public PriceResponse calculatePrice(long homestayId, LocalDate checkIn, LocalDate checkOut, int guests, long roomId) {
+        validateBookingRequest(checkIn, checkOut, guests, homestayId);
+
+        // Problem: thời gian xử lý tính toán giá phòng lâu gây giảm hiệu suất
+        // Solution: sử dụng Local cache và Redis cache để lưu trữ thông tin giá phòng đã tính toán
+        PriceResponse response = getPriceFromLocalCache(homestayId, checkIn, checkOut, guests, roomId);
+        if (response != null) {
+            log.info("GET PRICE FROM LOCAL CACHE");
+            return response;
+        }
+
+        response = getPriceFromRedisCache(homestayId, checkIn, checkOut, guests, roomId);
+        if (response != null) {
+            log.info("GET PRICE FROM REDIS CACHE");
+            return response;
+        }
+
+        log.info("CALCULATE PRICE FROM DOMAIN SERVICE");
+        response = bookingDomainService.calculatePrice(homestayId, checkIn, checkOut, guests, roomId);
+        setPriceToCache(homestayId, checkIn, checkOut, guests, roomId, response);
+        return response;
+    }
+
+    private PriceResponse getPriceFromLocalCache(long homestayId, LocalDate checkIn, LocalDate checkOut, int guests, long roomId) {
+        String stringKey = RedisKey.PRICE.getKey() + homestayId + ":" + checkIn + ":" + checkOut + ":" + guests + ":" + roomId;
+        long key = stringKey.hashCode();
+        return localCache.getIfPresent(key);
+    }
+
+    private PriceResponse getPriceFromRedisCache(long homestayId, LocalDate checkIn, LocalDate checkOut, int guests, long roomId) {
+        String key = RedisKey.PRICE.getKey() + homestayId + ":" + checkIn + ":" + checkOut + ":" + guests + ":" + roomId;
+        return redisCache.getObject(key, PriceResponse.class);
+    }
+
+    private void setPriceToCache(long homestayId, LocalDate checkIn, LocalDate checkOut, int guests, long roomId, PriceResponse response) {
+        String redisKey = RedisKey.PRICE.getKey() + homestayId + ":" + checkIn + ":" + checkOut + ":" + guests + ":" + roomId;
+        redisCache.setObject(redisKey, response, 1L, TimeUnit.MINUTES);
+        long localKey = redisKey.hashCode();
+        localCache.put(localKey, response);
+        log.info("SAVE PRICE TO LOCAL AND REDIS CACHE");
+    }
+
+    private void validateBookingRequest(LocalDate checkIn, LocalDate checkOut, int guests, long homestayId) {
+        if (checkIn.isBefore(LocalDate.now()) || checkOut.isBefore(LocalDate.now())) {
             throw new BusinessException(ErrorCode.CHECKIN_CHECKOUT_IN_PAST);
         }
-        if (request.getCheckIn().isAfter(request.getCheckOut())) {
+        if (checkIn.isAfter(checkOut)) {
             throw new BusinessException(ErrorCode.CHECKIN_AFTER_CHECKOUT);
         }
-        Homestay homestay = homestayDomainService.getById(request.getHomestayId());
-        int guests = request.getAdult() + request.getChildren() + request.getInfant() / 2; // 1 infant = 0.5 guest
+        HomestayResponse homestay = homestayAppServiceCache.getHomestayById(homestayId); // get by cache to save time
         if (guests > homestay.getMaxGuests()) {
             throw new BusinessException(ErrorCode.MAX_GUESTS_EXCEEDED);
         }
