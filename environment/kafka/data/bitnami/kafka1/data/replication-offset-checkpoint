@@ -1,5 +1,5 @@
 0
-70
+71
 __consumer_offsets 43 0
 __consumer_offsets 30 0
 __consumer_offsets 32 0
@@ -10,8 +10,9 @@ user.mail 3 16
 __consumer_offsets 49 0
 user.mail 0 4
 __consumer_offsets 40 0
+booking.confirmation 0 2
 __consumer_offsets 27 0
-__consumer_offsets 12 1738381
+__consumer_offsets 12 1691785
 __consumer_offsets 36 0
 __consumer_offsets 45 0
 __consumer_offsets 10 0

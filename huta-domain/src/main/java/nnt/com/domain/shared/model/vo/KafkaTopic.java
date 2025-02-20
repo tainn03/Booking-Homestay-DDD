@@ -12,7 +12,7 @@ import static lombok.AccessLevel.PRIVATE;
 public enum KafkaTopic {
     MAIL_TOPIC("user.mail"),
     BOOKING_TOPIC("booking.mail"),
-    PAYMENT_TOPIC("payment.mail"),
+    BOOKING_CONFIRM_TOPIC("booking.confirmation"),
     RECOMMENDATION_TOPIC("homestay.recommendation"),
     SYNC_TOPIC("database.sync");
 

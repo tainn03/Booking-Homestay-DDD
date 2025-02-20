@@ -4,7 +4,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import nnt.com.application.brokerMQ.producer.MailProducer;
 import nnt.com.application.service.booking.BookingAppService;
 import nnt.com.application.service.homestay.cache.HomestayAppServiceCache;
 import nnt.com.domain.aggregates.model.dto.request.BookingRequest;
@@ -13,10 +12,13 @@ import nnt.com.domain.aggregates.model.dto.response.PriceResponse;
 import nnt.com.domain.aggregates.service.BookingDomainService;
 import nnt.com.domain.shared.exception.BusinessException;
 import nnt.com.domain.shared.exception.ErrorCode;
+import nnt.com.domain.shared.model.vo.KafkaTopic;
 import nnt.com.domain.shared.model.vo.LockKey;
 import nnt.com.domain.shared.model.vo.RedisKey;
+import nnt.com.domain.shared.utils.StringUtil;
 import nnt.com.infrastructure.cache.local.LocalCache;
 import nnt.com.infrastructure.cache.redis.RedisCache;
+import nnt.com.infrastructure.distributed.kafka.producer.KafkaProducer;
 import nnt.com.infrastructure.distributed.redisson.BloomFilterService;
 import nnt.com.infrastructure.distributed.redisson.RedisDistributedLocker;
 import nnt.com.infrastructure.distributed.redisson.RedisDistributedService;
@@ -33,7 +35,7 @@ import static lombok.AccessLevel.PRIVATE;
 @FieldDefaults(level = PRIVATE, makeFinal = true)
 @Slf4j
 public class BookingAppServiceImpl implements BookingAppService {
-    MailProducer mailProducer;
+    KafkaProducer kafkaProducer;
     RedisCache redisCache;
     LocalCache<PriceResponse> localCache;
     RedisDistributedService distributedCache;
@@ -61,10 +63,10 @@ public class BookingAppServiceImpl implements BookingAppService {
                 throw new BusinessException(ErrorCode.NO_ROOM_AVAILABLE);
             }
 
-            String bookingId = saveBookingToDatabase(request);
-            sendBookingMessageToKafka(request.getEmail(), "Nguyễn Văn A");
-            setAvailableRoomInCache(request.getCheckIn(), request.getCheckOut(), RedisKey.ROOM_AVAILABILITY.getKey() + request.getHomestayId() + ":" + request.getRoomId());
-            return bookingId;
+            String code = "BK-" + request.getHomestayId() + StringUtil.getRandomNumber(6);
+            sendBookingMessageToKafka(request, code);
+            setAvailableRoomInCache(request.getCheckIn(), request.getCheckOut(), RedisKey.ROOM_AVAILABILITY.getKey() + key + ":" + request.getRoomId());
+            return code;
         } catch (InterruptedException e) {
             log.error("BOOKING PROCESS INTERRUPTED DUE TO: {}", e.getMessage());
             Thread.currentThread().interrupt();
@@ -72,6 +74,79 @@ public class BookingAppServiceImpl implements BookingAppService {
         } finally {
             locker.unlock();
         }
+    }
+
+    // Problem: nhiều request cùng lúc, việc kiểm tra room available gây áp lực lớn cho database
+    // Solution: sử dụng Redis cache để lưu trữ thông tin room available
+    private boolean isRoomAvailable(BookingRequest request) {
+        if (request.getRoomId() == 0) {
+            return true;
+        }
+        long roomId = request.getRoomId();
+        LocalDate checkIn = request.getCheckIn();
+        LocalDate checkOut = request.getCheckOut();
+        String key = RedisKey.ROOM_AVAILABILITY.getKey() + request.getHomestayId() + ":" + roomId;
+
+        // Step 1: Check bloom filter first, not found means room has not been booked
+        if (!hasRoomAvailableInBloomFilter(checkIn, checkOut, key)) {
+            return true;
+        }
+
+        // Step 2: Check redis cache, not found means cache expired or room has been booked
+        if (hasRoomAvailableInCache(checkIn, checkOut, key)) {
+            return false;
+        }
+
+        // Step 3: If redis cache not found, check in database
+        boolean available = bookingDomainService.isRoomAvailable(roomId, checkIn, checkOut);
+        log.info("ROOM AVAILABLE IN RANGE {} TO {} IS {}", checkIn, checkOut, available);
+
+        return available;
+    }
+
+    // Problem: truy vấn Redis nhiều lần trong vòng lặp gây giảm hiệu suất
+    // Solution: sử dụng Bloom Filter -> tăng tốc độ truy vấn khi tìm kiếm key không tồn tại
+    public boolean hasRoomAvailableInBloomFilter(LocalDate checkIn, LocalDate checkOut, String key) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        for (LocalDate i = checkIn; i.isBefore(checkOut); i = i.plusDays(1)) {
+            String fullKey = key + ":" + i.format(formatter);
+            if (bloomFilterService.mightContain(fullKey)) {
+                log.info("BLOOM FILTER SUGGESTS ROOM AVAILABILITY MIGHT BE FOUND IN DATE {}, CHECK AGAIN IN REDIS", i);
+                return true;
+            }
+        }
+
+        log.info("BLOOM FILTER CONFIRMS ROOM AVAILABILITY NOT FOUND IN RANGE {} TO {}", checkIn, checkOut);
+        return false;
+    }
+
+    private boolean hasRoomAvailableInCache(LocalDate checkIn, LocalDate checkOut, String key) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        for (LocalDate i = checkIn; i.isBefore(checkOut); i = i.plusDays(1)) {
+            String fullKey = key + ":" + i.format(formatter);
+            if (redisCache.hasKey(fullKey)) {
+                log.info("ROOM AVAILABLE FOUND IN REDIS CACHE FOR KEY {}", fullKey);
+                return true;
+            }
+        }
+
+        log.info("ROOM AVAILABLE NOT FOUND IN Redis CACHE, CHECK AGAIN IN DATABASE");
+        return false;
+    }
+
+    public void setAvailableRoomInCache(LocalDate checkIn, LocalDate checkOut, String key) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        for (LocalDate i = checkIn; i.isBefore(checkOut); i = i.plusDays(1)) {
+            String fullKey = key + ":" + i.format(formatter);
+            bloomFilterService.add(fullKey);
+            redisCache.setObject(fullKey, true, 1L, TimeUnit.HOURS);
+            log.info("ROOM AVAILABLE SAVED IN CACHE FOR KEY {}", fullKey);
+        }
+    }
+
+    private void sendBookingMessageToKafka(BookingRequest request, String code) {
+        kafkaProducer.sendAsync(KafkaTopic.BOOKING_CONFIRM_TOPIC.getTopic(), code, request);
+        log.info("SEND BOOKING MESSAGE TO KAFKA WITH CODE KEY: {}", code);
     }
 
     @Override
@@ -128,63 +203,5 @@ public class BookingAppServiceImpl implements BookingAppService {
         if (guests > homestay.getMaxGuests()) {
             throw new BusinessException(ErrorCode.MAX_GUESTS_EXCEEDED);
         }
-    }
-
-    // Problem: nhiều request cùng lúc, việc kiểm tra room available gây áp lực lớn cho database
-    // Solution: sử dụng Redis cache để lưu trữ thông tin room available
-    private boolean isRoomAvailable(BookingRequest request) {
-        if (request.getRoomId() == 0) {
-            return true;
-        }
-        long roomId = request.getRoomId();
-        LocalDate checkIn = request.getCheckIn();
-        LocalDate checkOut = request.getCheckOut();
-        String key = RedisKey.ROOM_AVAILABILITY.getKey() + request.getHomestayId() + ":" + roomId;
-
-        // Step 1: Check bloom filter first, not found means room has not been booked
-        if (!hasRoomAvailableInCacheWithBloomFilter(checkIn, checkOut, key)) {
-            return true;
-        }
-
-        // Step 2: If bloom filter suggests room might be booked, check database
-        boolean available = bookingDomainService.isRoomAvailable(roomId, checkIn, checkOut);
-        log.info("ROOM AVAILABLE IN RANGE {} TO {} IS {}", checkIn, checkOut, available);
-
-        return available;
-    }
-
-    // Problem: truy vấn Redis nhiều lần trong vòng lặp gây giảm hiệu suất
-    // Solution: sử dụng Bloom Filter -> tăng tốc độ truy vấn khi tìm kiếm key không tồn tại
-    public boolean hasRoomAvailableInCacheWithBloomFilter(LocalDate checkIn, LocalDate checkOut, String key) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        for (LocalDate i = checkIn; i.isBefore(checkOut); i = i.plusDays(1)) {
-            String fullKey = key + ":" + i.format(formatter);
-            if (bloomFilterService.mightContain(fullKey)) {
-                log.info("BLOOM FILTER SUGGESTS ROOM AVAILABILITY MIGHT BE FOUND IN DATE {}, CHECK AGAIN IN DATABASE", i);
-                return true;
-            }
-        }
-
-        log.info("BLOOM FILTER CONFIRMS ROOM AVAILABILITY NOT FOUND IN RANGE {} TO {}", checkIn, checkOut);
-        return false;
-    }
-
-    public void setAvailableRoomInCache(LocalDate checkIn, LocalDate checkOut, String key) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        for (LocalDate i = checkIn; i.isBefore(checkOut); i = i.plusDays(1)) {
-            String fullKey = key + ":" + i.format(formatter);
-            bloomFilterService.add(fullKey);
-            log.info("ROOM AVAILABLE SAVED IN Redis FOR KEY {}", fullKey);
-        }
-    }
-
-    private String saveBookingToDatabase(BookingRequest request) {
-        log.info("SAVE BOOKING TO DATABASE");
-        return bookingDomainService.booking(request);
-    }
-
-    private void sendBookingMessageToKafka(String email, String name) {
-        mailProducer.sendBookingMail(email, name);
-        log.info("SEND BOOKING MESSAGE TO KAFKA: {}", email);
     }
 }
