@@ -63,6 +63,8 @@ public class BookingAppServiceImpl implements BookingAppService {
                 throw new BusinessException(ErrorCode.NO_ROOM_AVAILABLE);
             }
 
+            // Problem: đặt phòng tốn nhiều thời gian xử lý
+            // Solution: sử dụng Kafka để xử lý đặt phòng bất đồng bộ và giảm thời gian xử lý
             String code = "BK-" + request.getHomestayId() + StringUtil.getRandomNumber(6);
             sendBookingMessageToKafka(request, code);
             setAvailableRoomInCache(request.getCheckIn(), request.getCheckOut(), RedisKey.ROOM_AVAILABILITY.getKey() + key + ":" + request.getRoomId());
