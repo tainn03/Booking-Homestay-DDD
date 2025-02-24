@@ -77,6 +77,8 @@ public enum ErrorCode {
     CHECK_IN_MUST_BE_NOT_BLANK(40021, "Ngày checkin không được để trống", HttpStatus.BAD_REQUEST),
     CHECK_OUT_MUST_BE_NOT_BLANK(40022, "Ngày checkout không được để trống", HttpStatus.BAD_REQUEST),
     ROOM_NOT_FOUND(40023, "Không tìm thấy phòng", HttpStatus.BAD_REQUEST),
+    INVALID_DISCOUNT(40024, "Khuyến mãi không hợp lệ", HttpStatus.BAD_REQUEST),
+    OVERLAP_DISCOUNT(40025, "Khuyến mãi trùng lặp", HttpStatus.BAD_REQUEST),
 
 
     ;

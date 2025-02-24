@@ -1,12 +1,13 @@
 package nnt.com.domain.aggregates.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import nnt.com.domain.aggregates.model.vo.DiscountType;
 import nnt.com.domain.shared.model.entity.BaseEntity;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -24,11 +25,12 @@ public class Discount extends BaseEntity<Long> {
     String description;
 
     @Builder.Default
-    LocalDateTime startDate = LocalDateTime.now();
+    LocalDate startDate = LocalDate.now();
 
     @Builder.Default
-    LocalDateTime endDate = LocalDateTime.now();
+    LocalDate endDate = LocalDate.now();
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
     Room room;

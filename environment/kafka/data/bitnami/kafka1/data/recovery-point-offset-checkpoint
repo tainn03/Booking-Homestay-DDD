@@ -53,13 +53,13 @@ __consumer_offsets 43 0
 __consumer_offsets 6 0
 __consumer_offsets 14 0
 booking.mail 0 0
-homestay.booking 0 0
+homestay.booking 0 22
 database.sync 2 6
 __consumer_offsets 20 0
 __consumer_offsets 0 0
 __consumer_offsets 44 0
 __consumer_offsets 39 0
-__consumer_offsets 12 2070294
+__consumer_offsets 12 2929290
 __consumer_offsets 45 0
 __consumer_offsets 1 0
 __consumer_offsets 5 0

@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -189,7 +190,7 @@ public class BookingDomainServiceImpl implements BookingDomainService {
             totalCost += isWeekday ? room.getDailyPrice() : room.getWeekendPrice();
 
             // check custom discount and apply
-            if (customDiscount != null && isDayInPeriod(i, customDiscount.getStartDate().toLocalDate(), customDiscount.getEndDate().toLocalDate())) {
+            if (customDiscount != null && isDayInPeriod(i, customDiscount.getStartDate(), customDiscount.getEndDate())) {
                 discountValue += (long) (totalCost * customDiscount.getValue() / 100);
                 totalCost = (long) (totalCost * (1 - customDiscount.getValue() / 100));
                 log.info("APPLY DAILY DISCOUNT: {}", customDiscount.getValue());
@@ -277,8 +278,8 @@ public class BookingDomainServiceImpl implements BookingDomainService {
 
     private Discount getCustomDiscount(Room room, LocalDate checkIn, LocalDate checkOut) {
         return room.getDiscounts().stream()
-                .filter(discount -> discount.getStartDate().isBefore(checkOut.atStartOfDay())
-                        && discount.getEndDate().isAfter(checkIn.atStartOfDay().minusDays(1)))
+                .filter(discount -> discount.getStartDate().isBefore(ChronoLocalDate.from(checkOut.atStartOfDay()))
+                        && discount.getEndDate().isAfter(ChronoLocalDate.from(checkIn.atStartOfDay().minusDays(1))))
                 .findFirst()
                 .orElse(null);
     }

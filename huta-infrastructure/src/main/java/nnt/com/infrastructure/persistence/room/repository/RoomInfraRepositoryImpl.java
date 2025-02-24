@@ -11,6 +11,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 import static lombok.AccessLevel.PRIVATE;
 
 @Service
@@ -43,5 +45,10 @@ public class RoomInfraRepositoryImpl implements RoomDomainRepository {
     @Override
     public void delete(Long id) {
         roomInfraRepositoryJpa.deleteById(id);
+    }
+
+    @Override
+    public List<Room> getByHomestayId(Long homestayId) {
+        return roomInfraRepositoryJpa.findAllByHomestayId(homestayId);
     }
 }

@@ -1,5 +1,6 @@
 package nnt.com.domain.aggregates.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
@@ -19,6 +20,7 @@ public class PriceCalendar extends BaseEntity<Long> {
     String date;
     double price;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
     Room room;
