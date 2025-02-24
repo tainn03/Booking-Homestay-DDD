@@ -57,7 +57,7 @@ public class BloomFilterService {
     public RBloomFilter<String> getBloomFilter(String filterName) {
         return bloomFilterMap.computeIfAbsent(filterName, id -> {
             String name = "bloomfilter:" + id;
-            RBloomFilter<String> bloomFilter = redissonClient.getBloomFilter(name);
+            bloomFilter = redissonClient.getBloomFilter(name);
 
             if (!bloomFilter.isExists()) {
                 bloomFilter.tryInit(capacity, errorRate);

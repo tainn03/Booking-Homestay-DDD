@@ -54,4 +54,14 @@ public class BookingInfraRepositoryImpl implements BookingDomainRepository {
     public List<Booking> getByStatus(BookingStatus bookingStatus) {
         return bookingInfraRepositoryJpa.findByStatus(bookingStatus);
     }
+
+    @Override
+    public Booking getByCode(String orderInfo) {
+        return bookingInfraRepositoryJpa.findByCode(orderInfo);
+    }
+
+    @Override
+    public List<Booking> getByHomestayId(long homestayId) {
+        return bookingInfraRepositoryJpa.findByHomestayId(homestayId);
+    }
 }

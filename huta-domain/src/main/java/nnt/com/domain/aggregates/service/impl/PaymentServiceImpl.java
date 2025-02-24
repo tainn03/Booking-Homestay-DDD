@@ -3,6 +3,8 @@ package nnt.com.domain.aggregates.service.impl;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import nnt.com.domain.aggregates.model.entity.Payment;
+import nnt.com.domain.aggregates.repository.PaymentDomainRepository;
 import nnt.com.domain.aggregates.service.PaymentService;
 import nnt.com.domain.shared.utils.VNPayUtil;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,7 @@ import static lombok.AccessLevel.PRIVATE;
 @FieldDefaults(level = PRIVATE, makeFinal = true)
 public class PaymentServiceImpl implements PaymentService {
     VNPayUtil vnpayUtil;
+    PaymentDomainRepository paymentDomainRepository;
 
     @Override
     public String createOrder(int total, String orderInfor, String urlReturn) {
@@ -77,5 +80,25 @@ public class PaymentServiceImpl implements PaymentService {
         } else {
             return -1;
         }
+    }
+
+    @Override
+    public Payment save(Payment payment) {
+        return paymentDomainRepository.save(payment);
+    }
+
+    @Override
+    public Payment update(Payment payment) {
+        return paymentDomainRepository.update(payment);
+    }
+
+    @Override
+    public Payment findById(Long id) {
+        return paymentDomainRepository.getById(id);
+    }
+
+    @Override
+    public void delete(Long id) {
+        paymentDomainRepository.delete(id);
     }
 }

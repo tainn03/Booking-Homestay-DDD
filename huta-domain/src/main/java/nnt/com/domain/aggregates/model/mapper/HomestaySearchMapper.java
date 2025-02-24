@@ -8,5 +8,6 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface HomestaySearchMapper {
     @Mapping(target = "location", ignore = true)
+    @Mapping(target = "amenities", source = "amenities")
     HomestayDocument toDocument(HomestayResponse response);
 }

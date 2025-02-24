@@ -6,6 +6,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import nnt.com.domain.aggregates.model.dto.request.HomestayRequest;
 import nnt.com.domain.aggregates.model.dto.request.RatingRequest;
+import nnt.com.domain.aggregates.model.dto.response.AmenityResponse;
 import nnt.com.domain.aggregates.model.dto.response.HomestayResponse;
 import nnt.com.domain.aggregates.model.dto.response.ReviewResponse;
 import nnt.com.domain.aggregates.model.entity.*;
@@ -21,10 +22,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -210,6 +208,19 @@ public class HomestayDomainServiceImpl implements HomestayDomainService {
                 homestay.getRooms().getFirst().getDiscounts().getFirst().getValue() > 0) {
             response.setSaleOff("-" + (int) homestay.getRooms().getFirst().getDiscounts().getFirst().getValue() + "% hôm nay");
         }
+        Set<AmenityResponse> amenities = new HashSet<>();
+        if (homestay.getRooms() != null && !homestay.getRooms().isEmpty()) {
+            homestay.getRooms().forEach(room -> {
+                if (room.getAmenities() != null && !room.getAmenities().isEmpty()) {
+                    room.getAmenities().forEach(amenity -> {
+                        amenities.add(AmenityResponse.builder()
+                                .name(amenity.getName())
+                                .build());
+                    });
+                }
+            });
+        }
+        response.setAmenities(amenities);
         response.setMap(Map.of("lat", homestay.getLat(), "lng", homestay.getLon()));
         response.setDate(homestay.getCreatedAt().format(DateTimeFormatter.ofPattern("dd 'tháng' MM, yyyy")));
         return response;

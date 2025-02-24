@@ -13,4 +13,5 @@ public interface UserAppService {
 
     void likeHomestay(Long homestayId);
 
+    boolean checkLikedHomestay(Long homestayId);
 }

@@ -2,11 +2,17 @@ package nnt.com.application.service.payment.impl;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import nnt.com.application.service.payment.PaymentAppService;
+import nnt.com.domain.aggregates.model.entity.Payment;
+import nnt.com.domain.aggregates.model.vo.PaymentMethod;
+import nnt.com.domain.aggregates.model.vo.PaymentStatus;
+import nnt.com.domain.aggregates.service.BookingDomainService;
 import nnt.com.domain.aggregates.service.PaymentService;
+import nnt.com.infrastructure.distributed.kafka.producer.KafkaProducer;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -21,14 +27,18 @@ import static lombok.AccessLevel.PRIVATE;
 @Slf4j
 public class PaymentAppServiceImpl implements PaymentAppService {
     PaymentService vnPayService;
+    BookingDomainService bookingDomainService;
+    KafkaProducer kafkaProducer;
 
     @Override
     public void redirectToPaymentGateway(int amount, String orderInfor, String baseUrl, HttpServletResponse response) throws IOException {
         String vnpayUrl = vnPayService.createOrder(amount, orderInfor, baseUrl);
+        log.info("URL TO VNPAY: {}", vnpayUrl);
         response.sendRedirect(vnpayUrl);
     }
 
     @Override
+    @Transactional
     public void handlePaymentResponse(HttpServletRequest request, HttpServletResponse response) throws IOException {
         int paymentStatus = vnPayService.orderReturn(request);
         if (paymentStatus == 0) {
@@ -50,6 +60,11 @@ public class PaymentAppServiceImpl implements PaymentAppService {
         } else {
             response.sendRedirect("http://localhost:3000/paymentfail");
         }
+    }
+
+    private void sendRequestToKafka(String orderInfo) {
+        // Gửi thông tin đơn hàng về Kafka
+        log.info("SEND REQUEST TO KAFKA: {}", orderInfo);
     }
 
     private void handleRequestParams(HttpServletRequest request, int paymentStatus, String orderInfo) {
@@ -75,5 +90,18 @@ public class PaymentAppServiceImpl implements PaymentAppService {
         log.info("Card type: {}", vnp_CardType);
         log.info("Transaction reference: {}", vnp_TxnRef);
         log.info("Secure hash: {}", vnp_SecureHash);
+
+        log.info("CREATE PAYMENT WITH TOTAL PRICE: {}", totalPrice);
+        Payment payment = Payment.builder()
+                .amount(Integer.parseInt(totalPrice))
+                .transactionId(transactionId)
+                .status(paymentStatus == 1 ? PaymentStatus.SUCCESS.name() : PaymentStatus.FAIL.name())
+                .note("Thanh toán thành công với VNPay")
+                .paymentMethod(PaymentMethod.CREDIT_CARD)
+                .booking(null)
+                .build();
+
+        log.info("SEND PAYMENT MESSAGE TO KAFKA");
+        kafkaProducer.sendFireAndForgot("payment.mail", orderInfo, payment);
     }
 }

@@ -28,12 +28,22 @@ public class BookingController {
         return responseFactory.create(bookingAppService.booking(bookingRequest));
     }
 
-    @GetMapping("/homestays/{homestayId}")
-    public ApiResponse calculatePrice(@PathVariable long homestayId,
+    @GetMapping("/price")
+    public ApiResponse calculatePrice(@RequestParam long homestayId,
                                       @RequestParam LocalDate checkIn,
                                       @RequestParam LocalDate checkOut,
                                       @RequestParam int guests,
                                       @RequestParam long roomId) {
         return responseFactory.create(bookingAppService.calculatePrice(homestayId, checkIn, checkOut, guests, roomId));
+    }
+
+    @GetMapping("/{code}")
+    public ApiResponse getBooking(@PathVariable String code) {
+        return responseFactory.create(bookingAppService.getBookingByCode(code));
+    }
+
+    @GetMapping("/homestays/{homestayId}")
+    public ApiResponse getBookingsByHomestay(@PathVariable long homestayId) {
+        return responseFactory.create(bookingAppService.getBookingsByHomestay(homestayId));
     }
 }

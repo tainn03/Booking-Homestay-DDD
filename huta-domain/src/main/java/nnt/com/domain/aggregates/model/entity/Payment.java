@@ -6,8 +6,6 @@ import lombok.experimental.FieldDefaults;
 import nnt.com.domain.aggregates.model.vo.PaymentMethod;
 import nnt.com.domain.shared.model.entity.BaseEntity;
 
-import java.time.LocalDate;
-
 @Entity
 @Getter
 @Setter
@@ -18,12 +16,11 @@ import java.time.LocalDate;
 public class Payment extends BaseEntity<Long> {
     int amount;
     String transactionId;
-    LocalDate date;
     String status;
     String note;
 
     @Enumerated(EnumType.STRING)
-    PaymentMethod paymentMethod;
+    PaymentMethod paymentMethod = PaymentMethod.CASH;
 
     @OneToOne(mappedBy = "payment")
     @JoinColumn(name = "booking_id", nullable = false)

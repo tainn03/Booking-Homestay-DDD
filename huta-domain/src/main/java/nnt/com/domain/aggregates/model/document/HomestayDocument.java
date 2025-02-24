@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import nnt.com.domain.aggregates.model.dto.request.RuleRequest;
+import nnt.com.domain.aggregates.model.dto.response.AmenityResponse;
 import nnt.com.domain.aggregates.model.vo.RentalType;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.GeoPointField;
@@ -14,6 +15,7 @@ import org.springframework.data.elasticsearch.core.geo.GeoPoint;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static lombok.AccessLevel.PRIVATE;
 
@@ -66,6 +68,7 @@ public class HomestayDocument {
 
     List<RuleRequest> rules;
     List<String> tags;
+    Set<AmenityResponse> amenities;
     @GeoPointField
     private GeoPoint location;
 }

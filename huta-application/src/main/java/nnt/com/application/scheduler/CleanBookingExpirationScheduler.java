@@ -16,7 +16,7 @@ import static lombok.AccessLevel.PRIVATE;
 public class CleanBookingExpirationScheduler {
     BookingDomainService bookingDomainService;
 
-    @Scheduled(fixedRate = 1000 * 60) // run every 30 minutes
+    @Scheduled(fixedRate = 1000 * 60 * 30) // run every 30 minutes
     public void cleanBookingExpiration() {
         bookingDomainService.cleanBookingExpiration();
         log.info("CLEANING EXPIRED BOOKINGS");

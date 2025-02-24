@@ -12,6 +12,7 @@ import org.springframework.data.elasticsearch.core.geo.GeoPoint;
 import org.springframework.data.elasticsearch.core.query.Criteria;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -53,10 +54,10 @@ public class HomestaySearchDomainServiceImpl implements HomestaySearchDomainServ
     public List<HomestayDocument> searchByContent(String content) {
         String query = "*" + content + "*";
         Criteria criteria = new Criteria()
-                .or(new Criteria("name").expression(query))
+                .or(new Criteria("title").expression(query))
                 .or(new Criteria("description").expression(query))
                 .or(new Criteria("typeHomestay").expression(query))
-                .or(new Criteria("addressDetail").expression(query));
+                .or(new Criteria("address").expression(query));
         return homestaySearchDomainRepository.search(criteria);
     }
 
@@ -65,6 +66,20 @@ public class HomestaySearchDomainServiceImpl implements HomestaySearchDomainServ
         GeoPoint centerPoint = new GeoPoint(lat, lon);
         Criteria criteria = new Criteria("location")
                 .within(centerPoint, String.format("%dkm", distance));
-        return homestaySearchDomainRepository.search(criteria);
+        List<HomestayDocument> results = homestaySearchDomainRepository.search(criteria);
+        results.sort(Comparator.comparingDouble(doc -> calculateDistance(doc.getLocation(), centerPoint)));
+        return results;
+    }
+
+    private double calculateDistance(GeoPoint point1, GeoPoint point2) {
+        final int R = 6371; // Radius of the earth in km
+        double latDistance = Math.toRadians(point2.getLat() - point1.getLat());
+        double lonDistance = Math.toRadians(point2.getLon() - point1.getLon());
+        // Haversine Formula
+        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+                + Math.cos(Math.toRadians(point1.getLat())) * Math.cos(Math.toRadians(point2.getLat()))
+                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c; // Distance in km
     }
 }

@@ -1,5 +1,6 @@
 package nnt.com.domain.aggregates.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -51,6 +52,7 @@ public class User extends BaseEntity<Long> implements UserDetails {
     @Column(columnDefinition = "TEXT")
     String bio;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role", nullable = false)
     Role role;

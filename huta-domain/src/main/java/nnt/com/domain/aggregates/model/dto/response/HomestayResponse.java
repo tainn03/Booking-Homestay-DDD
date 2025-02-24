@@ -9,6 +9,7 @@ import nnt.com.domain.aggregates.model.vo.RentalType;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -60,4 +61,5 @@ public class HomestayResponse {
     List<RuleRequest> rules;
     List<String> tags;
     List<ReviewResponse> reviews;
+    Set<AmenityResponse> amenities;
 }

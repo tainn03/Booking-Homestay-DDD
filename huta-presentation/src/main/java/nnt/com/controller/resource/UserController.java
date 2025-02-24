@@ -50,4 +50,10 @@ public class UserController {
         userAppService.likeHomestay(homestayId);
         return ResponseEntity.ok(responseFactory.create(ErrorCode.SUCCESS));
     }
+
+    @GetMapping("/homestay/{homestayId}/like")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'LANDLORD')")
+    public ResponseEntity<ApiResponse> checkLikedHomestay(@PathVariable Long homestayId) {
+        return ResponseEntity.ok(responseFactory.create(userAppService.checkLikedHomestay(homestayId)));
+    }
 }

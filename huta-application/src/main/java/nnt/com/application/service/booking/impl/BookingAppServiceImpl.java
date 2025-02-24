@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import nnt.com.application.service.booking.BookingAppService;
 import nnt.com.application.service.homestay.cache.HomestayAppServiceCache;
 import nnt.com.domain.aggregates.model.dto.request.BookingRequest;
+import nnt.com.domain.aggregates.model.dto.response.BookingResponse;
 import nnt.com.domain.aggregates.model.dto.response.HomestayResponse;
 import nnt.com.domain.aggregates.model.dto.response.PriceResponse;
 import nnt.com.domain.aggregates.service.BookingDomainService;
@@ -26,6 +27,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static lombok.AccessLevel.PRIVATE;
@@ -108,7 +110,7 @@ public class BookingAppServiceImpl implements BookingAppService {
 
     // Problem: truy vấn Redis nhiều lần trong vòng lặp gây giảm hiệu suất
     // Solution: sử dụng Bloom Filter -> tăng tốc độ truy vấn khi tìm kiếm key không tồn tại
-    public boolean hasRoomAvailableInBloomFilter(LocalDate checkIn, LocalDate checkOut, String key) {
+    private boolean hasRoomAvailableInBloomFilter(LocalDate checkIn, LocalDate checkOut, String key) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         for (LocalDate i = checkIn; i.isBefore(checkOut); i = i.plusDays(1)) {
             String fullKey = key + ":" + i.format(formatter);
@@ -136,7 +138,7 @@ public class BookingAppServiceImpl implements BookingAppService {
         return false;
     }
 
-    public void setAvailableRoomInCache(LocalDate checkIn, LocalDate checkOut, String key) {
+    private void setAvailableRoomInCache(LocalDate checkIn, LocalDate checkOut, String key) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         for (LocalDate i = checkIn; i.isBefore(checkOut); i = i.plusDays(1)) {
             String fullKey = key + ":" + i.format(formatter);
@@ -173,6 +175,16 @@ public class BookingAppServiceImpl implements BookingAppService {
         response = bookingDomainService.calculatePrice(homestayId, checkIn, checkOut, guests, roomId);
         setPriceToCache(homestayId, checkIn, checkOut, guests, roomId, response);
         return response;
+    }
+
+    @Override
+    public BookingResponse getBookingByCode(String code) {
+        return bookingDomainService.getBookingByCode(code);
+    }
+
+    @Override
+    public List<BookingResponse> getBookingsByHomestay(long homestayId) {
+        return bookingDomainService.getBookingsByHomestay(homestayId);
     }
 
     private PriceResponse getPriceFromLocalCache(long homestayId, LocalDate checkIn, LocalDate checkOut, int guests, long roomId) {

@@ -5,14 +5,14 @@ __consumer_offsets 30 0
 __consumer_offsets 32 0
 __consumer_offsets 25 0
 __consumer_offsets 41 0
-payment.mail 2 0
+payment.mail 2 1
 user.mail 3 16
 __consumer_offsets 49 0
 user.mail 0 4
 __consumer_offsets 40 0
-booking.confirmation 0 2
+booking.confirmation 0 4
 __consumer_offsets 27 0
-__consumer_offsets 12 1691785
+__consumer_offsets 12 2906186
 __consumer_offsets 36 0
 __consumer_offsets 45 0
 __consumer_offsets 10 0
@@ -27,7 +27,7 @@ database.sync 2 6
 homestay.recommendation 0 0
 payment.mail 1 0
 __consumer_offsets 23 0
-database.sync 4 10
+database.sync 4 13
 __consumer_offsets 42 0
 __consumer_offsets 28 0
 __consumer_offsets 4 0
@@ -49,7 +49,7 @@ __consumer_offsets 37 0
 __consumer_offsets 8 0
 __consumer_offsets 24 0
 __consumer_offsets 3 0
-database.sync 0 7
+database.sync 0 10
 user.mail 2 6
 __consumer_offsets 17 0
 __consumer_offsets 39 0
@@ -60,7 +60,7 @@ __consumer_offsets 44 0
 __consumer_offsets 16 0
 user.mail 1 6
 __consumer_offsets 47 0
-database.sync 3 8
+database.sync 3 14
 __consumer_offsets 7 0
 __consumer_offsets 22 0
 __consumer_offsets 46 0

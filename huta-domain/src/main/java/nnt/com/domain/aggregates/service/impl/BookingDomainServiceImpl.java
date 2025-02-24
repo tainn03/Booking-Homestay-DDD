@@ -4,8 +4,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import nnt.com.domain.aggregates.model.dto.request.BookingRequest;
+import nnt.com.domain.aggregates.model.dto.response.BookingResponse;
+import nnt.com.domain.aggregates.model.dto.response.PaymentResponse;
 import nnt.com.domain.aggregates.model.dto.response.PriceResponse;
 import nnt.com.domain.aggregates.model.entity.*;
+import nnt.com.domain.aggregates.model.mapper.BookingMapper;
+import nnt.com.domain.aggregates.model.mapper.PaymentMapper;
 import nnt.com.domain.aggregates.model.vo.BookingStatus;
 import nnt.com.domain.aggregates.model.vo.DiscountType;
 import nnt.com.domain.aggregates.repository.*;
@@ -35,6 +39,8 @@ public class BookingDomainServiceImpl implements BookingDomainService {
     RoomAvailableDomainRepository roomAvailableDomainRepository;
     UserDomainRepository userDomainRepository;
     RoomDomainRepository roomDomainRepository;
+    BookingMapper bookingMapper;
+    PaymentMapper paymentMapper;
 
     @Override
     public Booking save(Booking booking) {
@@ -206,6 +212,42 @@ public class BookingDomainServiceImpl implements BookingDomainService {
                 .weekendDays(weekendDays)
                 .weekendPrice(formatCurrency(room.getWeekendPrice()))
                 .build();
+    }
+
+    @Override
+    public Booking getByCode(String orderInfo) {
+        return bookingDomainRepository.getByCode(orderInfo);
+    }
+
+    @Override
+    public BookingResponse getBookingByCode(String code) {
+        Booking booking = bookingDomainRepository.getByCode(code);
+        return getBookingResponse(booking);
+    }
+
+    @Override
+    public List<BookingResponse> getBookingsByHomestay(long homestayId) {
+        List<Booking> bookings = bookingDomainRepository.getByHomestayId(homestayId);
+        List<BookingResponse> responses = new ArrayList<>();
+        bookings.forEach(booking -> {
+            BookingResponse response = getBookingResponse(booking);
+            responses.add(response);
+        });
+        responses.sort(Comparator.comparing(BookingResponse::getCheckIn).reversed());
+        return responses;
+    }
+
+    private BookingResponse getBookingResponse(Booking booking) {
+        BookingResponse response = bookingMapper.toDTO(booking);
+
+        Payment payment = booking.getPayment();
+        PaymentResponse paymentResponse = payment != null ? paymentMapper.toDTO(payment) : null;
+        response.setPayment(paymentResponse);
+
+        List<String> roomNames = new ArrayList<>();
+        booking.getRooms().forEach(room -> roomNames.add(room.getName()));
+        response.setRoomNames(roomNames);
+        return response;
     }
 
     private String formatCurrency(long value) {

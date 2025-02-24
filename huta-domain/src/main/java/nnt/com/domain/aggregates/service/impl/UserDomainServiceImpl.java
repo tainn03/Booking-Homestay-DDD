@@ -98,4 +98,9 @@ public class UserDomainServiceImpl implements UserDomainService {
                 );
         update(user);
     }
+
+    @Override
+    public boolean checkLikedHomestay(User user, long homestayId) {
+        return user.getWishlist().stream().anyMatch(h -> h.getId().equals(homestayId));
+    }
 }

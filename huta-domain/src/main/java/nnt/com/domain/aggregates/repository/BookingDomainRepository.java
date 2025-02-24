@@ -9,4 +9,8 @@ import java.util.List;
 public interface BookingDomainRepository extends BaseBehaviors<Booking, Long> {
 
     List<Booking> getByStatus(BookingStatus bookingStatus);
+
+    Booking getByCode(String orderInfo);
+
+    List<Booking> getByHomestayId(long homestayId);
 }
