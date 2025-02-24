@@ -222,6 +222,9 @@ public class BookingDomainServiceImpl implements BookingDomainService {
     @Override
     public BookingResponse getBookingByCode(String code) {
         Booking booking = bookingDomainRepository.getByCode(code);
+        if (booking == null) {
+            throw new BusinessException(ErrorCode.BOOKING_NOT_FOUND);
+        }
         return getBookingResponse(booking);
     }
 
@@ -235,6 +238,17 @@ public class BookingDomainServiceImpl implements BookingDomainService {
         });
         responses.sort(Comparator.comparing(BookingResponse::getCheckIn).reversed());
         return responses;
+    }
+
+    @Override
+    public BookingResponse updateStatus(long bookingId, String status) {
+        Booking booking = bookingDomainRepository.getById(bookingId);
+        if (booking == null) {
+            throw new BusinessException(ErrorCode.BOOKING_NOT_FOUND);
+        }
+        booking.setStatus(BookingStatus.valueOf(status));
+        bookingDomainRepository.update(booking);
+        return getBookingResponse(booking);
     }
 
     private BookingResponse getBookingResponse(Booking booking) {

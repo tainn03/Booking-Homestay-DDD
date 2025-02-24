@@ -19,6 +19,7 @@ import static lombok.AccessLevel.PRIVATE;
 @Builder
 @FieldDefaults(level = PRIVATE)
 public class BookingResponse {
+    long id;
     LocalDate checkIn;
     LocalDate checkOut;
     String code;

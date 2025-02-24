@@ -46,4 +46,18 @@ public class BookingController {
     public ApiResponse getBookingsByHomestay(@PathVariable long homestayId) {
         return responseFactory.create(bookingAppService.getBookingsByHomestay(homestayId));
     }
+
+    @DeleteMapping("/{bookingId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'LANDLORD')")
+    public ApiResponse deleteBooking(@PathVariable long bookingId) {
+        bookingAppService.deleteBooking(bookingId);
+        return responseFactory.create("Booking deleted successfully");
+    }
+
+    @PatchMapping("/{bookingId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'LANDLORD')")
+    public ApiResponse updateBookingStatus(@PathVariable long bookingId, @RequestParam String status) {
+        return responseFactory.create(bookingAppService.updateBookingStatus(bookingId, status));
+    }
+
 }

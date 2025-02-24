@@ -187,6 +187,16 @@ public class BookingAppServiceImpl implements BookingAppService {
         return bookingDomainService.getBookingsByHomestay(homestayId);
     }
 
+    @Override
+    public void deleteBooking(long bookingId) {
+        bookingDomainService.delete(bookingId);
+    }
+
+    @Override
+    public BookingResponse updateBookingStatus(long bookingId, String status) {
+        return bookingDomainService.updateStatus(bookingId, status);
+    }
+
     private PriceResponse getPriceFromLocalCache(long homestayId, LocalDate checkIn, LocalDate checkOut, int guests, long roomId) {
         String stringKey = RedisKey.PRICE.getKey() + homestayId + ":" + checkIn + ":" + checkOut + ":" + guests + ":" + roomId;
         long key = stringKey.hashCode();

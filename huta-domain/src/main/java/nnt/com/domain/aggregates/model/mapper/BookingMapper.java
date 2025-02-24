@@ -9,5 +9,6 @@ import org.mapstruct.Mapping;
 public interface BookingMapper {
     @Mapping(target = "payment", ignore = true)
     @Mapping(target = "roomNames", ignore = true)
+    @Mapping(target = "id", source = "id")
     BookingResponse toDTO(Booking booking);
 }

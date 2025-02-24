@@ -15,4 +15,8 @@ public interface BookingAppService {
     BookingResponse getBookingByCode(String code);
 
     List<BookingResponse> getBookingsByHomestay(long homestayId);
+
+    void deleteBooking(long bookingId);
+
+    BookingResponse updateBookingStatus(long bookingId, String status);
 }
