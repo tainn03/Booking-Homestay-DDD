@@ -73,7 +73,6 @@ public class UserAppServiceImpl implements UserAppService {
         }
         if (checkLikedHomestayInDB(user, homestay.getId())) {
             log.info("USER HAS LIKED HOMESTAY {}", homestayId);
-            updateCache(key);
             return true;
         }
         log.info("USER HAS NOT LIKED HOMESTAY {}", homestayId);
