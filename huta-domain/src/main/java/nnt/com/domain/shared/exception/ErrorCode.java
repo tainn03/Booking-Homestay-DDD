@@ -79,6 +79,7 @@ public enum ErrorCode {
     ROOM_NOT_FOUND(40023, "Không tìm thấy phòng", HttpStatus.BAD_REQUEST),
     INVALID_DISCOUNT(40024, "Khuyến mãi không hợp lệ", HttpStatus.BAD_REQUEST),
     OVERLAP_DISCOUNT(40025, "Khuyến mãi trùng lặp", HttpStatus.BAD_REQUEST),
+    INVALID_DATE(40026, "Ngày không hợp lệ", HttpStatus.BAD_REQUEST),
 
 
     ;

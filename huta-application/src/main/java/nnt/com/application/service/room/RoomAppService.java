@@ -22,4 +22,6 @@ public interface RoomAppService {
     RoomResponse addCustomDiscount(Long roomId, DiscountRequest request);
 
     RoomResponse getRoomById(Long roomId);
+
+    List<RoomResponse> getAvailableRoomsByHomestayId(Long homestayId, String checkIn, String checkOut);
 }

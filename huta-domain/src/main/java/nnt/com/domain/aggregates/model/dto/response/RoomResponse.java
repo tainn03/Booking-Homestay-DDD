@@ -26,6 +26,7 @@ public class RoomResponse {
     int weekendPrice;
     String status;
     int beds;
+    boolean available;
 
     long homestayId;
     List<AmenityResponse> amenities;

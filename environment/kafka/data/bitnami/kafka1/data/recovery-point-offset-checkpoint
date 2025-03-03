@@ -7,7 +7,7 @@ __consumer_offsets 8 0
 database.sync 3 14
 __consumer_offsets 21 0
 __consumer_offsets 4 0
-user.mail 4 0
+user.mail 4 1
 __consumer_offsets 27 0
 __consumer_offsets 7 0
 database.sync 1 5

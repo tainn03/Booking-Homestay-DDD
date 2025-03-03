@@ -25,6 +25,11 @@ public class RoomController {
         return responseFactory.create(roomAppService.getRoomsByHomestayId(homestayId));
     }
 
+    @GetMapping("/homestays/{homestayId}/available")
+    public ApiResponse getAvailableRoomsByHomestayId(@PathVariable Long homestayId, @RequestParam String checkIn, @RequestParam String checkOut) {
+        return responseFactory.create(roomAppService.getAvailableRoomsByHomestayId(homestayId, checkIn, checkOut));
+    }
+
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'LANDLORD', 'USER')")
     public ApiResponse createRoom(@RequestBody @Valid RoomRequest roomRequest) {

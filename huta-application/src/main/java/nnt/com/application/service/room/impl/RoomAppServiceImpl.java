@@ -65,4 +65,9 @@ public class RoomAppServiceImpl implements RoomAppService {
     public RoomResponse getRoomById(Long roomId) {
         return roomDomainService.getRoomById(roomId);
     }
+
+    @Override
+    public List<RoomResponse> getAvailableRoomsByHomestayId(Long homestayId, String checkIn, String checkOut) {
+        return roomDomainService.getAvailableRoomsByHomestayId(homestayId, checkIn, checkOut);
+    }
 }

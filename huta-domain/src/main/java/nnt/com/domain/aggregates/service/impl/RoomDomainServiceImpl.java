@@ -13,13 +13,17 @@ import nnt.com.domain.aggregates.model.mapper.RoomMapper;
 import nnt.com.domain.aggregates.model.vo.DiscountType;
 import nnt.com.domain.aggregates.repository.DiscountDomainRepository;
 import nnt.com.domain.aggregates.repository.HomestayDomainRepository;
+import nnt.com.domain.aggregates.repository.RoomAvailableDomainRepository;
 import nnt.com.domain.aggregates.repository.RoomDomainRepository;
 import nnt.com.domain.aggregates.service.RoomDomainService;
 import nnt.com.domain.shared.exception.BusinessException;
 import nnt.com.domain.shared.exception.ErrorCode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,9 +33,11 @@ import static lombok.AccessLevel.PRIVATE;
 @RequiredArgsConstructor
 @FieldDefaults(level = PRIVATE, makeFinal = true)
 public class RoomDomainServiceImpl implements RoomDomainService {
+    private static final Logger log = LoggerFactory.getLogger(RoomDomainServiceImpl.class);
     RoomDomainRepository roomDomainRepository;
     HomestayDomainRepository homestayDomainRepository;
     DiscountDomainRepository discountDomainRepository;
+    RoomAvailableDomainRepository roomAvailableDomainRepository;
     RoomMapper roomMapper;
 
     @Override
@@ -155,6 +161,37 @@ public class RoomDomainServiceImpl implements RoomDomainService {
             throw new BusinessException(ErrorCode.ROOM_NOT_FOUND);
         }
         return getRoomResponse(room);
+    }
+
+    @Override
+    public List<RoomResponse> getAvailableRoomsByHomestayId(Long homestayId, String checkIn, String checkOut) {
+        validateDate(checkIn, checkOut);
+        List<Room> rooms = roomDomainRepository.getByHomestayId(homestayId);
+        List<RoomResponse> response = new ArrayList<>();
+        rooms.forEach(r -> {
+            RoomResponse roomResponse = getRoomResponse(r);
+            boolean isAvailable = true;
+            if (r.getRoomAvailables() != null) {
+                isAvailable = roomAvailableDomainRepository.isRoomAvailable(r.getId(), LocalDate.parse(checkIn), LocalDate.parse(checkOut));
+                log.info("Room {} is available: {}", r.getId(), isAvailable);
+            }
+            roomResponse.setAvailable(isAvailable);
+            response.add(roomResponse);
+        });
+        return response;
+    }
+
+    private void validateDate(String checkIn, String checkOut) {
+        try {
+            LocalDate startDate = LocalDate.parse(checkIn);
+            LocalDate endDate = LocalDate.parse(checkOut);
+            if (startDate.isAfter(endDate)) {
+                throw new BusinessException(ErrorCode.CHECKIN_AFTER_CHECKOUT);
+            }
+        } catch (Exception e) {
+            log.warn("INVALID DATE FORMAT: {}, {}", checkIn, checkOut);
+            throw new BusinessException(ErrorCode.INVALID_DATE);
+        }
     }
 
     private void validateRequest(Room room, DiscountRequest request) {
