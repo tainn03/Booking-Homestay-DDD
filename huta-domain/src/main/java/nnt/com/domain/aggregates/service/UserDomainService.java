@@ -19,4 +19,6 @@ public interface UserDomainService extends BaseBehaviors<User, Long> {
     void likeHomestay(User user, Homestay homestay);
 
     boolean checkLikedHomestay(User user, long homestayId);
+
+    UserResponse getProfileById(Long userId);
 }

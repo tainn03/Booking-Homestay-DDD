@@ -30,6 +30,12 @@ public class UserController {
         return ResponseEntity.ok(responseFactory.create(userResponse));
     }
 
+    @GetMapping("/profile/{userId}")
+    public ResponseEntity<ApiResponse> getProfileById(@PathVariable Long userId) {
+        UserResponse userResponse = userAppService.getProfileById(userId);
+        return ResponseEntity.ok(responseFactory.create(userResponse));
+    }
+
     @PutMapping("/profile")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'LANDLORD')")
     public ResponseEntity<ApiResponse> updateProfile(@RequestBody UserUpdateRequest request) {

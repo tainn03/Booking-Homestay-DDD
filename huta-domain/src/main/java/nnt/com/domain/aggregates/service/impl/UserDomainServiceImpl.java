@@ -103,4 +103,9 @@ public class UserDomainServiceImpl implements UserDomainService {
     public boolean checkLikedHomestay(User user, long homestayId) {
         return user.getWishlist().stream().anyMatch(h -> h.getId().equals(homestayId));
     }
+
+    @Override
+    public UserResponse getProfileById(Long userId) {
+        return userMapper.toDTO(getById(userId));
+    }
 }

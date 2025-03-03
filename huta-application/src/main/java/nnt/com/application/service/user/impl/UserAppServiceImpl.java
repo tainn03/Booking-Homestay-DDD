@@ -80,6 +80,11 @@ public class UserAppServiceImpl implements UserAppService {
         return false;
     }
 
+    @Override
+    public UserResponse getProfileById(Long userId) {
+        return userDomainService.getProfileById(userId);
+    }
+
     private boolean checkLikedHomestayInBloomFilter(String key) {
         return bloomFilterService.mightContain(key);
     }
