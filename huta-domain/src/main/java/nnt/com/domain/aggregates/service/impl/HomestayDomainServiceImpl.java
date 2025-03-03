@@ -103,7 +103,7 @@ public class HomestayDomainServiceImpl implements HomestayDomainService {
                     .status("ACTIVE")
                     .build();
             Discount discount = Discount.builder()
-                    .value(request.getMonthlyDiscount())
+                    .value((int) request.getMonthlyDiscount())
                     .type(DiscountType.WEEKLY)
                     .room(room)
                     .build();
@@ -177,8 +177,8 @@ public class HomestayDomainServiceImpl implements HomestayDomainService {
                     .mapToDouble(Review::getRating)
                     .average()
                     .orElse(0);
-            response.setReviewStart((float) rating);
-            response.setRating(rating);
+            response.setReviewStart(Float.parseFloat(String.format("%,.2f", rating)));
+            response.setRating(Float.parseFloat(String.format("%,.2f", rating)));
             response.setReviewCount(homestay.getReviews().size());
             response.setCommentCount(homestay.getReviews().size());
             response.setReviews(homestay.getReviews().stream().map(review -> ReviewResponse.builder()
@@ -203,10 +203,10 @@ public class HomestayDomainServiceImpl implements HomestayDomainService {
                 response.setLike(user.getWishlist().contains(homestay));
             }
         }
-        response.setPrice("đ" + String.format("%,d", homestay.getRooms().getFirst().getDailyPrice()).replace(',', ','));
+        response.setPrice("đ" + String.format("%,d", homestay.getRooms().stream().mapToInt(Room::getDailyPrice).min().orElse(0)).replace(',', ','));
         if (homestay.getRooms().getFirst().getDiscounts() != null && !homestay.getRooms().getFirst().getDiscounts().isEmpty() &&
                 homestay.getRooms().getFirst().getDiscounts().getFirst().getValue() > 0) {
-            response.setSaleOff("-" + (int) homestay.getRooms().getFirst().getDiscounts().getFirst().getValue() + "% hôm nay");
+            response.setSaleOff("-" + homestay.getRooms().getFirst().getDiscounts().stream().mapToInt(Discount::getValue).min().orElse(0) + "% hôm nay");
         }
         Set<AmenityResponse> amenities = new HashSet<>();
         if (homestay.getRooms() != null && !homestay.getRooms().isEmpty()) {

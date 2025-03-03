@@ -42,7 +42,7 @@ public class HomestayResponse {
     boolean isAds;
     Map<String, Double> map;
     //    List<Room> rooms;
-    double rating;
+    float rating;
     String typeHomestay;
     Integer version;
 

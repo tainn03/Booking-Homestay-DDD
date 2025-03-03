@@ -73,6 +73,9 @@ public class RoomDomainServiceImpl implements RoomDomainService {
     public RoomResponse save(RoomRequest roomRequest) {
         Room room = roomMapper.toEntity(roomRequest);
         Homestay homestay = homestayDomainRepository.getById(roomRequest.getHomestayId());
+        homestay.setBedrooms(homestay.getBedrooms() + 1);
+        homestay.setBeds(homestay.getBeds() + roomRequest.getBeds());
+        homestay.setMaxGuests(homestay.getMaxGuests() + roomRequest.getSize());
         room.setHomestay(homestay);
         room = roomDomainRepository.save(room);
         return getRoomResponse(save(room));

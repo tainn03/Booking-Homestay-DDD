@@ -17,7 +17,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Discount extends BaseEntity<Long> {
-    double value;
+    int value;
 
     @Enumerated(EnumType.STRING)
     @Builder.Default
