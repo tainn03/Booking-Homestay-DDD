@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import nnt.com.domain.aggregates.model.vo.BookingStatus;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import static lombok.AccessLevel.PRIVATE;
@@ -20,12 +19,13 @@ import static lombok.AccessLevel.PRIVATE;
 @FieldDefaults(level = PRIVATE)
 public class BookingResponse {
     long id;
-    LocalDate checkIn;
-    LocalDate checkOut;
+    String checkIn;
+    String checkOut;
     String code;
+    String email;
     @Lob
     String note;
-    long totalCost;
+    String totalCost;
     int night;
     int adults;
     int children;

@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.chrono.ChronoLocalDate;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -262,6 +263,12 @@ public class BookingDomainServiceImpl implements BookingDomainService {
         List<String> roomNames = new ArrayList<>();
         booking.getRooms().forEach(room -> roomNames.add(room.getName()));
         response.setRoomNames(roomNames);
+
+        response.setEmail(booking.getUser().getEmail());
+
+        response.setCheckIn(booking.getCheckIn().format(DateTimeFormatter.ofPattern("yyyy/MM/dd")));
+        response.setCheckOut(booking.getCheckOut().format(DateTimeFormatter.ofPattern("yyyy/MM/dd")));
+        response.setTotalCost(formatCurrency(booking.getTotalCost()));
         return response;
     }
 

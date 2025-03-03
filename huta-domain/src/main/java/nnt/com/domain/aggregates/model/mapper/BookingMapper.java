@@ -10,5 +10,8 @@ public interface BookingMapper {
     @Mapping(target = "payment", ignore = true)
     @Mapping(target = "roomNames", ignore = true)
     @Mapping(target = "id", source = "id")
+    @Mapping(target = "checkIn", ignore = true)
+    @Mapping(target = "checkOut", ignore = true)
+    @Mapping(target = "totalCost", ignore = true)
     BookingResponse toDTO(Booking booking);
 }
