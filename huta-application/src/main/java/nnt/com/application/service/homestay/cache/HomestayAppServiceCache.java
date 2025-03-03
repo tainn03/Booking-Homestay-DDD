@@ -234,4 +234,8 @@ public class HomestayAppServiceCache {
         log.info("GET POPULAR RECOMMENDATION FROM SERVICE");
         return responses;
     }
+
+    public List<HomestayResponse> getHomestaysByOwnerId(Long ownerId) {
+        return homestayDomainService.getByOwner(ownerId);
+    }
 }

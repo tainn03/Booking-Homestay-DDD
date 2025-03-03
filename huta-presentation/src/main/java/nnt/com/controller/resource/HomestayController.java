@@ -57,6 +57,11 @@ public class HomestayController {
         return responseFactory.create(homestayAppService.getHomestayByOwner());
     }
 
+    @GetMapping("owner/{ownerId}")
+    public ApiResponse getHomestayByOwnerId(@PathVariable Long ownerId) {
+        return responseFactory.create(homestayAppService.getHomestaysByOwnerId(ownerId));
+    }
+
     @GetMapping("/{homestayId}/img")
     public ApiResponse getHomestayImages(@PathVariable Long homestayId) {
         return responseFactory.create(homestayAppService.getHomestayImages(homestayId));

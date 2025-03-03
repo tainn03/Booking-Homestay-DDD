@@ -35,4 +35,6 @@ public interface HomestayAppService {
     List<ImageResponse> uploadHomestayImageByUrl(Long homestayId, String type, List<String> urls);
 
     List<HomestayResponse> recommendHomestay();
+
+    List<HomestayResponse> getHomestaysByOwnerId(Long ownerId);
 }
