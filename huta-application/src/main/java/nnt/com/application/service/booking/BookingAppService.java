@@ -19,4 +19,6 @@ public interface BookingAppService {
     void deleteBooking(long bookingId);
 
     BookingResponse updateBookingStatus(long bookingId, String status);
+
+    List<BookingResponse> getMyBookings();
 }

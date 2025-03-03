@@ -197,6 +197,11 @@ public class BookingAppServiceImpl implements BookingAppService {
         return bookingDomainService.updateStatus(bookingId, status);
     }
 
+    @Override
+    public List<BookingResponse> getMyBookings() {
+        return bookingDomainService.getMyBookings();
+    }
+
     private PriceResponse getPriceFromLocalCache(long homestayId, LocalDate checkIn, LocalDate checkOut, int guests, long roomId) {
         String stringKey = RedisKey.PRICE.getKey() + homestayId + ":" + checkIn + ":" + checkOut + ":" + guests + ":" + roomId;
         long key = stringKey.hashCode();

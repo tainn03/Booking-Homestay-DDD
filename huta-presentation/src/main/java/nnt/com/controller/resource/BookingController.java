@@ -60,4 +60,9 @@ public class BookingController {
         return responseFactory.create(bookingAppService.updateBookingStatus(bookingId, status));
     }
 
+    @GetMapping("/users")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'LANDLORD')")
+    public ApiResponse getMyBookings() {
+        return responseFactory.create(bookingAppService.getMyBookings());
+    }
 }

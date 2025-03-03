@@ -25,4 +25,6 @@ public interface BookingDomainService extends BaseBehaviors<Booking, Long> {
     List<BookingResponse> getBookingsByHomestay(long homestayId);
 
     BookingResponse updateStatus(long bookingId, String status);
+
+    List<BookingResponse> getMyBookings();
 }

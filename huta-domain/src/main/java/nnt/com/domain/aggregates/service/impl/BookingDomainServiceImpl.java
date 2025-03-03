@@ -18,6 +18,7 @@ import nnt.com.domain.shared.exception.BusinessException;
 import nnt.com.domain.shared.exception.ErrorCode;
 import nnt.com.domain.shared.utils.StringUtil;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -232,7 +233,10 @@ public class BookingDomainServiceImpl implements BookingDomainService {
 
     @Override
     public List<BookingResponse> getBookingsByHomestay(long homestayId) {
-        List<Booking> bookings = bookingDomainRepository.getByHomestayId(homestayId);
+        List<Booking> bookings = bookingDomainRepository.getByHomestayId(homestayId).stream()
+                .filter(response -> !response.getStatus().equals(BookingStatus.EXPIRED))
+                .sorted(Comparator.comparing(Booking::getCheckIn).reversed())
+                .toList();
         List<BookingResponse> responses = new ArrayList<>();
         bookings.forEach(booking -> {
             BookingResponse response = getBookingResponse(booking);
@@ -251,6 +255,21 @@ public class BookingDomainServiceImpl implements BookingDomainService {
         booking.setStatus(BookingStatus.valueOf(status));
         bookingDomainRepository.update(booking);
         return getBookingResponse(booking);
+    }
+
+    @Override
+    public List<BookingResponse> getMyBookings() {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        List<Booking> bookings = user.getBookings().stream()
+                .filter(response -> !response.getStatus().equals(BookingStatus.EXPIRED))
+                .sorted(Comparator.comparing(Booking::getCheckIn).reversed())
+                .toList();
+        List<BookingResponse> responses = new ArrayList<>();
+        bookings.forEach(booking -> {
+            BookingResponse response = getBookingResponse(booking);
+            responses.add(response);
+        });
+        return responses;
     }
 
     private BookingResponse getBookingResponse(Booking booking) {
