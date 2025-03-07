@@ -1,5 +1,6 @@
 package nnt.com.domain.aggregates.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -22,12 +23,15 @@ public class Discount extends BaseEntity<Long> {
     @Enumerated(EnumType.STRING)
     @Builder.Default
     DiscountType type = DiscountType.DAILY;
-    String description;
+
+    String status;
 
     @Builder.Default
+    @JsonFormat(pattern = "yyyy-MM-dd")
     LocalDate startDate = LocalDate.now();
 
     @Builder.Default
+    @JsonFormat(pattern = "yyyy-MM-dd")
     LocalDate endDate = LocalDate.now();
 
     @JsonIgnore

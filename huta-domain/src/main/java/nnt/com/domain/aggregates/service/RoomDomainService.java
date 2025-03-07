@@ -3,6 +3,7 @@ package nnt.com.domain.aggregates.service;
 import nnt.com.domain.aggregates.model.dto.request.DiscountRequest;
 import nnt.com.domain.aggregates.model.dto.request.RoomRequest;
 import nnt.com.domain.aggregates.model.dto.response.RoomResponse;
+import nnt.com.domain.aggregates.model.entity.Discount;
 import nnt.com.domain.aggregates.model.entity.Room;
 import nnt.com.domain.shared.behaviors.BaseBehaviors;
 
@@ -24,4 +25,10 @@ public interface RoomDomainService extends BaseBehaviors<Room, Long> {
     RoomResponse getRoomById(Long roomId);
 
     List<RoomResponse> getAvailableRoomsByHomestayId(Long homestayId, String checkIn, String checkOut);
+
+    List<Discount> getCustomDiscounts(Long roomId);
+
+    Discount updateCustomDiscount(Long roomId, Long discountId, DiscountRequest request);
+
+    void deleteCustomDiscount(Long roomId, Long discountId);
 }

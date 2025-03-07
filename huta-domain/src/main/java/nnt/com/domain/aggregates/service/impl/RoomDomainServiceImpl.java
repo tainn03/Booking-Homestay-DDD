@@ -1,5 +1,6 @@
 package nnt.com.domain.aggregates.service.impl;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import nnt.com.domain.aggregates.model.dto.request.DiscountRequest;
@@ -141,7 +142,7 @@ public class RoomDomainServiceImpl implements RoomDomainService {
         Discount discount = Discount.builder()
                 .value(request.getValue())
                 .type(DiscountType.DAILY)
-                .description(request.getDescription())
+                .status(request.getStatus())
                 .startDate(request.getStartDate())
                 .endDate(request.getEndDate())
                 .room(room)
@@ -181,6 +182,46 @@ public class RoomDomainServiceImpl implements RoomDomainService {
         return response;
     }
 
+    @Override
+    public List<Discount> getCustomDiscounts(Long roomId) {
+        Room room = roomDomainRepository.getById(roomId);
+        if (room == null) {
+            throw new BusinessException(ErrorCode.ROOM_NOT_FOUND);
+        }
+        return room.getDiscounts().stream().filter(d -> d.getType() == DiscountType.DAILY).toList();
+    }
+
+    @Override
+    public Discount updateCustomDiscount(Long roomId, Long discountId, DiscountRequest request) {
+        Room room = roomDomainRepository.getById(roomId);
+        if (room == null) {
+            throw new BusinessException(ErrorCode.ROOM_NOT_FOUND);
+        }
+        Discount discount = discountDomainRepository.getById(discountId);
+        if (discount == null) {
+            throw new BusinessException(ErrorCode.DISCOUNT_NOT_FOUND);
+        }
+        discount.setValue(request.getValue());
+        discount.setStartDate(request.getStartDate());
+        discount.setEndDate(request.getEndDate());
+        discount.setStatus(request.getStatus());
+        return discountDomainRepository.update(discount);
+    }
+
+    @Override
+    @Transactional
+    public void deleteCustomDiscount(Long roomId, Long discountId) {
+        Room room = roomDomainRepository.getById(roomId);
+        if (room == null) {
+            throw new BusinessException(ErrorCode.ROOM_NOT_FOUND);
+        }
+        Discount discount = discountDomainRepository.getById(discountId);
+        if (discount == null) {
+            throw new BusinessException(ErrorCode.DISCOUNT_NOT_FOUND);
+        }
+        discountDomainRepository.delete(discountId);
+    }
+
     private void validateDate(String checkIn, String checkOut) {
         try {
             LocalDate startDate = LocalDate.parse(checkIn);
@@ -195,6 +236,9 @@ public class RoomDomainServiceImpl implements RoomDomainService {
     }
 
     private void validateRequest(Room room, DiscountRequest request) {
+        if (room == null) {
+            throw new BusinessException(ErrorCode.ROOM_NOT_FOUND);
+        }
         if (request.getStartDate().isAfter(request.getEndDate())) {
             throw new BusinessException(ErrorCode.CHECKIN_AFTER_CHECKOUT);
         }
@@ -212,6 +256,10 @@ public class RoomDomainServiceImpl implements RoomDomainService {
                 if (request.getStartDate().isBefore(d.getStartDate()) && request.getEndDate().isAfter(d.getEndDate())) {
                     throw new BusinessException(ErrorCode.OVERLAP_DISCOUNT);
                 }
+                if (request.getStartDate().isEqual(d.getStartDate()) || request.getEndDate().isEqual(d.getEndDate())) {
+                    throw new BusinessException(ErrorCode.OVERLAP_DISCOUNT);
+                }
+
             });
         }
     }

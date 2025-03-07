@@ -15,7 +15,7 @@ import static lombok.AccessLevel.PRIVATE;
 @FieldDefaults(level = PRIVATE)
 public class DiscountRequest {
     int value;
-    String description;
+    String status;
     LocalDate startDate;
     LocalDate endDate;
 }

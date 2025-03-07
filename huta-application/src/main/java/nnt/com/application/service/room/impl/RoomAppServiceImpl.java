@@ -8,6 +8,7 @@ import nnt.com.application.service.room.RoomAppService;
 import nnt.com.domain.aggregates.model.dto.request.DiscountRequest;
 import nnt.com.domain.aggregates.model.dto.request.RoomRequest;
 import nnt.com.domain.aggregates.model.dto.response.RoomResponse;
+import nnt.com.domain.aggregates.model.entity.Discount;
 import nnt.com.domain.aggregates.service.RoomDomainService;
 import nnt.com.domain.shared.exception.BusinessException;
 import nnt.com.domain.shared.exception.ErrorCode;
@@ -69,5 +70,20 @@ public class RoomAppServiceImpl implements RoomAppService {
     @Override
     public List<RoomResponse> getAvailableRoomsByHomestayId(Long homestayId, String checkIn, String checkOut) {
         return roomDomainService.getAvailableRoomsByHomestayId(homestayId, checkIn, checkOut);
+    }
+
+    @Override
+    public List<Discount> getCustomDiscounts(Long roomId) {
+        return roomDomainService.getCustomDiscounts(roomId);
+    }
+
+    @Override
+    public Discount updateCustomDiscount(Long roomId, Long discountId, DiscountRequest request) {
+        return roomDomainService.updateCustomDiscount(roomId, discountId, request);
+    }
+
+    @Override
+    public void deleteCustomDiscount(Long roomId, Long discountId) {
+        roomDomainService.deleteCustomDiscount(roomId, discountId);
     }
 }

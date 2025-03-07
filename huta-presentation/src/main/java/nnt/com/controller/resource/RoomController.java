@@ -48,10 +48,28 @@ public class RoomController {
         return responseFactory.create(roomAppService.updateRoomDiscount(roomId, weeklyDiscount, monthlyDiscount));
     }
 
-    @PostMapping("/{roomId}/discount")
+    @PostMapping("/{roomId}/discounts")
     @PreAuthorize("hasAnyRole('ADMIN', 'LANDLORD')")
     public ApiResponse addCustomDiscount(@PathVariable Long roomId, @RequestBody @Valid DiscountRequest request) {
         return responseFactory.create(roomAppService.addCustomDiscount(roomId, request));
+    }
+
+    @GetMapping("/{roomId}/discounts/custom")
+    public ApiResponse getCustomDiscounts(@PathVariable Long roomId) {
+        return responseFactory.create(roomAppService.getCustomDiscounts(roomId));
+    }
+
+    @PutMapping("/{roomId}/discounts/{discountId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LANDLORD')")
+    public ApiResponse updateCustomDiscount(@PathVariable Long roomId, @PathVariable Long discountId, @RequestBody @Valid DiscountRequest request) {
+        return responseFactory.create(roomAppService.updateCustomDiscount(roomId, discountId, request));
+    }
+
+    @DeleteMapping("/{roomId}/discounts/{discountId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LANDLORD')")
+    public ApiResponse deleteCustomDiscount(@PathVariable Long roomId, @PathVariable Long discountId) {
+        roomAppService.deleteCustomDiscount(roomId, discountId);
+        return responseFactory.create("Discount deleted successfully");
     }
 
     @GetMapping("/{roomId}")
