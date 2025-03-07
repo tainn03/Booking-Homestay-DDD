@@ -1,10 +1,12 @@
 package nnt.com.controller.aop.aspect;
 
 import lombok.extern.slf4j.Slf4j;
+import nnt.com.controller.model.vo.ApiResponse;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
@@ -19,8 +21,19 @@ public class LoggerAspect {
         Object result = joinPoint.proceed();
         Instant end = Instant.now();
         long time = end.toEpochMilli() - start.toEpochMilli();
-        log.info("FINISH EXECUTION METHOD {} RUN IN {} ms", joinPoint.getSignature().getName(), time);
+
+        logExecutionDetails(joinPoint, result, time);
+
         return result;
+    }
+
+    private void logExecutionDetails(ProceedingJoinPoint joinPoint, Object result, long time) {
+        log.info("FINISH EXECUTION METHOD {} RUN IN {} ms", joinPoint.getSignature().getName(), time);
+        if (result instanceof ApiResponse apiResponse) {
+            apiResponse.setExecutionTime(time);
+        } else if (result instanceof ResponseEntity<?> responseEntity && responseEntity.getBody() instanceof ApiResponse apiResponse) {
+            apiResponse.setExecutionTime(time);
+        }
     }
 
     @AfterThrowing(pointcut = "execution(* nnt.com.controller..*.*(..))", throwing = "ex")

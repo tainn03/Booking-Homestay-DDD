@@ -5,8 +5,6 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import nnt.com.domain.shared.exception.ErrorCode;
 
-import java.time.LocalDateTime;
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -17,10 +15,12 @@ import java.time.LocalDateTime;
 public class ApiResponse {
     @Builder.Default
     int code = ErrorCode.SUCCESS.getCode();
+
     @Builder.Default
     String message = ErrorCode.SUCCESS.getMessage();
+
     @Builder.Default
-    String timestamp = LocalDateTime.now().toString();
+    Long executionTime = 0L;
 
     Object payload;
 }
