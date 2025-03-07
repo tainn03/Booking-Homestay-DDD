@@ -27,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 import static lombok.AccessLevel.PRIVATE;
@@ -237,5 +238,44 @@ public class HomestayAppServiceCache {
 
     public List<HomestayResponse> getHomestaysByOwnerId(Long ownerId) {
         return homestayDomainService.getByOwner(ownerId);
+    }
+
+    public long getNumberOfLike(Long homestayId) {
+        String cacheKey = RedisKey.HOMESTAY.getKey() + homestayId + ":likes";
+        Long likes = getLikesFromCache(cacheKey);
+        if (likes != null) {
+            log.info("GET NUMBER OF LIKES FOR HOMESTAY {} FROM CACHE", homestayId);
+            updateLikesAsync(homestayId, cacheKey);
+            return likes;
+        }
+
+        log.info("GET NUMBER OF LIKES FOR HOMESTAY {} FROM DATABASE", homestayId);
+        likes = getLikesFromDatabase(homestayId);
+        cacheLikes(cacheKey, likes);
+        return likes;
+    }
+
+    private Long getLikesFromCache(String cacheKey) {
+        return redisCache.getObject(cacheKey, Long.class);
+    }
+
+    private Long getLikesFromDatabase(Long homestayId) {
+        return (long) homestayDomainService.getById(homestayId).getLikedUsers().size();
+    }
+
+    private void cacheLikes(String cacheKey, Long likes) {
+        log.info("UPDATE LIKES FOR HOMESTAY {} TO CACHE", cacheKey);
+        redisCache.setObject(cacheKey, likes, 1L, TimeUnit.HOURS);
+    }
+
+    private void updateLikesAsync(Long homestayId, String cacheKey) {
+        CompletableFuture.runAsync(() -> {
+            log.info("CHECKING ASYNC LIKES FOR HOMESTAY {}", homestayId);
+            long actualLikes = getLikesFromDatabase(homestayId);
+            Long cachedLikes = getLikesFromCache(cacheKey);
+            if (cachedLikes == null || !cachedLikes.equals(actualLikes)) {
+                cacheLikes(cacheKey, actualLikes);
+            }
+        });
     }
 }

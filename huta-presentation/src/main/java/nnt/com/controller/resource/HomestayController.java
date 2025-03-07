@@ -122,4 +122,9 @@ public class HomestayController {
     public ResponseEntity<ApiResponse> recommendHomestay() {
         return ResponseEntity.ok(responseFactory.create(homestayAppService.recommendHomestay()));
     }
+
+    @GetMapping("/{homestayId}/like")
+    public ResponseEntity<ApiResponse> getNumberOfLike(@PathVariable Long homestayId) {
+        return ResponseEntity.ok(responseFactory.create(homestayAppService.getNumberOfLike(homestayId)));
+    }
 }

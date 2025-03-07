@@ -37,4 +37,6 @@ public interface HomestayAppService {
     List<HomestayResponse> recommendHomestay();
 
     List<HomestayResponse> getHomestaysByOwnerId(Long ownerId);
+
+    long getNumberOfLike(Long homestayId);
 }
