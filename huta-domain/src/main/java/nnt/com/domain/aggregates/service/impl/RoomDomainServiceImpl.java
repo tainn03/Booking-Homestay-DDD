@@ -139,6 +139,15 @@ public class RoomDomainServiceImpl implements RoomDomainService {
     public RoomResponse addCustomDiscount(Long roomId, DiscountRequest request) {
         Room room = roomDomainRepository.getById(roomId);
         validateRequest(room, request);
+        Discount discount = createDiscount(request, room);
+        if (room.getDiscounts() == null) {
+            room.setDiscounts(new ArrayList<>());
+        }
+        room.getDiscounts().add(discount);
+        return getRoomResponse(update(room));
+    }
+
+    private Discount createDiscount(DiscountRequest request, Room room) {
         Discount discount = Discount.builder()
                 .value(request.getValue())
                 .type(DiscountType.DAILY)
@@ -147,12 +156,7 @@ public class RoomDomainServiceImpl implements RoomDomainService {
                 .endDate(request.getEndDate())
                 .room(room)
                 .build();
-        discount = discountDomainRepository.save(discount);
-        if (room.getDiscounts() == null) {
-            room.setDiscounts(new ArrayList<>());
-        }
-        room.getDiscounts().add(discount);
-        return getRoomResponse(update(room));
+        return discountDomainRepository.save(discount);
     }
 
     @Override
@@ -197,15 +201,17 @@ public class RoomDomainServiceImpl implements RoomDomainService {
         if (room == null) {
             throw new BusinessException(ErrorCode.ROOM_NOT_FOUND);
         }
-        Discount discount = discountDomainRepository.getById(discountId);
-        if (discount == null) {
-            throw new BusinessException(ErrorCode.DISCOUNT_NOT_FOUND);
+        try {
+            Discount discount = discountDomainRepository.getById(discountId);
+            discount.setValue(request.getValue());
+            discount.setStartDate(request.getStartDate());
+            discount.setEndDate(request.getEndDate());
+            discount.setStatus(request.getStatus());
+            return discountDomainRepository.update(discount);
+        } catch (Exception e) {
+            validateRequest(room, request);
+            return createDiscount(request, room);
         }
-        discount.setValue(request.getValue());
-        discount.setStartDate(request.getStartDate());
-        discount.setEndDate(request.getEndDate());
-        discount.setStatus(request.getStatus());
-        return discountDomainRepository.update(discount);
     }
 
     @Override

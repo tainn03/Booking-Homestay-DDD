@@ -84,6 +84,11 @@ public class UserAppServiceImpl implements UserAppService {
         return userDomainService.getProfileById(userId);
     }
 
+    @Override
+    public boolean isCanCreateHomestay() {
+        return userDomainService.isCanCreateHomestay();
+    }
+
     private boolean checkLikedHomestayInBloomFilter(String key) {
         return bloomFilterService.mightContain(key);
     }

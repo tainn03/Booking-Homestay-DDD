@@ -16,4 +16,6 @@ public interface UserAppService {
     boolean checkLikedHomestay(Long homestayId);
 
     UserResponse getProfileById(Long userId);
+
+    boolean isCanCreateHomestay();
 }

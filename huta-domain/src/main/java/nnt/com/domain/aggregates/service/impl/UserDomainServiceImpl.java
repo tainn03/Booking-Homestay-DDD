@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Objects;
 
 import static lombok.AccessLevel.PRIVATE;
 
@@ -107,5 +108,21 @@ public class UserDomainServiceImpl implements UserDomainService {
     @Override
     public UserResponse getProfileById(Long userId) {
         return userMapper.toDTO(getById(userId));
+    }
+
+    @Override
+    public boolean isCanCreateHomestay() {
+        User user = getByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+        return isFullProfile(user) && isLandlord(user);
+    }
+
+    private boolean isLandlord(User user) {
+        return Objects.equals(user.getRole().getRole(), "LANDLORD");
+    }
+
+    private boolean isFullProfile(User user) {
+        return user.getPhone() != null && user.getDob() != null && user.getGender() != null && user.getAddress() != null
+                && user.getIdentityNumber() != null && user.getBusinessLicense() != null && user.getNationality() != null
+                && user.getBankName() != null && user.getBankNum() != null && user.getBankUsername() != null;
     }
 }
