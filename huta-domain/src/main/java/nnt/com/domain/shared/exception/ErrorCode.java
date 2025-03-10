@@ -39,6 +39,7 @@ public enum ErrorCode {
     PRICE_CALENDAR_NOT_FOUND(40417, "Không tìm thấy lịch giá", HttpStatus.NOT_FOUND),
     PAYMENT_NOT_FOUND(40418, "Không tìm thấy thanh toán", HttpStatus.NOT_FOUND),
     REFUND_NOT_FOUND(40419, "Không tìm thấy hoàn tiền", HttpStatus.NOT_FOUND),
+    SUBSCRIPTION_NOT_FOUND(40420, "Không tìm thấy gói dịch vụ", HttpStatus.NOT_FOUND),
 
     // SERVICE ERRORS
     SERVICE_UNAVAILABLE(50301, "Dịch vụ không khả dụng, ngắt kết nối", HttpStatus.SERVICE_UNAVAILABLE),
@@ -80,6 +81,7 @@ public enum ErrorCode {
     INVALID_DISCOUNT(40024, "Khuyến mãi không hợp lệ", HttpStatus.BAD_REQUEST),
     OVERLAP_DISCOUNT(40025, "Khuyến mãi trùng lặp", HttpStatus.BAD_REQUEST),
     INVALID_DATE(40026, "Ngày không hợp lệ", HttpStatus.BAD_REQUEST),
+    SUBSCRIPTION_ALREADY_SUBSCRIBED(40027, "Đã đăng ký gói dịch vụ này", HttpStatus.BAD_REQUEST),
 
 
     ;

@@ -26,7 +26,15 @@ public class PaymentController {
                             @RequestParam("orderInfo") String orderInfo,
                             HttpServletRequest request, HttpServletResponse response) throws IOException {
         String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
-        paymentAppService.redirectToPaymentGateway(amount, orderInfo, baseUrl, response);
+        paymentAppService.redirectToPaymentGateway(amount, "BOOKING:" + orderInfo, baseUrl, response);
+    }
+
+    @GetMapping("/subscribe")
+    public void subscribe(@RequestParam("amount") int amount,
+                          @RequestParam("orderInfo") String orderInfo,
+                          HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+        paymentAppService.redirectToPaymentGateway(amount, "SUBSCRIPTION:" + orderInfo, baseUrl, response);
     }
 
     // Sau khi hoàn tất thanh toán, VNPAY sẽ chuyển hướng trình duyệt về URL này

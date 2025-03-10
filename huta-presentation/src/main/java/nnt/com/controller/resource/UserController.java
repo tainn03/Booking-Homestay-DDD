@@ -5,6 +5,7 @@ import lombok.experimental.FieldDefaults;
 import nnt.com.application.service.user.UserAppService;
 import nnt.com.controller.model.builder.ResponseFactory;
 import nnt.com.controller.model.vo.ApiResponse;
+import nnt.com.domain.aggregates.model.dto.request.SubscriptionRequest;
 import nnt.com.domain.aggregates.model.dto.request.UserUpdateRequest;
 import nnt.com.domain.aggregates.model.dto.response.UserResponse;
 import nnt.com.domain.shared.exception.ErrorCode;
@@ -67,5 +68,41 @@ public class UserController {
     @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'LANDLORD')")
     public ResponseEntity<ApiResponse> isCanCreateHomestay() {
         return ResponseEntity.ok(responseFactory.create(userAppService.isCanCreateHomestay()));
+    }
+
+    @PostMapping("/subscriptions")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'LANDLORD')")
+    public ResponseEntity<ApiResponse> createSubscription(@RequestBody SubscriptionRequest request) {
+        return ResponseEntity.ok(responseFactory.create(userAppService.createSubscription(request)));
+    }
+
+    @GetMapping("/subscriptions")
+    public ResponseEntity<ApiResponse> getSubscriptions() {
+        return ResponseEntity.ok(responseFactory.create(userAppService.getSubscriptions()));
+    }
+
+    @PutMapping("/subscriptions/{subscriptionId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'LANDLORD')")
+    public ResponseEntity<ApiResponse> updateSubscription(@PathVariable Long subscriptionId, @RequestBody SubscriptionRequest request) {
+        return ResponseEntity.ok(responseFactory.create(userAppService.updateSubscription(subscriptionId, request)));
+    }
+
+    @DeleteMapping("/subscriptions/{subscriptionId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'LANDLORD')")
+    public ResponseEntity<ApiResponse> deleteSubscription(@PathVariable Long subscriptionId) {
+        userAppService.deleteSubscription(subscriptionId);
+        return ResponseEntity.ok(responseFactory.create("Xóa thành công"));
+    }
+
+    @PostMapping("/subscriptions/{subscriptionId}/subscribe")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'LANDLORD')")
+    public ResponseEntity<ApiResponse> subscribe(@PathVariable Long subscriptionId) {
+        return ResponseEntity.ok(responseFactory.create(userAppService.subscribe(subscriptionId)));
+    }
+
+    @GetMapping("/subscriptions/mine")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'LANDLORD')")
+    public ResponseEntity<ApiResponse> getMySubscriptions() {
+        return ResponseEntity.ok(responseFactory.create(userAppService.getMySubscriptions()));
     }
 }

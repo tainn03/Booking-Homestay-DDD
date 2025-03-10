@@ -8,9 +8,11 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import nnt.com.application.service.payment.PaymentAppService;
 import nnt.com.domain.aggregates.model.entity.Payment;
+import nnt.com.domain.aggregates.model.entity.UserSubscription;
 import nnt.com.domain.aggregates.model.vo.PaymentMethod;
 import nnt.com.domain.aggregates.model.vo.PaymentStatus;
-import nnt.com.domain.aggregates.service.BookingDomainService;
+import nnt.com.domain.aggregates.repository.PaymentDomainRepository;
+import nnt.com.domain.aggregates.repository.UserSubscriptionDomainRepository;
 import nnt.com.domain.aggregates.service.PaymentService;
 import nnt.com.infrastructure.distributed.kafka.producer.KafkaProducer;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import static lombok.AccessLevel.PRIVATE;
 
@@ -27,7 +30,8 @@ import static lombok.AccessLevel.PRIVATE;
 @Slf4j
 public class PaymentAppServiceImpl implements PaymentAppService {
     PaymentService vnPayService;
-    BookingDomainService bookingDomainService;
+    UserSubscriptionDomainRepository userSubscriptionDomainRepository;
+    PaymentDomainRepository paymentDomainRepository;
     KafkaProducer kafkaProducer;
 
     @Override
@@ -49,13 +53,48 @@ public class PaymentAppServiceImpl implements PaymentAppService {
         String orderInfo = request.getParameter("vnp_OrderInfo");
 
         // Xử lý thông tin đơn hàng
-        handleRequestParams(request, paymentStatus, orderInfo);
+        if (orderInfo.split(":")[0].equals("BOOKING")) {
+            handleRequestParams(request, paymentStatus, orderInfo);
+        } else {
+            handleSubscriptionRequestParams(request, paymentStatus, orderInfo.split(":")[1]);
+        }
         redirectToReactClient(response, orderInfo);
+    }
+
+    private void handleSubscriptionRequestParams(HttpServletRequest request, int paymentStatus, String orderInfo) {
+        String totalPrice = String.valueOf(Integer.parseInt(request.getParameter("vnp_Amount")) / 100);
+        UserSubscription userSubscription = userSubscriptionDomainRepository.getById(Long.valueOf(orderInfo));
+        long month = (Integer.parseInt(totalPrice) / userSubscription.getSubscription().getPrice());
+        if (month > 0) {
+            userSubscription.setExpiredAt(userSubscription.getExpiredAt().plusMonths(month));
+            userSubscription.setStatus("ACTIVE");
+        } else {
+            userSubscription.setExpiredAt(userSubscription.getExpiredAt().plusMonths(1));
+            userSubscription.setStatus("INACTIVE");
+        }
+        userSubscription.setExpiredAt(userSubscription.getExpiredAt().plusMonths(month > 0 ? month : 1));
+        Payment payment = Payment.builder()
+                .amount(Integer.parseInt(totalPrice))
+                .userSubscription(userSubscription)
+                .status(paymentStatus == 1 ? PaymentStatus.SUCCESS.name() : PaymentStatus.FAIL.name())
+                .paymentMethod(PaymentMethod.CREDIT_CARD)
+                .build();
+        if (userSubscription.getPayments() != null) {
+            userSubscription.getPayments().add(payment);
+        } else {
+            userSubscription.setPayments(List.of(payment));
+        }
+        userSubscriptionDomainRepository.save(userSubscription);
     }
 
     private void redirectToReactClient(HttpServletResponse response, String orderInfo) throws IOException {
         if (orderInfo != null) {
-            String redirectUrl = "http://localhost:3000/pay-done?id=" + orderInfo;
+            String redirectUrl;
+            if (orderInfo.split(":")[0].equals("BOOKING")) {
+                redirectUrl = "http://localhost:3000/pay-done?id=" + orderInfo;
+            } else {
+                redirectUrl = "http://localhost:3000/account-package";
+            }
             response.sendRedirect(redirectUrl);
         } else {
             response.sendRedirect("http://localhost:3000/paymentfail");
@@ -92,6 +131,7 @@ public class PaymentAppServiceImpl implements PaymentAppService {
         log.info("Secure hash: {}", vnp_SecureHash);
 
         log.info("CREATE PAYMENT WITH TOTAL PRICE: {}", totalPrice);
+        String bookingCode = orderInfo.split(":")[1];
         Payment payment = Payment.builder()
                 .amount(Integer.parseInt(totalPrice))
                 .transactionId(transactionId)
@@ -102,6 +142,6 @@ public class PaymentAppServiceImpl implements PaymentAppService {
                 .build();
 
         log.info("SEND PAYMENT MESSAGE TO KAFKA");
-        kafkaProducer.sendFireAndForgot("payment.mail", orderInfo, payment);
+        kafkaProducer.sendFireAndForgot("payment.mail", bookingCode, payment);
     }
 }

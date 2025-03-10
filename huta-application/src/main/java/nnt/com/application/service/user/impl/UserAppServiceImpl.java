@@ -4,12 +4,17 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import nnt.com.application.service.homestay.cache.HomestayAppServiceCache;
 import nnt.com.application.service.user.UserAppService;
+import nnt.com.domain.aggregates.model.dto.request.SubscriptionRequest;
 import nnt.com.domain.aggregates.model.dto.request.UserUpdateRequest;
 import nnt.com.domain.aggregates.model.dto.response.HomestayResponse;
+import nnt.com.domain.aggregates.model.dto.response.SubscriptionsResponse;
 import nnt.com.domain.aggregates.model.dto.response.UserResponse;
 import nnt.com.domain.aggregates.model.entity.Homestay;
+import nnt.com.domain.aggregates.model.entity.Subscription;
 import nnt.com.domain.aggregates.model.entity.User;
+import nnt.com.domain.aggregates.model.entity.UserSubscription;
 import nnt.com.domain.aggregates.service.HomestayDomainService;
+import nnt.com.domain.aggregates.service.SubscriptionDomainService;
 import nnt.com.domain.aggregates.service.UserDomainService;
 import nnt.com.infrastructure.cache.redis.RedisCache;
 import nnt.com.infrastructure.distributed.redisson.BloomFilterService;
@@ -19,6 +24,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static lombok.AccessLevel.PRIVATE;
@@ -31,6 +37,7 @@ public class UserAppServiceImpl implements UserAppService {
     UserDomainService userDomainService;
     HomestayDomainService homestayDomainService;
     HomestayAppServiceCache homestayAppServiceCache;
+    SubscriptionDomainService subscriptionDomainService;
     RedisCache redisCache;
     BloomFilterService bloomFilterService;
 
@@ -87,6 +94,36 @@ public class UserAppServiceImpl implements UserAppService {
     @Override
     public boolean isCanCreateHomestay() {
         return userDomainService.isCanCreateHomestay();
+    }
+
+    @Override
+    public Subscription createSubscription(SubscriptionRequest request) {
+        return subscriptionDomainService.createSubscription(request);
+    }
+
+    @Override
+    public List<Subscription> getSubscriptions() {
+        return subscriptionDomainService.getSubscriptions();
+    }
+
+    @Override
+    public Subscription updateSubscription(Long subscriptionId, SubscriptionRequest request) {
+        return subscriptionDomainService.updateSubscription(subscriptionId, request);
+    }
+
+    @Override
+    public void deleteSubscription(Long subscriptionId) {
+        subscriptionDomainService.deleteSubscription(subscriptionId);
+    }
+
+    @Override
+    public UserSubscription subscribe(Long subscriptionId) {
+        return subscriptionDomainService.subscribe(subscriptionId);
+    }
+
+    @Override
+    public List<SubscriptionsResponse> getMySubscriptions() {
+        return subscriptionDomainService.getMySubscriptions();
     }
 
     private boolean checkLikedHomestayInBloomFilter(String key) {

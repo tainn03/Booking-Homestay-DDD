@@ -6,6 +6,7 @@ import nnt.com.domain.aggregates.model.dto.request.UserUpdateRequest;
 import nnt.com.domain.aggregates.model.dto.response.UserResponse;
 import nnt.com.domain.aggregates.model.entity.Homestay;
 import nnt.com.domain.aggregates.model.entity.User;
+import nnt.com.domain.aggregates.model.entity.UserSubscription;
 import nnt.com.domain.aggregates.model.mapper.UserMapper;
 import nnt.com.domain.aggregates.repository.UserDomainRepository;
 import nnt.com.domain.aggregates.service.ImageDomainService;
@@ -114,6 +115,12 @@ public class UserDomainServiceImpl implements UserDomainService {
     public boolean isCanCreateHomestay() {
         User user = getByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         return isFullProfile(user) && isLandlord(user);
+    }
+
+    @Override
+    public List<UserSubscription> getMySubscriptions() {
+        User user = getByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+        return user.getUserSubscriptions();
     }
 
     private boolean isLandlord(User user) {

@@ -26,8 +26,8 @@ public class PaymentConsumer {
     public void consumer(ConsumerRecord<String, Payment> record) {
         log.info("LẮNG NGHE SỰ KIỆN VỚI KEY {}, VALUE {}, PARTITION {}, OFFSET {}", record.key(), record.value(), record.partition(), record.offset());
         Payment payment = record.value();
-        String orderInfo = record.key();
-        Booking booking = bookingDomainService.getByCode(orderInfo);
+        String bookingCode = record.key();
+        Booking booking = bookingDomainService.getByCode(bookingCode);
         payment.setBooking(booking);
         payment = paymentService.save(payment);
         booking.setPayment(payment);

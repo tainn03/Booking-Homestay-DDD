@@ -4,8 +4,11 @@ import nnt.com.domain.aggregates.model.dto.request.UserUpdateRequest;
 import nnt.com.domain.aggregates.model.dto.response.UserResponse;
 import nnt.com.domain.aggregates.model.entity.Homestay;
 import nnt.com.domain.aggregates.model.entity.User;
+import nnt.com.domain.aggregates.model.entity.UserSubscription;
 import nnt.com.domain.shared.behaviors.BaseBehaviors;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 public interface UserDomainService extends BaseBehaviors<User, Long> {
     User getByEmail(String emailOwner);
@@ -23,4 +26,6 @@ public interface UserDomainService extends BaseBehaviors<User, Long> {
     UserResponse getProfileById(Long userId);
 
     boolean isCanCreateHomestay();
+
+    List<UserSubscription> getMySubscriptions();
 }
