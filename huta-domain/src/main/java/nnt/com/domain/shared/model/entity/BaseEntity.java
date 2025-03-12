@@ -28,7 +28,7 @@ public abstract class BaseEntity<T extends Serializable> implements Serializable
     private LocalDateTime createdAt;
 
     @LastModifiedDate
-    @Column(insertable = false)
+//    @Column(insertable = false)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updatedAt;
 
@@ -37,6 +37,6 @@ public abstract class BaseEntity<T extends Serializable> implements Serializable
     private String createdBy;
 
     @LastModifiedBy
-    @Column(insertable = false)
+//    @Column(insertable = false)
     private String updatedBy;
 }

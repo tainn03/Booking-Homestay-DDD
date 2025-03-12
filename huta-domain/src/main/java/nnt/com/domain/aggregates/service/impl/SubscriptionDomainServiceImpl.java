@@ -12,8 +12,6 @@ import nnt.com.domain.aggregates.repository.SubscriptionDomainRepository;
 import nnt.com.domain.aggregates.repository.UserDomainRepository;
 import nnt.com.domain.aggregates.repository.UserSubscriptionDomainRepository;
 import nnt.com.domain.aggregates.service.SubscriptionDomainService;
-import nnt.com.domain.shared.exception.BusinessException;
-import nnt.com.domain.shared.exception.ErrorCode;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -87,7 +85,7 @@ public class SubscriptionDomainServiceImpl implements SubscriptionDomainService 
         if (user.getUserSubscriptions() != null) {
             for (UserSubscription userSubscription : user.getUserSubscriptions()) {
                 if (userSubscription.getSubscription().getId().equals(subscriptionId)) {
-                    throw new BusinessException(ErrorCode.SUBSCRIPTION_ALREADY_SUBSCRIBED);
+                    return userSubscription;
                 }
             }
         }

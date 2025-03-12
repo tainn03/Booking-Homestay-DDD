@@ -66,13 +66,13 @@ public class PaymentAppServiceImpl implements PaymentAppService {
         UserSubscription userSubscription = userSubscriptionDomainRepository.getById(Long.valueOf(orderInfo));
         long month = (Integer.parseInt(totalPrice) / userSubscription.getSubscription().getPrice());
         if (month > 0) {
+            log.info("UPDATE USER SUBSCRIPTION WITH MONTH: {}, {} TOTAL PRICE", month, totalPrice);
             userSubscription.setExpiredAt(userSubscription.getExpiredAt().plusMonths(month));
             userSubscription.setStatus("ACTIVE");
         } else {
             userSubscription.setExpiredAt(userSubscription.getExpiredAt().plusMonths(1));
             userSubscription.setStatus("INACTIVE");
         }
-        userSubscription.setExpiredAt(userSubscription.getExpiredAt().plusMonths(month > 0 ? month : 1));
         Payment payment = Payment.builder()
                 .amount(Integer.parseInt(totalPrice))
                 .userSubscription(userSubscription)

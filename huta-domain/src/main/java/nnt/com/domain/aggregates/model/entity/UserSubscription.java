@@ -22,7 +22,7 @@ public class UserSubscription extends BaseEntity<Long> {
     @JoinColumn(name = "user_id", nullable = false)
     User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "subscription_id", nullable = false)
     Subscription subscription;
 
