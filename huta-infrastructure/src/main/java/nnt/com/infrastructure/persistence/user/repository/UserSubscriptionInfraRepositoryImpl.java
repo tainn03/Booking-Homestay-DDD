@@ -11,6 +11,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 import static lombok.AccessLevel.PRIVATE;
 
 @Service
@@ -43,5 +45,10 @@ public class UserSubscriptionInfraRepositoryImpl implements UserSubscriptionDoma
     @Override
     public void delete(Long id) {
         userSubscriptionInfraRepository.deleteById(id);
+    }
+
+    @Override
+    public List<UserSubscription> getByUser(Long id) {
+        return userSubscriptionInfraRepository.getByUser(id);
     }
 }

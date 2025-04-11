@@ -4,9 +4,11 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import nnt.com.application.service.booking.BookingAppService;
+import nnt.com.controller.aop.annotation.UserActionLog;
 import nnt.com.controller.model.builder.ResponseFactory;
 import nnt.com.controller.model.vo.ApiResponse;
 import nnt.com.domain.aggregates.model.dto.request.BookingRequest;
+import nnt.com.domain.shared.model.vo.UserAction;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +26,7 @@ public class BookingController {
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'LANDLORD')")
+    @UserActionLog(action = UserAction.BOOKING)
     public ApiResponse createBooking(@Valid @RequestBody BookingRequest bookingRequest) {
         return responseFactory.create(bookingAppService.booking(bookingRequest));
     }

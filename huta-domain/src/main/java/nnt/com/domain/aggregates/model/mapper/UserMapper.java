@@ -10,6 +10,7 @@ import org.mapstruct.MappingTarget;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
     @Mapping(target = "role", source = "role.role")
+    @Mapping(target = "createdAt", source = "createdAt")
     UserResponse toDTO(User user);
 
     User updateEntity(UserUpdateRequest request, @MappingTarget User user);

@@ -1,6 +1,7 @@
 package nnt.com.domain.aggregates.service;
 
 import nnt.com.domain.aggregates.model.dto.request.SubscriptionRequest;
+import nnt.com.domain.aggregates.model.dto.response.AnalysisSubscriptionResponse;
 import nnt.com.domain.aggregates.model.dto.response.SubscriptionsResponse;
 import nnt.com.domain.aggregates.model.entity.Subscription;
 import nnt.com.domain.aggregates.model.entity.UserSubscription;
@@ -20,4 +21,6 @@ public interface SubscriptionDomainService extends BaseBehaviors<Subscription, L
     UserSubscription subscribe(Long subscriptionId);
 
     List<SubscriptionsResponse> getMySubscriptions();
+
+    List<AnalysisSubscriptionResponse> getAnalysisSubscriptions(int year);
 }

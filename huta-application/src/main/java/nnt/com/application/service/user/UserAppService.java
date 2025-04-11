@@ -2,6 +2,7 @@ package nnt.com.application.service.user;
 
 import nnt.com.domain.aggregates.model.dto.request.SubscriptionRequest;
 import nnt.com.domain.aggregates.model.dto.request.UserUpdateRequest;
+import nnt.com.domain.aggregates.model.dto.response.AnalysisSubscriptionResponse;
 import nnt.com.domain.aggregates.model.dto.response.SubscriptionsResponse;
 import nnt.com.domain.aggregates.model.dto.response.UserResponse;
 import nnt.com.domain.aggregates.model.entity.Subscription;
@@ -36,4 +37,12 @@ public interface UserAppService {
     UserSubscription subscribe(Long subscriptionId);
 
     List<SubscriptionsResponse> getMySubscriptions();
+
+    List<AnalysisSubscriptionResponse> getAnalysisSubscriptions(int year);
+
+    List<UserResponse> getAllUsers();
+
+    void blockUser(Long userId);
+
+    void unblockUser(Long userId);
 }

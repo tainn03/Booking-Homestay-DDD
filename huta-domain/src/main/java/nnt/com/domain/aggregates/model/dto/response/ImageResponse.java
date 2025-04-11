@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
+
 import static lombok.AccessLevel.PRIVATE;
 
 @Data
@@ -15,6 +17,6 @@ import static lombok.AccessLevel.PRIVATE;
 @FieldDefaults(level = PRIVATE)
 public class ImageResponse {
     long id;
-    String url;
+    List<String> urls;
     String type;
 }

@@ -8,12 +8,15 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import nnt.com.application.service.payment.PaymentAppService;
 import nnt.com.domain.aggregates.model.entity.Payment;
+import nnt.com.domain.aggregates.model.entity.User;
 import nnt.com.domain.aggregates.model.entity.UserSubscription;
 import nnt.com.domain.aggregates.model.vo.PaymentMethod;
 import nnt.com.domain.aggregates.model.vo.PaymentStatus;
-import nnt.com.domain.aggregates.repository.PaymentDomainRepository;
+import nnt.com.domain.aggregates.model.vo.RoleType;
+import nnt.com.domain.aggregates.repository.RoleDomainRepository;
 import nnt.com.domain.aggregates.repository.UserSubscriptionDomainRepository;
 import nnt.com.domain.aggregates.service.PaymentService;
+import nnt.com.domain.aggregates.service.UserDomainService;
 import nnt.com.infrastructure.distributed.kafka.producer.KafkaProducer;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +34,8 @@ import static lombok.AccessLevel.PRIVATE;
 public class PaymentAppServiceImpl implements PaymentAppService {
     PaymentService vnPayService;
     UserSubscriptionDomainRepository userSubscriptionDomainRepository;
-    PaymentDomainRepository paymentDomainRepository;
+    UserDomainService userDomainService;
+    RoleDomainRepository roleDomainRepository;
     KafkaProducer kafkaProducer;
 
     @Override
@@ -83,6 +87,11 @@ public class PaymentAppServiceImpl implements PaymentAppService {
             userSubscription.getPayments().add(payment);
         } else {
             userSubscription.setPayments(List.of(payment));
+        }
+        User user = userSubscription.getUser();
+        if (user.getRole().getRole().equals(RoleType.USER.name())) {
+            user.setRole(roleDomainRepository.findByRoleName(RoleType.LANDLORD.name()));
+            userDomainService.update(user);
         }
         userSubscriptionDomainRepository.save(userSubscription);
     }

@@ -25,8 +25,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -150,13 +152,22 @@ public class HomestayAppServiceCache {
     }
 
     private List<ImageResponse> convertImages(List<Image> images) {
-        return images.stream()
-                .map(image -> ImageResponse.builder()
+        List<ImageResponse> imageResponses = new ArrayList<>();
+        for (Image image : images) {
+            Optional<ImageResponse> existingImageResponse = imageResponses.stream()
+                    .filter(imageResponse -> Objects.equals(imageResponse.getType(), image.getType()))
+                    .findFirst();
+            if (existingImageResponse.isPresent()) {
+                existingImageResponse.get().getUrls().add(image.getUrl());
+            } else {
+                imageResponses.add(ImageResponse.builder()
                         .id(image.getId())
-                        .url(image.getUrl())
                         .type(image.getType())
-                        .build())
-                .toList();
+                        .urls(new ArrayList<>(List.of(image.getUrl())))
+                        .build());
+            }
+        }
+        return imageResponses;
     }
 
     public List<HomestayResponse> getHomestayByOwner() {
@@ -265,7 +276,7 @@ public class HomestayAppServiceCache {
 
     private void cacheLikes(String cacheKey, Long likes) {
         log.info("UPDATE LIKES FOR HOMESTAY {} TO CACHE", cacheKey);
-        redisCache.setObject(cacheKey, likes, 1L, TimeUnit.HOURS);
+        redisCache.setObject(cacheKey, likes, 1L, TimeUnit.MINUTES);
     }
 
     private void updateLikesAsync(Long homestayId, String cacheKey) {

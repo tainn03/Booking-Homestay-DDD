@@ -9,6 +9,7 @@ import nnt.com.domain.aggregates.model.dto.request.SubscriptionRequest;
 import nnt.com.domain.aggregates.model.dto.request.UserUpdateRequest;
 import nnt.com.domain.aggregates.model.dto.response.UserResponse;
 import nnt.com.domain.shared.exception.ErrorCode;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +24,26 @@ import static lombok.AccessLevel.PRIVATE;
 public class UserController {
     UserAppService userAppService;
     ResponseFactory responseFactory;
+
+    @GetMapping
+//    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse> getUsers() {
+        return ResponseEntity.ok(responseFactory.create(userAppService.getAllUsers()));
+    }
+
+    @PatchMapping("/block/{userId}")
+//    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse> blockUser(@PathVariable Long userId) {
+        userAppService.blockUser(userId);
+        return ResponseEntity.ok(responseFactory.create("Khóa tài khoản thành công"));
+    }
+
+    @PatchMapping("/unblock/{userId}")
+//    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse> unblockUser(@PathVariable Long userId) {
+        userAppService.unblockUser(userId);
+        return ResponseEntity.ok(responseFactory.create("Mở khóa tài khoản thành công"));
+    }
 
     @GetMapping("/profile")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'LANDLORD')")
@@ -89,9 +110,10 @@ public class UserController {
 
     @DeleteMapping("/subscriptions/{subscriptionId}")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'LANDLORD')")
-    public ResponseEntity<ApiResponse> deleteSubscription(@PathVariable Long subscriptionId) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public ApiResponse deleteSubscription(@PathVariable Long subscriptionId) {
         userAppService.deleteSubscription(subscriptionId);
-        return ResponseEntity.ok(responseFactory.create("Xóa thành công"));
+        return responseFactory.create("Xóa thành công");
     }
 
     @PostMapping("/subscriptions/{subscriptionId}/subscribe")
@@ -104,5 +126,10 @@ public class UserController {
     @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'LANDLORD')")
     public ResponseEntity<ApiResponse> getMySubscriptions() {
         return ResponseEntity.ok(responseFactory.create(userAppService.getMySubscriptions()));
+    }
+
+    @GetMapping("/subscriptions/analysis")
+    public ResponseEntity<ApiResponse> getAnalysisSubscriptions(@RequestParam int year) {
+        return ResponseEntity.ok(responseFactory.create(userAppService.getAnalysisSubscriptions(year)));
     }
 }

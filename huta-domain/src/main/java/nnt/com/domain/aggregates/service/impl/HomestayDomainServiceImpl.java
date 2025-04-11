@@ -8,19 +8,21 @@ import nnt.com.domain.aggregates.model.dto.request.HomestayRequest;
 import nnt.com.domain.aggregates.model.dto.request.RatingRequest;
 import nnt.com.domain.aggregates.model.dto.response.AmenityResponse;
 import nnt.com.domain.aggregates.model.dto.response.HomestayResponse;
+import nnt.com.domain.aggregates.model.dto.response.ImageResponse;
 import nnt.com.domain.aggregates.model.dto.response.ReviewResponse;
 import nnt.com.domain.aggregates.model.entity.*;
 import nnt.com.domain.aggregates.model.mapper.HomestayMapper;
 import nnt.com.domain.aggregates.model.vo.AmenityType;
 import nnt.com.domain.aggregates.model.vo.DiscountType;
-import nnt.com.domain.aggregates.repository.HomestayDomainRepository;
-import nnt.com.domain.aggregates.repository.TypeHomestayDomainRepository;
+import nnt.com.domain.aggregates.model.vo.RoleType;
+import nnt.com.domain.aggregates.repository.*;
 import nnt.com.domain.aggregates.service.HomestayDomainService;
 import nnt.com.domain.aggregates.service.UserDomainService;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -31,6 +33,9 @@ import java.util.*;
 public class HomestayDomainServiceImpl implements HomestayDomainService {
     HomestayMapper homestayMapper;
     UserDomainService userDomainService;
+    RoleDomainRepository roleDomainRepository;
+    UserDomainRepository userDomainRepository;
+    UserSubscriptionDomainRepository userSubscriptionDomainRepository;
     HomestayDomainRepository homestayDomainRepository;
     TypeHomestayDomainRepository typeHomestayDomainRepository;
 
@@ -139,7 +144,16 @@ public class HomestayDomainServiceImpl implements HomestayDomainService {
 
     @Override
     public HomestayResponse updateHomestay(long homestayId, HomestayRequest request) {
-        return null;
+        Homestay updatedHomestay = homestayMapper.update(getById(homestayId), request);
+        try {
+            updatedHomestay.setTypeHomestay(typeHomestayDomainRepository.getById(request.getTypeHomestay()));
+        } catch (Exception e) {
+            updatedHomestay.setTypeHomestay(TypeHomestay.builder()
+                    .name(request.getTypeHomestay())
+                    .build());
+            typeHomestayDomainRepository.save(updatedHomestay.getTypeHomestay());
+        }
+        return convertToResponse(update(updatedHomestay));
     }
 
     @Override
@@ -170,6 +184,28 @@ public class HomestayDomainServiceImpl implements HomestayDomainService {
         return homestayDomainRepository.getAll().stream().map(this::convertToResponse).toList();
     }
 
+    @Override
+    public void scanHomestaysForExpiredSubscriptions() {
+        List<User> landlord = userDomainRepository.getByRole(RoleType.LANDLORD.name());
+        landlord.forEach(user -> {
+            List<UserSubscription> userSubscriptions = userSubscriptionDomainRepository.getByUser(user.getId());
+            userSubscriptions
+                    .stream()
+                    .filter(userSubscription -> !userSubscription.getStatus().equals("EXPIRED"))
+                    .sorted(Comparator.comparing(UserSubscription::getExpiredAt))
+                    .forEach(userSubscription -> {
+                        if (userSubscription.getExpiredAt().isBefore(LocalDate.now())) {
+                            userSubscription.setStatus("EXPIRED");
+                            userSubscriptionDomainRepository.update(userSubscription);
+                            if (userSubscriptions.stream().allMatch(sub -> sub.getStatus().equals("EXPIRED"))) {
+                                List<Homestay> homestays = homestayDomainRepository.getByOwner(user.getId());
+                                homestays.forEach(homestay -> log.info("Homestay ID: {}", homestay.getId()));
+                            }
+                        }
+                    });
+        });
+    }
+
     private HomestayResponse convertToResponse(Homestay homestay) {
         HomestayResponse response = homestayMapper.toDTO(homestay);
         if (homestay.getReviews() != null && !homestay.getReviews().isEmpty()) {
@@ -186,12 +222,30 @@ public class HomestayDomainServiceImpl implements HomestayDomainService {
                     .date(review.getCreatedAt().format(DateTimeFormatter.ofPattern("HH:mm:ss, dd 'tháng' MM yyyy")))
                     .comment(review.getComment())
                     .starPoint(review.getRating())
+                    .avatar(review.getUser().getAvatar())
                     .build()).toList());
         }
         if (homestay.getImages() != null && !homestay.getImages().isEmpty()) {
-            response.setGalleryImgs(homestay.getImages().stream().map(Image::getUrl)
+            List<Image> images = homestay.getImages();
+            response.setGalleryImgs(images.stream().map(Image::getUrl)
                     .toList());
-            response.setFeaturedImage(homestay.getImages().getFirst().getUrl());
+            response.setFeaturedImage(images.getFirst().getUrl());
+            List<ImageResponse> imageResponses = new ArrayList<>();
+            for (Image image : images) {
+                Optional<ImageResponse> existingImageResponse = imageResponses.stream()
+                        .filter(imageResponse -> Objects.equals(imageResponse.getType(), image.getType()))
+                        .findFirst();
+                if (existingImageResponse.isPresent()) {
+                    existingImageResponse.get().getUrls().add(image.getUrl());
+                } else {
+                    imageResponses.add(ImageResponse.builder()
+                            .id(image.getId())
+                            .type(image.getType())
+                            .urls(new ArrayList<>(List.of(image.getUrl())))
+                            .build());
+                }
+            }
+            response.setImages(imageResponses);
         }
         response.setViewCount(9999);
 
@@ -206,7 +260,16 @@ public class HomestayDomainServiceImpl implements HomestayDomainService {
         response.setPrice("đ" + String.format("%,d", homestay.getRooms().stream().mapToInt(Room::getDailyPrice).min().orElse(0)).replace(',', ','));
         if (homestay.getRooms().getFirst().getDiscounts() != null && !homestay.getRooms().getFirst().getDiscounts().isEmpty() &&
                 homestay.getRooms().getFirst().getDiscounts().getFirst().getValue() > 0) {
-            response.setSaleOff("-" + homestay.getRooms().getFirst().getDiscounts().stream().mapToInt(Discount::getValue).min().orElse(0) + "% hôm nay");
+            long saleOff = homestay.getRooms().stream().map(Room::getDiscounts)
+                    .flatMap(Collection::stream)
+                    .filter(discount -> discount.getType().equals(DiscountType.DAILY))
+                    .filter(discount -> discount.getStartDate().isAfter(LocalDate.now().minusDays(1)))
+                    .mapToInt(Discount::getValue)
+                    .max()
+                    .orElse(0);
+            if (saleOff > 0) {
+                response.setSaleOff("-" + saleOff + "% hôm nay");
+            }
         }
         Set<AmenityResponse> amenities = new HashSet<>();
         if (homestay.getRooms() != null && !homestay.getRooms().isEmpty()) {

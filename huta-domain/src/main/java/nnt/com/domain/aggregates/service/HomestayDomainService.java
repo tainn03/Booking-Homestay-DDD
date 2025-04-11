@@ -26,4 +26,6 @@ public interface HomestayDomainService extends BaseBehaviors<Homestay, Long> {
     HomestayResponse ratingHomestay(Homestay homestay, User user, RatingRequest request);
 
     List<HomestayResponse> getAllHomestay();
+
+    void scanHomestaysForExpiredSubscriptions();
 }

@@ -6,12 +6,14 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import nnt.com.application.service.homestay.HomestayAppService;
+import nnt.com.controller.aop.annotation.UserActionLog;
 import nnt.com.controller.model.builder.ResponseFactory;
 import nnt.com.controller.model.vo.ApiResponse;
 import nnt.com.domain.aggregates.model.dto.request.HomestayRequest;
 import nnt.com.domain.aggregates.model.dto.request.RatingRequest;
 import nnt.com.domain.aggregates.model.dto.response.HomestayResponse;
 import nnt.com.domain.shared.exception.ErrorCode;
+import nnt.com.domain.shared.model.vo.UserAction;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,6 +48,7 @@ public class HomestayController {
     }
 
     @GetMapping("/{homestayId}")
+    @UserActionLog(action = UserAction.VIEW)
     public ApiResponse getHomestayById(@PathVariable Long homestayId) {
         HomestayResponse data = homestayAppService.getHomestayById(homestayId);
         return responseFactory.create(data);

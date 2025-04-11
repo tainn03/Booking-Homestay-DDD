@@ -16,5 +16,5 @@ public class ReviewResponse {
     String date;
     String comment;
     int starPoint;
-
+    String avatar;
 }

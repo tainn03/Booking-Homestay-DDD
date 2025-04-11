@@ -82,7 +82,7 @@ public enum ErrorCode {
     OVERLAP_DISCOUNT(40025, "Khuyến mãi trùng lặp", HttpStatus.BAD_REQUEST),
     INVALID_DATE(40026, "Ngày không hợp lệ", HttpStatus.BAD_REQUEST),
     SUBSCRIPTION_ALREADY_SUBSCRIBED(40027, "Đã đăng ký gói dịch vụ này", HttpStatus.BAD_REQUEST),
-
+    USER_ALREADY_SUBSCRIBED_ANOTHER_PACKAGE(40028, "Người dùng đã đăng ký gói dịch vụ khác", HttpStatus.BAD_REQUEST),
 
     ;
 

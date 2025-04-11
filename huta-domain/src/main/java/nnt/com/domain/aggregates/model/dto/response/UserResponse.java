@@ -1,5 +1,6 @@
 package nnt.com.domain.aggregates.model.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Lob;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,6 +22,7 @@ public class UserResponse {
     String avatar;
     UserStatus status;
     String phone;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     LocalDate dob;
     String gender;
     String address;
@@ -34,4 +36,7 @@ public class UserResponse {
     String role;
     @Lob
     String bio;
+
+    @JsonFormat(pattern = "'ngày' dd 'tháng' MM, yyyy")
+    LocalDateTime createdAt;
 }

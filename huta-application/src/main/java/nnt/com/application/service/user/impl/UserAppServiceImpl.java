@@ -6,6 +6,7 @@ import nnt.com.application.service.homestay.cache.HomestayAppServiceCache;
 import nnt.com.application.service.user.UserAppService;
 import nnt.com.domain.aggregates.model.dto.request.SubscriptionRequest;
 import nnt.com.domain.aggregates.model.dto.request.UserUpdateRequest;
+import nnt.com.domain.aggregates.model.dto.response.AnalysisSubscriptionResponse;
 import nnt.com.domain.aggregates.model.dto.response.HomestayResponse;
 import nnt.com.domain.aggregates.model.dto.response.SubscriptionsResponse;
 import nnt.com.domain.aggregates.model.dto.response.UserResponse;
@@ -44,7 +45,7 @@ public class UserAppServiceImpl implements UserAppService {
     @Override
     public UserResponse getProfile() {
         UserResponse response = userDomainService.getProfile();
-        redisCache.setObject(SecurityContextHolder.getContext().getAuthentication().getName() + ":profile", response, 30L, TimeUnit.MINUTES);
+        redisCache.setObject(SecurityContextHolder.getContext().getAuthentication().getName() + ":profile", response, 5L, TimeUnit.MINUTES);
         return response;
     }
 
@@ -98,6 +99,7 @@ public class UserAppServiceImpl implements UserAppService {
 
     @Override
     public Subscription createSubscription(SubscriptionRequest request) {
+        redisCache.delete(SecurityContextHolder.getContext().getAuthentication().getName() + ":profile");
         return subscriptionDomainService.createSubscription(request);
     }
 
@@ -124,6 +126,26 @@ public class UserAppServiceImpl implements UserAppService {
     @Override
     public List<SubscriptionsResponse> getMySubscriptions() {
         return subscriptionDomainService.getMySubscriptions();
+    }
+
+    @Override
+    public List<AnalysisSubscriptionResponse> getAnalysisSubscriptions(int year) {
+        return subscriptionDomainService.getAnalysisSubscriptions(year);
+    }
+
+    @Override
+    public List<UserResponse> getAllUsers() {
+        return userDomainService.getAllUsers();
+    }
+
+    @Override
+    public void blockUser(Long userId) {
+        userDomainService.blockUser(userId);
+    }
+
+    @Override
+    public void unblockUser(Long userId) {
+        userDomainService.unblockUser(userId);
     }
 
     private boolean checkLikedHomestayInBloomFilter(String key) {

@@ -26,7 +26,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.web.cors.CorsConfiguration;
 
-import java.util.Collections;
+import java.util.Arrays;
 
 @Configuration
 @RequiredArgsConstructor
@@ -70,7 +70,7 @@ public class SecurityConfig {
 //                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
                 .cors(corsConfig -> corsConfig.configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
-                    config.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
+                    config.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://localhost:3039"));
                     config.addAllowedMethod("*");
                     config.addAllowedHeader("*");
                     config.setMaxAge(3600L);

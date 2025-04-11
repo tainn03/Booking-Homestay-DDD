@@ -49,7 +49,8 @@ public class HomestayAppServiceImpl implements HomestayAppService {
     @Override
     public HomestayResponse update(Long homestayId, HomestayRequest request) {
         HomestayResponse response = homestayAppServiceCache.update(homestayId, request);
-        return updateHomestaySearch(request, response);
+        updateHomestaySearch(response);
+        return response;
     }
 
     @Override

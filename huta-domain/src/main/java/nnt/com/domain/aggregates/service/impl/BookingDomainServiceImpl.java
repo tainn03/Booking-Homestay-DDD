@@ -10,6 +10,7 @@ import nnt.com.domain.aggregates.model.dto.response.PriceResponse;
 import nnt.com.domain.aggregates.model.entity.*;
 import nnt.com.domain.aggregates.model.mapper.BookingMapper;
 import nnt.com.domain.aggregates.model.mapper.PaymentMapper;
+import nnt.com.domain.aggregates.model.mapper.UserMapper;
 import nnt.com.domain.aggregates.model.vo.BookingStatus;
 import nnt.com.domain.aggregates.model.vo.DiscountType;
 import nnt.com.domain.aggregates.repository.*;
@@ -18,6 +19,7 @@ import nnt.com.domain.shared.exception.BusinessException;
 import nnt.com.domain.shared.exception.ErrorCode;
 import nnt.com.domain.shared.utils.StringUtil;
 import org.springframework.data.domain.Page;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +31,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static lombok.AccessLevel.PRIVATE;
 
@@ -44,6 +47,7 @@ public class BookingDomainServiceImpl implements BookingDomainService {
     RoomDomainRepository roomDomainRepository;
     BookingMapper bookingMapper;
     PaymentMapper paymentMapper;
+    UserMapper userMapper;
 
     @Override
     public Booking save(Booking booking) {
@@ -72,6 +76,8 @@ public class BookingDomainServiceImpl implements BookingDomainService {
 
     @Override
     public void booking(BookingRequest request, String code) {
+        checkUserInfo(request);
+
         Homestay homestay = homestayDomainRepository.getById(request.getHomestayId());
         int guests = request.getAdult() + request.getChildren() + request.getInfant() / 2;
 
@@ -79,6 +85,15 @@ public class BookingDomainServiceImpl implements BookingDomainService {
 
         saveBookingToDB(request, selectedRoom, code);
         saveAvailableRoomToDB(selectedRoom, request.getCheckIn(), request.getCheckOut());
+    }
+
+    @Async
+    protected void checkUserInfo(BookingRequest request) {
+        User user = userDomainRepository.getByEmail(request.getEmail());
+        if (user.getPhone() == null || user.getPhone().isEmpty()) {
+            user.setPhone(request.getPhone());
+            userDomainRepository.update(user);
+        }
     }
 
     private void saveBookingToDB(BookingRequest request, Room selectedRoom, String code) {
@@ -172,15 +187,15 @@ public class BookingDomainServiceImpl implements BookingDomainService {
 
     @Override
     public PriceResponse calculatePrice(long homestayId, LocalDate checkIn, LocalDate checkOut, int guests, long roomId) {
-        long totalCost = 0;
-        long originalCost = 0;
-        long discountValue = 0;
         int dailyDays = 0;
         int weekendDays = 0;
+        long originalCost = 0;
+        long discountValue = 0;
 
         // get room and discounts
         Room room = roomDomainRepository.getById(roomId);
         Discount monthlyDiscount = getMonthlyDiscount(room);
+        Discount weeklyDiscount = getWeeklyDiscount(room);
         Discount customDiscount = getCustomDiscount(room, checkIn, checkOut);
 
         // map through each day to calculate price
@@ -188,28 +203,32 @@ public class BookingDomainServiceImpl implements BookingDomainService {
             boolean isWeekday = i.getDayOfWeek().getValue() < 6;
             dailyDays += isWeekday ? 1 : 0;
             weekendDays += isWeekday ? 0 : 1;
-            originalCost += isWeekday ? room.getDailyPrice() : room.getWeekendPrice();
-            totalCost += isWeekday ? room.getDailyPrice() : room.getWeekendPrice();
+            long currentCost = isWeekday ? room.getDailyPrice() : room.getWeekendPrice();
+            originalCost += currentCost;
 
             // check custom discount and apply
             if (customDiscount != null && isDayInPeriod(i, customDiscount.getStartDate(), customDiscount.getEndDate())) {
-                discountValue += (long) (totalCost * customDiscount.getValue() / 100);
-                totalCost = (long) (totalCost * (1 - customDiscount.getValue() / 100));
+                discountValue += currentCost * customDiscount.getValue() / 100;
                 log.info("APPLY DAILY DISCOUNT: {}", customDiscount.getValue());
             }
         }
 
         // check monthly discount and apply
-        if (ChronoUnit.DAYS.between(checkIn, checkOut) > 30 && monthlyDiscount != null) {
+        if (ChronoUnit.DAYS.between(checkIn, checkOut) >= 30 && monthlyDiscount != null) {
             log.info("APPLY MONTHLY DISCOUNT: {}", monthlyDiscount.getValue());
-            discountValue += (long) (totalCost * monthlyDiscount.getValue() / 100);
-            totalCost = (long) (totalCost * (1 - monthlyDiscount.getValue() / 100));
+            discountValue += originalCost * monthlyDiscount.getValue() / 100;
+        }
+
+        // check weekly discount and apply
+        if (ChronoUnit.DAYS.between(checkIn, checkOut) >= 7 && weeklyDiscount != null) {
+            log.info("APPLY WEEKLY DISCOUNT: {}", weeklyDiscount.getValue());
+            discountValue += originalCost * weeklyDiscount.getValue() / 100;
         }
 
         return PriceResponse.builder()
                 .originalCost(formatCurrency(originalCost))
                 .discountValue(formatCurrency(discountValue))
-                .totalCost(formatCurrency(totalCost))
+                .totalCost(formatCurrency(originalCost - discountValue))
                 .dailyDays(dailyDays)
                 .dailyPrice(formatCurrency(room.getDailyPrice()))
                 .weekendDays(weekendDays)
@@ -279,15 +298,16 @@ public class BookingDomainServiceImpl implements BookingDomainService {
         PaymentResponse paymentResponse = payment != null ? paymentMapper.toDTO(payment) : null;
         response.setPayment(paymentResponse);
 
-        List<String> roomNames = new ArrayList<>();
-        booking.getRooms().forEach(room -> roomNames.add(room.getName()));
-        response.setRoomNames(roomNames);
 
-        response.setEmail(booking.getUser().getEmail());
+        response.setRoomIds(booking.getRooms().stream().map(Room::getId).toList());
+        response.setUser(userMapper.toDTO(booking.getUser()));
 
         response.setCheckIn(booking.getCheckIn().format(DateTimeFormatter.ofPattern("yyyy/MM/dd")));
         response.setCheckOut(booking.getCheckOut().format(DateTimeFormatter.ofPattern("yyyy/MM/dd")));
         response.setTotalCost(formatCurrency(booking.getTotalCost()));
+
+        response.setHomestayName(homestayDomainRepository.getById(booking.getRooms().getFirst().getHomestay().getId()).getHomestayName());
+        response.setRoomName(booking.getRooms().stream().map(Room::getName).collect(Collectors.joining(", ")));
         return response;
     }
 
@@ -298,6 +318,13 @@ public class BookingDomainServiceImpl implements BookingDomainService {
     private Discount getMonthlyDiscount(Room room) {
         return room.getDiscounts().stream()
                 .filter(discount -> discount.getType().equals(DiscountType.MONTHLY))
+                .findFirst()
+                .orElse(null);
+    }
+
+    private Discount getWeeklyDiscount(Room room) {
+        return room.getDiscounts().stream()
+                .filter(discount -> discount.getType().equals(DiscountType.WEEKLY))
                 .findFirst()
                 .orElse(null);
     }

@@ -8,6 +8,7 @@ import nnt.com.domain.aggregates.model.entity.Homestay;
 import nnt.com.domain.aggregates.model.entity.User;
 import nnt.com.domain.aggregates.model.entity.UserSubscription;
 import nnt.com.domain.aggregates.model.mapper.UserMapper;
+import nnt.com.domain.aggregates.model.vo.UserStatus;
 import nnt.com.domain.aggregates.repository.UserDomainRepository;
 import nnt.com.domain.aggregates.service.ImageDomainService;
 import nnt.com.domain.aggregates.service.UserDomainService;
@@ -121,6 +122,25 @@ public class UserDomainServiceImpl implements UserDomainService {
     public List<UserSubscription> getMySubscriptions() {
         User user = getByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         return user.getUserSubscriptions();
+    }
+
+    @Override
+    public List<UserResponse> getAllUsers() {
+        return userDomainRepository.getAll().stream().map(userMapper::toDTO).toList();
+    }
+
+    @Override
+    public void blockUser(Long userId) {
+        User user = getById(userId);
+        user.setStatus(UserStatus.BLOCKED);
+        update(user);
+    }
+
+    @Override
+    public void unblockUser(Long userId) {
+        User user = getById(userId);
+        user.setStatus(UserStatus.ACTIVE);
+        update(user);
     }
 
     private boolean isLandlord(User user) {

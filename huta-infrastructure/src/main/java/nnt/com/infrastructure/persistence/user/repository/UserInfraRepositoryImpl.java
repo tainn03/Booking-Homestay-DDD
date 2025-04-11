@@ -13,6 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
@@ -58,5 +60,15 @@ public class UserInfraRepositoryImpl implements UserDomainRepository {
     @Override
     public User getByEmail(String emailOwner) {
         return userInfraRepository.getByEmail(emailOwner).orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+    }
+
+    @Override
+    public List<User> getByRole(String roleType) {
+        return userInfraRepository.findAllByRole(roleType);
+    }
+
+    @Override
+    public List<User> getAll() {
+        return userInfraRepository.findAll();
     }
 }

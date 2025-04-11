@@ -28,4 +28,10 @@ public interface UserDomainService extends BaseBehaviors<User, Long> {
     boolean isCanCreateHomestay();
 
     List<UserSubscription> getMySubscriptions();
+
+    List<UserResponse> getAllUsers();
+
+    void blockUser(Long userId);
+
+    void unblockUser(Long userId);
 }

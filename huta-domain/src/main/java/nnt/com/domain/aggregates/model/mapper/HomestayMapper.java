@@ -5,6 +5,7 @@ import nnt.com.domain.aggregates.model.dto.response.HomestayResponse;
 import nnt.com.domain.aggregates.model.entity.Homestay;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface HomestayMapper {
@@ -21,4 +22,8 @@ public interface HomestayMapper {
     @Mapping(target = "rating", ignore = true)
     @Mapping(target = "address", source = "addressDetail")
     HomestayResponse toDTO(Homestay homestay);
+
+    @Mapping(target = "homestayName", source = "name")
+    @Mapping(target = "typeHomestay", ignore = true)
+    Homestay update(@MappingTarget Homestay homestay, HomestayRequest request);
 }

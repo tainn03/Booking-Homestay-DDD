@@ -32,6 +32,8 @@ public class HomestayResponse {
 
     String featuredImage;
     List<String> galleryImgs;
+    List<ImageResponse> images;
+
     int commentCount;
     int viewCount;
     boolean like;

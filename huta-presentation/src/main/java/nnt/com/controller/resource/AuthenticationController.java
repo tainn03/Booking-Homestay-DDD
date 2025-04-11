@@ -5,12 +5,14 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import nnt.com.application.service.authentication.AuthenticationAppService;
+import nnt.com.controller.aop.annotation.UserActionLog;
 import nnt.com.controller.model.builder.ResponseFactory;
 import nnt.com.controller.model.vo.ApiResponse;
 import nnt.com.domain.aggregates.model.dto.request.ChangePasswordRequest;
 import nnt.com.domain.aggregates.model.dto.request.LoginRequest;
 import nnt.com.domain.aggregates.model.dto.request.RegisterRequest;
 import nnt.com.domain.shared.exception.ErrorCode;
+import nnt.com.domain.shared.model.vo.UserAction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -33,6 +35,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/public/login")
+    @UserActionLog(action = UserAction.LOGIN)
     public ResponseEntity<ApiResponse> login(@Valid @RequestBody LoginRequest request) {
         return ResponseEntity.ok(responseFactory.create(authenticationAppService.login(request)));
     }
