@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static lombok.AccessLevel.PRIVATE;
 
@@ -21,6 +22,11 @@ public class RoomAvailableDomainServiceImpl implements RoomAvailableDomainServic
     @Override
     public boolean isRoomAvailable(Long roomId, LocalDate checkIn, LocalDate checkOut) {
         return roomAvailableDomainRepository.isRoomAvailable(roomId, checkIn, checkOut);
+    }
+
+    @Override
+    public List<LocalDate> getUnavailableDates(Long id, LocalDate of, LocalDate of1) {
+        return roomAvailableDomainRepository.getUnavailableDates(id, of, of1);
     }
 
     @Override

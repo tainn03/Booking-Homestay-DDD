@@ -15,6 +15,7 @@ public enum ErrorCode {
     SUCCESS(20000, "Thành công", HttpStatus.OK),
 
     // SYSTEM ERRORS
+    NOT_AUTHORIZED(40100, "Chưa đăng nhập", HttpStatus.UNAUTHORIZED),
     INVALID_CREDENTIALS(40101, "Thông tin đăng nhập không chính xác", HttpStatus.UNAUTHORIZED),
     UNAUTHORIZED(40301, "Không có quyền truy cập", HttpStatus.FORBIDDEN),
     UNCATEGORIZED(50001, "Lỗi hệ thống, vui lòng kiểm tra logs", HttpStatus.INTERNAL_SERVER_ERROR),
@@ -40,6 +41,7 @@ public enum ErrorCode {
     PAYMENT_NOT_FOUND(40418, "Không tìm thấy thanh toán", HttpStatus.NOT_FOUND),
     REFUND_NOT_FOUND(40419, "Không tìm thấy hoàn tiền", HttpStatus.NOT_FOUND),
     SUBSCRIPTION_NOT_FOUND(40420, "Không tìm thấy gói dịch vụ", HttpStatus.NOT_FOUND),
+    TRIP_NOT_FOUND(40421, "Không tìm thấy chuyến đi", HttpStatus.NOT_FOUND),
 
     // SERVICE ERRORS
     SERVICE_UNAVAILABLE(50301, "Dịch vụ không khả dụng, ngắt kết nối", HttpStatus.SERVICE_UNAVAILABLE),

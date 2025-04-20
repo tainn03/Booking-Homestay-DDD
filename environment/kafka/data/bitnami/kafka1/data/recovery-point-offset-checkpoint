@@ -22,9 +22,9 @@ __consumer_offsets 41 0
 __consumer_offsets 33 0
 __consumer_offsets 23 0
 __consumer_offsets 49 0
-booking.confirmation 0 12
+booking.confirmation 0 13
 __consumer_offsets 47 0
-payment.mail 2 5
+payment.mail 2 6
 __consumer_offsets 16 0
 __consumer_offsets 28 0
 homestay.recommendation 0 0
@@ -59,7 +59,7 @@ __consumer_offsets 20 0
 __consumer_offsets 0 0
 __consumer_offsets 44 0
 __consumer_offsets 39 0
-__consumer_offsets 12 10392064
+__consumer_offsets 12 11251147
 __consumer_offsets 45 0
 __consumer_offsets 1 0
 __consumer_offsets 5 0

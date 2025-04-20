@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static lombok.AccessLevel.PRIVATE;
 
@@ -50,5 +51,10 @@ public class RoomAvailableInfraRepositoryImpl implements RoomAvailableDomainRepo
     @Override
     public boolean isRoomAvailable(Long roomId, LocalDate checkIn, LocalDate checkOut) {
         return roomAvailableRepositoryJpa.isRoomAvailable(roomId, checkIn, checkOut);
+    }
+
+    @Override
+    public List<LocalDate> getUnavailableDates(Long id, LocalDate of, LocalDate of1) {
+        return roomAvailableRepositoryJpa.getUnavailableDates(id, of, of1);
     }
 }

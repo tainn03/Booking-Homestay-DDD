@@ -291,6 +291,16 @@ public class BookingDomainServiceImpl implements BookingDomainService {
         return responses;
     }
 
+    @Override
+    public List<Booking> getBookingsWithinDateRange(List<Long> roomIds, LocalDate startDate, LocalDate endDate) {
+        return bookingDomainRepository.getBookingsWithinDateRange(roomIds, startDate, endDate);
+    }
+
+    @Override
+    public Object[] countNewAndReturningCustomers(List<Long> roomIds, LocalDateTime startOfYear, LocalDateTime startOfNextYear) {
+        return bookingDomainRepository.countNewAndReturningCustomers(roomIds, startOfYear, startOfNextYear);
+    }
+
     private BookingResponse getBookingResponse(Booking booking) {
         BookingResponse response = bookingMapper.toDTO(booking);
 

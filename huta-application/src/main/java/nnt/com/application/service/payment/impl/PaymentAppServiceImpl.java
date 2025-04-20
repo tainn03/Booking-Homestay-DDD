@@ -15,7 +15,7 @@ import nnt.com.domain.aggregates.model.vo.PaymentStatus;
 import nnt.com.domain.aggregates.model.vo.RoleType;
 import nnt.com.domain.aggregates.repository.RoleDomainRepository;
 import nnt.com.domain.aggregates.repository.UserSubscriptionDomainRepository;
-import nnt.com.domain.aggregates.service.PaymentService;
+import nnt.com.domain.aggregates.service.PaymentDomainService;
 import nnt.com.domain.aggregates.service.UserDomainService;
 import nnt.com.infrastructure.distributed.kafka.producer.KafkaProducer;
 import org.springframework.stereotype.Service;
@@ -32,7 +32,7 @@ import static lombok.AccessLevel.PRIVATE;
 @FieldDefaults(level = PRIVATE, makeFinal = true)
 @Slf4j
 public class PaymentAppServiceImpl implements PaymentAppService {
-    PaymentService vnPayService;
+    PaymentDomainService vnPayService;
     UserSubscriptionDomainRepository userSubscriptionDomainRepository;
     UserDomainService userDomainService;
     RoleDomainRepository roleDomainRepository;

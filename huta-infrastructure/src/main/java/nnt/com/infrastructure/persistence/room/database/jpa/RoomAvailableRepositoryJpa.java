@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Repository
 public interface RoomAvailableRepositoryJpa extends JpaRepository<RoomAvailable, Long> {
@@ -22,4 +23,10 @@ public interface RoomAvailableRepositoryJpa extends JpaRepository<RoomAvailable,
     @Modifying
     @Transactional
     void deleteByRoomIdAndDateBetween(Long roomId, LocalDate checkIn, LocalDate checkOut);
+
+
+    @Query("SELECT ra.date " +
+            "FROM RoomAvailable ra " +
+            "WHERE ra.room.id = ?1 AND ra.date BETWEEN ?2 AND ?3 AND ra.available = 0")
+    List<LocalDate> getUnavailableDates(Long id, LocalDate of, LocalDate of1);
 }

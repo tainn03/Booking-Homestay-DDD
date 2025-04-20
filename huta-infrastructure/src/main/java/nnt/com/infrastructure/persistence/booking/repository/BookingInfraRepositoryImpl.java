@@ -14,6 +14,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static lombok.AccessLevel.PRIVATE;
@@ -64,4 +66,21 @@ public class BookingInfraRepositoryImpl implements BookingDomainRepository {
     public List<Booking> getByHomestayId(long homestayId) {
         return bookingInfraRepositoryJpa.findByHomestayId(homestayId);
     }
+
+    @Override
+    public List<Booking> getBookingsWithinDateRange(List<Long> roomIds, LocalDate startDate, LocalDate endDate) {
+        if (roomIds == null || roomIds.isEmpty()) {
+            return List.of();
+        }
+        return bookingInfraRepositoryJpa.findBookingsWithinDateRange(roomIds, startDate, endDate);
+    }
+
+    @Override
+    public Object[] countNewAndReturningCustomers(List<Long> roomIds, LocalDateTime startOfYear, LocalDateTime startOfNextYear) {
+        if (roomIds == null || roomIds.isEmpty()) {
+            return new Object[]{0, 0};
+        }
+        return bookingInfraRepositoryJpa.countNewAndReturningCustomers(roomIds, startOfYear, startOfNextYear);
+    }
+
 }

@@ -3,9 +3,10 @@ package nnt.com.domain.aggregates.service.impl;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import nnt.com.domain.aggregates.model.entity.Payment;
 import nnt.com.domain.aggregates.repository.PaymentDomainRepository;
-import nnt.com.domain.aggregates.service.PaymentService;
+import nnt.com.domain.aggregates.service.PaymentDomainService;
 import nnt.com.domain.shared.utils.VNPayUtil;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +19,8 @@ import static lombok.AccessLevel.PRIVATE;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = PRIVATE, makeFinal = true)
-public class PaymentServiceImpl implements PaymentService {
+@Slf4j
+public class PaymentServiceImpl implements PaymentDomainService {
     VNPayUtil vnpayUtil;
     PaymentDomainRepository paymentDomainRepository;
 
@@ -100,5 +102,16 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public void delete(Long id) {
         paymentDomainRepository.delete(id);
+    }
+
+    @Override
+    public long getTotalPaymentByBooking(long id) {
+        log.info("GET TOTAL PAYMENT BY BOOKING ID {}", id);
+        Payment payment = paymentDomainRepository.getByBookingId(id);
+        if (payment != null) {
+            log.info("FOUND PAYMENT FOR BOOKING ID {} WITH AMOUNT {}", id, payment.getAmount());
+            return payment.getAmount();
+        }
+        return 0;
     }
 }

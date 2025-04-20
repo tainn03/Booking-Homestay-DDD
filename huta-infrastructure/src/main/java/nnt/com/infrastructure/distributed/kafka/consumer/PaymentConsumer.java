@@ -7,7 +7,7 @@ import nnt.com.domain.aggregates.model.entity.Booking;
 import nnt.com.domain.aggregates.model.entity.Payment;
 import nnt.com.domain.aggregates.model.vo.BookingStatus;
 import nnt.com.domain.aggregates.service.BookingDomainService;
-import nnt.com.domain.aggregates.service.PaymentService;
+import nnt.com.domain.aggregates.service.PaymentDomainService;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,7 @@ import static lombok.AccessLevel.PRIVATE;
 @RequiredArgsConstructor
 @FieldDefaults(level = PRIVATE, makeFinal = true)
 public class PaymentConsumer {
-    PaymentService paymentService;
+    PaymentDomainService paymentService;
     BookingDomainService bookingDomainService;
 
     @KafkaListener(topics = "payment.mail", groupId = "my-group", concurrency = "5")

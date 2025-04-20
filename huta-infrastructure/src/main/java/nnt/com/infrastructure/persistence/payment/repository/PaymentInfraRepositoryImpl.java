@@ -46,4 +46,9 @@ public class PaymentInfraRepositoryImpl implements PaymentDomainRepository {
     public void delete(Long id) {
         paymentInfraRepositoryJpa.deleteById(id);
     }
+
+    @Override
+    public Payment getByBookingId(long id) {
+        return paymentInfraRepositoryJpa.findByBookingId(id).orElseThrow(() -> new BusinessException(ErrorCode.BOOKING_NOT_FOUND));
+    }
 }
