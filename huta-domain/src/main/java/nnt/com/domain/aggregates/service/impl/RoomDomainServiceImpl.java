@@ -104,6 +104,7 @@ public class RoomDomainServiceImpl implements RoomDomainService {
         room.setWeekendPrice(roomRequest.getWeekendPrice());
         room.setStatus(roomRequest.getStatus());
         room.setBeds(roomRequest.getBeds());
+        room.setSize(roomRequest.getSize());
         room = roomDomainRepository.update(room);
         return getRoomResponse(room);
     }

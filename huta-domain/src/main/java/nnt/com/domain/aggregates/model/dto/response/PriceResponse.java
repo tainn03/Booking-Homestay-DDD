@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
+
 import static lombok.AccessLevel.PRIVATE;
 
 @Data
@@ -14,6 +16,7 @@ import static lombok.AccessLevel.PRIVATE;
 @AllArgsConstructor
 @FieldDefaults(level = PRIVATE)
 public class PriceResponse {
+    List<String> suitableRoomIds;
     String originalCost;
     String discountValue;
     String totalCost;

@@ -43,4 +43,9 @@ public class StringUtil {
         }
         return password.toString();
     }
+
+    public static long parseCurrency(String originalCost) {
+        String sanitizedCost = originalCost.replaceAll("[^\\d]", "");
+        return Long.parseLong(sanitizedCost);
+    }
 }

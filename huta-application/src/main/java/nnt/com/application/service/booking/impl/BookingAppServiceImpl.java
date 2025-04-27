@@ -8,7 +8,6 @@ import nnt.com.application.service.booking.BookingAppService;
 import nnt.com.application.service.homestay.cache.HomestayAppServiceCache;
 import nnt.com.domain.aggregates.model.dto.request.BookingRequest;
 import nnt.com.domain.aggregates.model.dto.response.BookingResponse;
-import nnt.com.domain.aggregates.model.dto.response.HomestayResponse;
 import nnt.com.domain.aggregates.model.dto.response.PriceResponse;
 import nnt.com.domain.aggregates.service.BookingDomainService;
 import nnt.com.domain.shared.exception.BusinessException;
@@ -61,15 +60,22 @@ public class BookingAppServiceImpl implements BookingAppService {
             if (!isLocked) {
                 throw new BusinessException(ErrorCode.TOO_MANY_REQUESTS);
             }
-            if (!isRoomAvailable(request)) {
-                throw new BusinessException(ErrorCode.NO_ROOM_AVAILABLE);
+            for (Long roomId : request.getRoomIds()) {
+                if (!isRoomAvailable(request.getCheckIn(), request.getCheckOut(), roomId, request.getHomestayId())) {
+                    throw new BusinessException(ErrorCode.NO_ROOM_AVAILABLE);
+                }
             }
+
 
             // Problem: đặt phòng tốn nhiều thời gian xử lý
             // Solution: sử dụng Kafka để xử lý đặt phòng bất đồng bộ và giảm thời gian xử lý
             String code = "BK-" + request.getHomestayId() + StringUtil.getRandomNumber(6);
             sendBookingMessageToKafka(request, code);
-            setAvailableRoomInCache(request.getCheckIn(), request.getCheckOut(), RedisKey.ROOM_AVAILABILITY.getKey() + key + ":" + request.getRoomId());
+            request.getRoomIds()
+                    .forEach(roomId -> {
+                        setAvailableRoomInCache(request.getCheckIn(), request.getCheckOut(), RedisKey.ROOM_AVAILABILITY.getKey() + key + ":" + roomId);
+                    });
+
             return code;
         } catch (InterruptedException e) {
             log.error("BOOKING PROCESS INTERRUPTED DUE TO: {}", e.getMessage());
@@ -82,14 +88,8 @@ public class BookingAppServiceImpl implements BookingAppService {
 
     // Problem: nhiều request cùng lúc, việc kiểm tra room available gây áp lực lớn cho database
     // Solution: sử dụng Redis cache để lưu trữ thông tin room available
-    private boolean isRoomAvailable(BookingRequest request) {
-        if (request.getRoomId() == 0) {
-            return true;
-        }
-        long roomId = request.getRoomId();
-        LocalDate checkIn = request.getCheckIn();
-        LocalDate checkOut = request.getCheckOut();
-        String key = RedisKey.ROOM_AVAILABILITY.getKey() + request.getHomestayId() + ":" + roomId;
+    private boolean isRoomAvailable(LocalDate checkIn, LocalDate checkOut, long roomId, long homestayId) {
+        String key = RedisKey.ROOM_AVAILABILITY.getKey() + homestayId + ":" + roomId;
 
         // Step 1: Check bloom filter first, not found means room has not been booked
         if (!hasRoomAvailableInBloomFilter(checkIn, checkOut, key)) {
@@ -172,7 +172,7 @@ public class BookingAppServiceImpl implements BookingAppService {
         }
 
         log.info("CALCULATE PRICE FROM DOMAIN SERVICE");
-        response = bookingDomainService.calculatePrice(homestayId, checkIn, checkOut, guests, roomId);
+        response = bookingDomainService.calculatePriceInManyRooms(homestayId, checkIn, checkOut, guests, roomId);
         setPriceToCache(homestayId, checkIn, checkOut, guests, roomId, response);
         return response;
     }
@@ -227,10 +227,6 @@ public class BookingAppServiceImpl implements BookingAppService {
         }
         if (checkIn.isAfter(checkOut)) {
             throw new BusinessException(ErrorCode.CHECKIN_AFTER_CHECKOUT);
-        }
-        HomestayResponse homestay = homestayAppServiceCache.getHomestayById(homestayId); // get by cache to save time
-        if (guests > homestay.getMaxGuests()) {
-            throw new BusinessException(ErrorCode.MAX_GUESTS_EXCEEDED);
         }
     }
 }

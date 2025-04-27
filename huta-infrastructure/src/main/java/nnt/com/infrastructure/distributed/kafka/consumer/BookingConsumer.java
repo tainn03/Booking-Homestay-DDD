@@ -6,10 +6,13 @@ import lombok.extern.slf4j.Slf4j;
 import nnt.com.domain.aggregates.model.dto.request.BookingRequest;
 import nnt.com.domain.aggregates.service.BookingDomainService;
 import nnt.com.domain.shared.model.dto.EmailRequest;
+import nnt.com.domain.shared.model.vo.MailTemplate;
 import nnt.com.infrastructure.persistence.mail.service.MailService;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 import static lombok.AccessLevel.PRIVATE;
 
@@ -34,6 +37,12 @@ public class BookingConsumer {
         bookingDomainService.booking(request, code);
         log.info("ĐẶT PHÒNG THÀNH CÔNG");
         log.info("GỬI MAIL CHO KHÁCH HÀNG VỀ VIỆC ĐẶT PHÒNG, EMAIL: {}", request.getEmail());
-        // gửi mail cho khách hàng
+        EmailRequest emailRequest = EmailRequest.builder()
+                .to(request.getEmail())
+                .subject("XÁC NHẬN ĐẶT PHÒNG")
+                .templateId(MailTemplate.BOOKING_SUCCESS.getValue())
+                .templateParams(Map.of("code", code))
+                .build();
+        mailService.send(emailRequest);
     }
 }

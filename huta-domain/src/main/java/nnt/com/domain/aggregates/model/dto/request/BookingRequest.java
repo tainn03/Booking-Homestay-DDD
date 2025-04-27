@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static lombok.AccessLevel.PRIVATE;
 
@@ -16,7 +17,7 @@ import static lombok.AccessLevel.PRIVATE;
 @FieldDefaults(level = PRIVATE)
 public class BookingRequest {
     long homestayId;
-    long roomId;
+    List<Long> roomIds;
     LocalDate checkIn;
     LocalDate checkOut;
     int adult;

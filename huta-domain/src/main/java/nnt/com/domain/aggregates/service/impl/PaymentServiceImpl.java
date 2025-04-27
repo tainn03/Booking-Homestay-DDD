@@ -106,12 +106,15 @@ public class PaymentServiceImpl implements PaymentDomainService {
 
     @Override
     public long getTotalPaymentByBooking(long id) {
-        log.info("GET TOTAL PAYMENT BY BOOKING ID {}", id);
-        Payment payment = paymentDomainRepository.getByBookingId(id);
-        if (payment != null) {
+        try {
+            log.info("GET TOTAL PAYMENT BY BOOKING ID {}", id);
+            Payment payment = paymentDomainRepository.getByBookingId(id);
             log.info("FOUND PAYMENT FOR BOOKING ID {} WITH AMOUNT {}", id, payment.getAmount());
             return payment.getAmount();
+        } catch
+        (Exception e) {
+            log.error("ERROR GETTING TOTAL PAYMENT BY BOOKING ID {}: {}", id, e.getMessage());
+            return 0;
         }
-        return 0;
     }
 }

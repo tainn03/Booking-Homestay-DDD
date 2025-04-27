@@ -17,6 +17,8 @@ public interface BookingDomainService extends BaseBehaviors<Booking, Long> {
 
     void cleanBookingExpiration();
 
+    PriceResponse calculatePriceInManyRooms(long homestayId, LocalDate checkIn, LocalDate checkOut, int guests, long roomId);
+
     PriceResponse calculatePrice(long homestayId, LocalDate checkIn, LocalDate checkOut, int guests, long roomIds);
 
     Booking getByCode(String orderInfo);

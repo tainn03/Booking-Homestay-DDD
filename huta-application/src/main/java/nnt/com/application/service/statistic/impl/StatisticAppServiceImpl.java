@@ -40,7 +40,7 @@ public class StatisticAppServiceImpl implements StatisticAppService {
 
     private void setBusinessKPIOverviewToCache(String selectedTime, BusinessKPIOverview response) {
         String key = generateCacheKey("KPI:" + selectedTime);
-        redisCache.setObject(key, response, 1L, TimeUnit.HOURS);
+        redisCache.setObject(key, response, 1L, TimeUnit.MINUTES);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class StatisticAppServiceImpl implements StatisticAppService {
 
     private void setBusinessHomestayIncomeToCache(String year, HomestayIncomeResponse response) {
         String key = generateCacheKey("income:" + year);
-        redisCache.setObject(key, response, 1L, TimeUnit.HOURS);
+        redisCache.setObject(key, response, 1L, TimeUnit.MINUTES);
     }
 
     @Override
@@ -79,7 +79,7 @@ public class StatisticAppServiceImpl implements StatisticAppService {
 
     private void setBookingLineChartToCache(String year, BookingLineChartResponse response) {
         String key = generateCacheKey("booking:" + year);
-        redisCache.setObject(key, response, 1L, TimeUnit.HOURS);
+        redisCache.setObject(key, response, 1L, TimeUnit.MINUTES);
     }
 
     private BookingLineChartResponse getBookingLineChartFromCache(String year) {
@@ -101,7 +101,7 @@ public class StatisticAppServiceImpl implements StatisticAppService {
 
     private void setBookingLineChartByHomestayToCache(Long homestayId, int[] years, BookingLineChartResponse response) {
         String key = generateCacheKey(homestayId + ":" + Arrays.stream(years).mapToObj(String::valueOf).reduce((a, b) -> a + "," + b).orElse(""));
-        redisCache.setObject(key, response, 1L, TimeUnit.HOURS);
+        redisCache.setObject(key, response, 1L, TimeUnit.MINUTES);
     }
 
     private BookingLineChartResponse getBookingLineChartByHomestayFromCache(Long homestayId, int[] years) {
@@ -123,7 +123,7 @@ public class StatisticAppServiceImpl implements StatisticAppService {
 
     private void setBookingStatePieChartToCache(int year, Long homestayId, StateRatePieChartResponse response) {
         String key = generateCacheKey("booking:state:" + year + ":" + homestayId);
-        redisCache.setObject(key, response, 1L, TimeUnit.HOURS);
+        redisCache.setObject(key, response, 1L, TimeUnit.MINUTES);
     }
 
     private StateRatePieChartResponse getBookingStatePieChartFromCache(int year, Long homestayId) {
@@ -144,7 +144,7 @@ public class StatisticAppServiceImpl implements StatisticAppService {
 
     private void setUserStatePieChartToCache(int year, Long homestayId, StateRatePieChartResponse response) {
         String key = generateCacheKey("user:state:" + year + ":" + homestayId);
-        redisCache.setObject(key, response, 1L, TimeUnit.HOURS);
+        redisCache.setObject(key, response, 1L, TimeUnit.MINUTES);
     }
 
     private StateRatePieChartResponse getUserStatePieChartFromCache(int year, Long homestayId) {
@@ -166,7 +166,7 @@ public class StatisticAppServiceImpl implements StatisticAppService {
 
     private void setRoomOccupancyToCache(Long homestayId, int year, int month, RoomOccupancyResponse response) {
         String key = generateCacheKey("room:occupancy:" + homestayId + ":" + year + ":" + month);
-        redisCache.setObject(key, response, 1L, TimeUnit.HOURS);
+        redisCache.setObject(key, response, 1L, TimeUnit.MINUTES);
     }
 
     private RoomOccupancyResponse getRoomOccupancyFromCache(Long homestayId, int year, int month) {

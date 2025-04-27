@@ -12,7 +12,9 @@ import static lombok.AccessLevel.PRIVATE;
 public enum MailTemplate {
     DEMO_TEMPLATE("d-2cebe65b02e545ebaaf91cd34d92a8a7"),
     FORGOT_PASSWORD("d-931226ad205a478ca7693005b169aa45"),
-    REGISTER_LANDLORD("d-cc917d6f75304d6bacbd51f814015e78");
+    REGISTER_LANDLORD("d-cc917d6f75304d6bacbd51f814015e78"),
+    BOOKING_SUCCESS("d-b1a24bd4dc384a48abb167e45509a700"),
+    ;
 
     String value;
 }

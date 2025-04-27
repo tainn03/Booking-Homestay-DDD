@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.time.chrono.ChronoLocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static lombok.AccessLevel.PRIVATE;
 
@@ -41,7 +42,7 @@ public class ActionAppServiceImpl implements ActionAppService {
     }
 
     private void setActionsToCache(List<Action> actions) {
-        redisCache.setObject("actions", actions);
+        redisCache.setObject("actions", actions, 1L, TimeUnit.MINUTES);
     }
 
     @Override
@@ -88,7 +89,7 @@ public class ActionAppServiceImpl implements ActionAppService {
     }
 
     private void setLoginStatToCache(LoginStatByYearResponse loginStat) {
-        redisCache.setObject("loginStatByYear", loginStat);
+        redisCache.setObject("loginStatByYear", loginStat, 1L, TimeUnit.MINUTES);
     }
 
     @Override

@@ -36,6 +36,12 @@ public class RoomController {
         return responseFactory.create(roomAppService.createRoom(roomRequest));
     }
 
+    @PutMapping("/{roomId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LANDLORD')")
+    public ApiResponse updateRoom(@PathVariable Long roomId, @RequestBody @Valid RoomRequest roomRequest) {
+        return responseFactory.create(roomAppService.updateRoom(roomId, roomRequest));
+    }
+
     @PatchMapping("/{roomId}/price")
     @PreAuthorize("hasAnyRole('ADMIN', 'LANDLORD')")
     public ApiResponse updateRoomPrice(@PathVariable Long roomId, @RequestParam int dailyPrice, @RequestParam int weekendPrice) {
